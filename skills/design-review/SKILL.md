@@ -1,4 +1,5 @@
 ---
+name: design-review
 description: 5 维度设计判据(Phase 2 横向辅助,可调 N 次)。**判据,不是闸门**——拿出来评判某段代码或某个设计选择。触发关键词:"该不该 newtype / 抽 trait / 上 Builder / 多方案纠结 / review 设计 / 审一下 / 审视 / 这个抽象合理吗 / 命名是否好 / 大破面变更 / 重构合理吗"。从类型抽象 / Builder / Trait / 命名组织 / 重构推进 5 维度评估。和 commit-review 区别:本 skill 是判据,commit-review 是闸门仪式。大改动 commit 前 commit-review 会内嵌调用本 skill。
 ---
 

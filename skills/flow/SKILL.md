@@ -1,4 +1,5 @@
 ---
+name: flow
 description: 工作流地图(导航层)。触发关键词:"该做什么 / 怎么开始 / 整体流程 / 哪个 skill / 现在到哪一步 / 不知如何展开"。展示两段论(Phase 1 feature 明确 / Phase 2 围绕 task 迭代)+ 10 个 skill 位置 + chain 关系。为单人 + AI 配对设计,Kanban 拉式,不是教科书 Scrum。
 ---
 
@@ -52,7 +53,7 @@ AI 协作的工作流地图。**不是教科书 Scrum**——为单人 + AI 实�
 ┌────────────────────────────────────────────┐
 │ Phase 2:围绕 task 迭代(单 session 闭环)   │
 │                                            │
-│   scope ──→ acceptance ──→ design-doc?     │
+│   scope ──→ acceptance ──→ design?     │
 │   ──→ [写代码 ↔ design-review N 次]        │
 │   ──→ commit-review ──→ push ──→ handoff   │
 │                                            │
@@ -80,10 +81,10 @@ feature ────→ scope(进 PR 级实施)
 
 scope ──────→ acceptance
 
-acceptance ──┬─→ design-doc(大功能,待新增)
+acceptance ──┬─→ design(大功能,可选闸门 2.5)
              └─→ [写代码]
 
-design-doc ─→ [写代码]
+design ─→ [写代码]
 
 [写代码 + design-review N 次]
               │
@@ -121,14 +122,14 @@ commit-review ─→ push ─→ handoff(自动)
 ┌─ Phase 2:围绕 task 迭代 ────────────────────────┐
 │  scope          PR 级 scope 对齐(闸门 1)        │
 │  acceptance     钉死可执行 DoD(闸门 2)          │
-│  design-doc     大功能设计文档(NEW,待新增)      │
+│  design     大功能设计文档(可选闸门 2.5)    │
 │  design-review  5 维度判据(横向 N 次)           │
 │  commit-review  commit + push 闸门(闸门 3)      │
 │  handoff        迭代终点交接(自动)              │
 └──────────────────────────────────────────────────┘
 ```
 
-**当前已有 9 个**(横切 3 + Phase 1 的 feature + Phase 2 五个);**待新增 1 个**:`design-doc`。
+**全 10 个 skill 全部交付**(横切 3 + Phase 1 的 feature + Phase 2 六个)。
 
 ---
 
@@ -164,7 +165,7 @@ docs/features/
 
 ## 一句话总结
 
-**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design-doc] → 写代码 + design-review → commit-review → push → handoff)围绕单个 task 单 session 闭环。
+**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design] → 写代码 + design-review → commit-review → push → handoff)围绕单个 task 单 session 闭环。
 
 **session = task = PR**——AI 无记忆从约束变 feature。
 
@@ -176,7 +177,7 @@ docs/features/
 
 本 skill 是**地图入口**,不替代任何具体仪式 skill:
 - 落到 Phase 1 → `feature`
-- 落到 Phase 2 → `scope` / `acceptance` / `design-doc` / `design-review` / `commit-review` / `handoff`
+- 落到 Phase 2 → `scope` / `acceptance` / `design` / `design-review` / `commit-review` / `handoff`
 - 想要哲学底座 → `principles` / `rust-principles`(Rust 项目)
 
 如果 AI 在新 feature 不知如何下手,**先调本 skill 看地图**,再点对应 step skill。

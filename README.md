@@ -24,7 +24,7 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 |-------|------|------|
 | `/aye:scope` | Gate 1 | About to dive into code — AI proposes which files change, you approve, only then implement |
 | `/aye:acceptance` | Gate 2 | Scope locked — pin down "done" with executable DoD checklist |
-| `/aye:design-doc` *(planned)* | Big-design | Cross-crate / public API / persistence change — produce design doc + multi-round refinement |
+| `/aye:design` | Big-design (Gate 2.5, optional) | Cross-crate / public API / persistence change / multi-option dilemma — produce `design.md` (problem + options + decision + impl) before coding |
 | `/aye:design-review` | Cross-cut | While coding / before commit — 5-axis judgment (types / builder / trait / naming / refactoring) |
 | `/aye:commit-review` | Gate 3 | Tests green — show diff, wait for explicit "commit" / "push" before touching git |
 | `/aye:handoff` | Iteration end | Auto-invoked after `commit-review` push — hand off facts only, ready to close session |

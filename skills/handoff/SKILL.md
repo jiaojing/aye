@@ -1,4 +1,5 @@
 ---
+name: handoff
 description: 迭代终点交接(Phase 2 自动 + 手动 fallback)。**主**:commit-review push 完成后**自动**触发,迭代结束 = session 结束 = 自然交接。**fallback**:用户说"今天到这 / 收 / 暂停 / 下次继续 / context 满了 / handoff" 时手动触发。输出当前 commit 状态 + 下条 backlog 起点 + 注意事项,< 10 行。规则:只交事实,不预设方案,不替下个 session 拍决策。
 ---
 

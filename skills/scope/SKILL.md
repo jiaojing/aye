@@ -1,4 +1,5 @@
 ---
+name: scope
 description: PR 级 scope 对齐(Phase 2 第一步)。触发关键词:"开始改 / 动手 / 做这条 / 实现一下 / 改 X / 实施 / 这个怎么改 / 准备写代码 / 修一下"。AI 提议本次改哪些文件 + 不确定项 → 用户点头 → 才动代码。Auto-invoke: acceptance.
 ---
 

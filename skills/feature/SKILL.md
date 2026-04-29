@@ -1,4 +1,5 @@
 ---
+name: feature
 description: 模糊需求结构化(Phase 1 闸门 0)。触发关键词:"加 X 功能 / 想做 Y / 优化下 Z / 整理一下 W / 新需求 / 新 feature / 这个怎么搞"。引导对话补充细节,产出单份 feature.md(承载 problem + users + scope + acceptance + tasks + status + notes)。后续围绕 task 打勾推进。Auto-invoke: scope(进 PR 级实施)。
 ---
 
@@ -226,7 +227,7 @@ Tasks 是**粗到中粒的实施步骤**,不是 commit 级 task(commit 级在写
 ## Tasks
 - [x] T1: rename aye:spec → aye:feature, 重写 SKILL.md (done @ abc1234)
 - [>] T2: 修 flow/scope/acceptance/handoff/rust-principles 的引用
-- [ ] T3: 新增 aye:design-doc skill
+- [ ] T3: 新增 aye:design skill
 - [ ] T4: README 同步
 - [ ] T5: dogfood 跑一圈真实 feature 验证
 ```
@@ -309,7 +310,7 @@ Feature 解决"做什么对吗",不解决"这次 task 改哪些文件"。Feature
 - **`scope`**:闸门 1。feature 决定"做什么对吗",scope 决定"这次 task 改哪些文件"——颗粒小一档。先 feature 后 scope。
 - **`acceptance`**:闸门 2。feature 里 acceptance 是用户视角(较粗),acceptance skill 把它做成带 command 的 checklist。两者不重复。
 - **`design-review`**:feature 阶段如涉及大破面 / 多方案纠结(技术选型),可同步触发 design-review 做 5 维度判据。
-- **`design-doc`**:大功能添加 `design.md` 时,由 design-doc skill 维护(待新增)。
+- **`design`**:大功能添加 `design.md` 时,由 design skill 维护。
 - **`principles`**:写 feature 时回去找判据——尤其在 out-of-scope 取舍上。
 
 ---

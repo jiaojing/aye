@@ -1,5 +1,6 @@
 ---
-description: 钉死可执行 DoD(Phase 2 第二步)。触发关键词:"DoD / 验收 / 什么算完 / acceptance / 怎么验证 / 确认目标 / 完成标准"。在 scope 对齐之后、写代码之前,把 feature.acceptance(用户视角粗版)细化成带 command 的 checklist。Auto-invoke: design-doc(若大功能,待新增)或开始写代码.
+name: acceptance
+description: 钉死可执行 DoD(Phase 2 第二步)。触发关键词:"DoD / 验收 / 什么算完 / acceptance / 怎么验证 / 确认目标 / 完成标准"。在 scope 对齐之后、写代码之前,把 feature.acceptance(用户视角粗版)细化成带 command 的 checklist。Auto-invoke: design(大功能可选闸门 2.5)或开始写代码.
 ---
 
 # Acceptance
@@ -165,7 +166,7 @@ DoD 多 = scope 太大,**回去拆 task**,不是硬上。一个 task 通常 3-5 
 
 完成本 skill 后,LLM 决定下一步:
 
-- **大功能**(改公开 API / 持久化 / 跨 crate / 多方案纠结)→ `design-doc`(产 design doc + 多轮敲定)— *待新增*
+- **大功能**(改公开 API / 持久化 / 跨 crate / 多方案纠结)→ `design`(产 design.md + 多轮敲定)
 - **正常实施** → 开始写代码,中途可调 `design-review` N 次
 
 写代码完 + 测试绿 → `commit-review`。
