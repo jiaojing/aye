@@ -50,10 +50,10 @@ aye plugin 的 `flow` 自报有 11 个 skill,实际只交付了 9 个,2 个标"�
 - [x] AC-3: `flow/scope/acceptance/handoff/rust-principles` 中所有 `spec` / `kanban` 引用更新为 `feature` 语义
 - [x] AC-4: README.md 的 Phase 1 表格、auto-invoke 例子同步
 - [x] AC-5: `feature.md` 文件落地约定明确为"每个 feature 一个目录,无 promote 仪式"
-- [ ] AC-6: `aye:design-doc` skill 落地(`skills/design-doc/SKILL.md` 存在 + flow 里"待新增 1 个"清零)
+- [x] AC-6: `aye:design` skill 落地(`skills/design/SKILL.md` 存在 + flow 里"待新增 1 个"清零)
 - [x] AC-7: 本 feature.md 自身存在(dogfood 自验证)
-- [ ] AC-8: `grep -rn "spec\b\|kanban\b" skills/ README.md` 的命中只剩反面教材引用 / 真实历史 task 描述,无功能性残留
-- [ ] AC-9: commit + push 完成,plugin reload 后 `/aye:feature` 可触发,`/aye:spec` 不可触发(已删)
+- [x] AC-8: `grep -rn "spec\b\|kanban\b" skills/ README.md` 的命中只剩反面教材引用 / 真实历史 task 描述,无功能性残留
+- [x] AC-9: commit + push 完成,plugin reload 后 `/aye:feature` 可触发,`/aye:spec` 不可触发(已删)
 
 ## Tasks
 
@@ -62,9 +62,9 @@ aye plugin 的 `flow` 自报有 11 个 skill,实际只交付了 9 个,2 个标"�
 - [x] T2.5: 重新设计 feature 文件落地——从"自适应单文件 / 目录"改为"强制每 feature 一目录",删除 promote 概念(done,本会话)
 - [x] T4: README.md 同步(done,本会话)
 - [x] T5: dogfood——创建本 feature.md(done,本会话当前 task)
-- [ ] T6: commit-review + push 本波改动(rename + 重构 + dogfood,作为单一 commit)
-- [ ] T3: 新增 `aye:design-doc` skill(独立 feature 拆分?或同 commit?待 T6 完成后决定)
-- [ ] T7: 验证——push 后 reload plugin,跑 `/aye:feature` 触发测试
+- [x] T6: commit-review + push 本波改动(rename + 重构 + dogfood,作为单一 commit)
+- [x] T3: 新增 `aye:design` skill(改名后落地,见 `2026-04-design-doc-skill` feature)
+- [x] T7: 验证——push 后 reload plugin,跑 `/aye:feature` 触发测试
 
 ## Notes
 

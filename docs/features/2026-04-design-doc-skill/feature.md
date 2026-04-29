@@ -47,15 +47,15 @@ aye 的 Phase 2 chain 在 `acceptance` 之后有一个分支:大功能(改公开
 
 ## Acceptance
 
-- [ ] AC-1: `skills/design-doc/SKILL.md` 存在,符合 SKILL.md 规范(name + description + body)
-- [ ] AC-2: 触发判据明确——任意命中即触发(改公开 API / 持久化 schema / 跨 crate / 多方案纠结 / 需要架构图)
-- [ ] AC-3: design.md 模板可直接 copy 使用
-- [ ] AC-4: 与 `design-review` 边界写在 SKILL.md 末尾"与其他 skill 的关系"段
-- [ ] AC-5: `flow/SKILL.md` 的"待新增"引用清零,skill 数量描述同步
-- [ ] AC-6: `acceptance` / `feature` 等 skill 中"待新增"引用清零
-- [ ] AC-7: README.md 中 `*(planned)*` 标记清掉
-- [ ] AC-8: `grep -rn "待新增" skills/ README.md` 命中清零
-- [ ] AC-9: commit + push,plugin reload 后 `/aye:design-doc` 可触发
+- [x] AC-1: `skills/design/SKILL.md` 存在,符合 SKILL.md 规范(name + description + body)
+- [x] AC-2: 触发判据明确——任意命中即触发(改公开 API / 持久化 schema / 跨 crate / 多方案纠结 / 需要架构图)
+- [x] AC-3: design.md 模板可直接 copy 使用
+- [x] AC-4: 与 `design-review` 边界写在 SKILL.md 末尾"与其他 skill 的关系"段
+- [x] AC-5: `flow/SKILL.md` 的"待新增"引用清零,skill 数量描述同步
+- [x] AC-6: `acceptance` / `feature` 等 skill 中"待新增"引用清零
+- [x] AC-7: README.md 中 `*(planned)*` 标记清掉
+- [x] AC-8: `grep -rn "待新增" skills/ README.md` 命中清零
+- [x] AC-9: commit + push,plugin reload 后 `/aye:design` 可触发
 
 ## Tasks
 
@@ -66,7 +66,7 @@ aye 的 Phase 2 chain 在 `acceptance` 之后有一个分支:大功能(改公开
 - [x] T5: 改 README.md 第 27 行 `*(planned)*` 去掉
 - [x] T6: 中途 cleanup——8 个 SKILL.md 加 `name:` frontmatter 字段(主流惯例)
 - [x] T7: dogfood——更新本 feature.md Tasks + Notes
-- [ ] T8: commit-review + push(单 commit:新 skill + rename + frontmatter 统一)
+- [x] T8: commit-review + push(单 commit:新 skill + rename + frontmatter 统一)
 
 ## Notes
 
