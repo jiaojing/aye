@@ -1,5 +1,5 @@
 ---
-description: Session 交接规则 — 只交事实,不预设方案,不替下个 session 拍决策。Context 即将耗尽 / session 主动结束 / 长任务暂停 / 切换 AI 实例时调用。
+description: 迭代终点交接(Phase 2 自动 + 手动 fallback)。**主**:commit-review push 完成后**自动**触发,迭代结束 = session 结束 = 自然交接。**fallback**:用户说"今天到这 / 收 / 暂停 / 下次继续 / context 满了 / handoff" 时手动触发。输出当前 commit 状态 + 下条 backlog 起点 + 注意事项,< 10 行。规则:只交事实,不预设方案,不替下个 session 拍决策。
 ---
 
 # Handoff
@@ -47,7 +47,7 @@ Session 交接给下一个 AI session(或下次自己)的规则:**只交事实,�
 ## 下个 session 起点
 
 - 下一条 backlog:F2 端到端 integration test
-- 详细见 docs/sprint.md 第 30 行
+- 详细见 docs/kanban.md 第 30 行
 - 相关文件:src/shield-pricing/tests/(待新建 end_to_end.rs)
 
 ## 注意约定
@@ -133,4 +133,16 @@ Session 交接给下一个 AI session(或下次自己)的规则:**只交事实,�
 
 - **`flow`**:地图。handoff 是横切元规则,任意一步都可能触发交接。
 - **`commit-review`**:交接前必须确认 commit / push 状态,本 skill 直接引用 commit-review 的"测试绿 + diff 摆出 + 等点头"循环结果。
-- **`scope-align` / `acceptance`**:交接时如果 scope / DoD 已对齐过,**只引用不复述**(下家会去看原文)。
+- **`scope` / `acceptance`**:交接时如果 scope / DoD 已对齐过,**只引用不复述**(下家会去看原文)。
+
+---
+
+## Auto-invoke chain
+
+handoff 是 chain **终点**,完成后:
+
+1. 输出交接信息(< 10 行)
+2. session 可关闭
+3. 下次新 session 起来,从 handoff 信息恢复上下文,继续从 Phase 1(看板选下条)或 Phase 2(spec 已写好的 story)开始
+
+handoff 本身**不 chain 到任何 skill**——它是 session 自然终点。

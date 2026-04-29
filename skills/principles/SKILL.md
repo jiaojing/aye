@@ -1,5 +1,5 @@
 ---
-description: 工程哲学底座 — 好品味、不破坏 consumer、实用主义、简洁执念。多种方案纠结 / 想要决策框架 / 反思设计取舍时调用。也可作为元规则永久参考。
+description: 工程哲学底座(横切,始终 active)。触发关键词:"多种方案纠结 / 不知怎么取舍 / 想找判据 / 决策框架 / 该用哪种 / 反思设计 / 这样对吗 / 取舍 / 简洁性"。提供 4 条核心哲学(好品味 / 不破坏 consumer / 实用主义 / 简洁)+ 决策框架(可测试性 / 可读性 / 一致性 / 简洁性 / 可逆性)。其他所有 skill 的判据都建立在本 skill 之上。
 ---
 
 # Principles
@@ -122,7 +122,7 @@ description: 工程哲学底座 — 好品味、不破坏 consumer、实用主�
 
 `principles` 是**底座**,不是 step。具体仪式调对应 skill:
 - 流程地图 → `flow`
-- scope 对齐 → `scope-align`
+- scope 对齐 → `scope`
 - 设计审查 → `design-review`
 - commit 闸门 → `commit-review`
 

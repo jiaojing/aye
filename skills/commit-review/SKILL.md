@@ -1,6 +1,6 @@
 ---
 name: commit-review
-description: 改完代码 / 准备 git commit / git push 前必读。硬规则:展示 diff → 等用户明确说"commit"或"push" → 才动 git。包含 commit message 写作规范(中文标题 ≤ 15 字、正文只讲 why、不带 Co-Authored-By、副作用改动不进 message)。
+description: commit + push 闸门(Phase 2 末尾)。触发关键词:"测试绿了 / 完成了 / commit / 提交 / push / 推送 / 准备好了 / 可以了 / 改完了"。摆 diff → 等明确点头才动 git。大改动(>200 行 / 改公开 API / 改持久化数据)时先内嵌调用 design-review 做 5 维度审查。包含 commit message 规范(中文 ≤15 字 / 只讲 why / 不带 Co-Authored-By / 副作用改动不进 message)。push 完 auto-invoke: handoff.
 ---
 
 # Commit Review
@@ -135,6 +135,16 @@ session 层不再持有 user 业务状态。
 
 ## 与其他 skill 的关系
 
-- **`scope-align`**:动手前对齐 scope。本 skill 是动手**后**、commit 前的闸门。前者防越界,后者防自作主张。
+- **`scope`**:动手前对齐 scope。本 skill 是动手**后**、commit 前的闸门。前者防越界,后者防自作主张。
 - **`design-review`**:5 维度设计审查。改动量大或破面时,review 阶段可触发它做更深判断。
 - **`agent-skills:git-workflow-and-versioning`**:git 操作的通用流程参考。本 skill 强调"等用户点头才动"这一刚性边界,是它的补充。
+
+---
+
+## Auto-invoke chain
+
+push 完成后,LLM **自动 invoke**: `handoff`(迭代终点交接)。
+
+如果用户明确说"继续下一条 / 不交接 / 接着做",则跳过 handoff,继续 Phase 1(看板选下条)。
+
+大改动(>200 行 / 改公开 API / 改持久化)进入 commit-review 时,**先内嵌调用** `design-review` 做 5 维度审查,再摆 diff。

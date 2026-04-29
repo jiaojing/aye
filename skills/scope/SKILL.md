@@ -1,5 +1,5 @@
 ---
-description: AI 动手前的 scope 对齐仪式 — 强制"AI 提议 scope → 用户点头/纠偏 → 才动手"循环。AI 准备实施 / scope 不清晰 / 任务模糊 / 担心越界时调用。这是 AI 协作的"闸门 1"。
+description: PR 级 scope 对齐(Phase 2 第一步)。触发关键词:"开始改 / 动手 / 做这条 / 实现一下 / 改 X / 实施 / 这个怎么改 / 准备写代码 / 修一下"。AI 提议本次改哪些文件 + 不确定项 → 用户点头 → 才动代码。Auto-invoke: acceptance.
 ---
 
 # Scope Align
@@ -133,3 +133,11 @@ scope 提议给用户时,**用代码块包起来**(更醒目),并明确等待:
 - **`acceptance`**:scope 对齐**之后**的下一步——钉死 DoD。先 scope 后 DoD,顺序不能反。
 - **`commit-review`**:动手**后**的闸门 3。前者防越界扩 scope,后者防自作主张 commit。前后呼应。
 - **`design-review`**:scope 对齐时如果涉及大破面变更,可同步触发它做 5 维度判据。
+
+---
+
+## Auto-invoke chain
+
+完成本 skill 后,LLM **自动 invoke**: `acceptance`(钉死可执行 DoD)。
+
+如用户已经在 spec 里钉好 DoD 且本次足够小,可跳过直接写代码。

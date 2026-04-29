@@ -1,5 +1,5 @@
 {
-  "name": "yebai",
+  "name": "aye",
   "owner": {
     "name": "jiaojing"
   },
@@ -8,7 +8,7 @@
   },
   "plugins": [
     {
-      "name": "yebai",
+      "name": "aye",
       "source": "./",
       "description": "Scope alignment, acceptance criteria, pull-based iteration for AI-pair programming."
     }

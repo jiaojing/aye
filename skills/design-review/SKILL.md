@@ -1,5 +1,5 @@
 ---
-description: 5 维度设计判断标准 — 类型抽象 / Builder / Trait / 代码组织命名 / 重构推进。不是 lint 清单,是"先看触发信号,命中再深入"的判据。即将做大破面变更 / review 已写代码或他人 PR / 多方案纠结("该不该 newtype/抽 trait/上 Builder")时调用。
+description: 5 维度设计判据(Phase 2 横向辅助,可调 N 次)。**判据,不是闸门**——拿出来评判某段代码或某个设计选择。触发关键词:"该不该 newtype / 抽 trait / 上 Builder / 多方案纠结 / review 设计 / 审一下 / 审视 / 这个抽象合理吗 / 命名是否好 / 大破面变更 / 重构合理吗"。从类型抽象 / Builder / Trait / 命名组织 / 重构推进 5 维度评估。和 commit-review 区别:本 skill 是判据,commit-review 是闸门仪式。大改动 commit 前 commit-review 会内嵌调用本 skill。
 ---
 
 # Design Review
@@ -415,7 +415,19 @@ review 完成后给用户的报告结构:
 ## 与其他 skill 的关系
 
 - **`flow`**:地图。本 skill 是"拉式执行"步骤的横向辅助,做大破面变更 / review 时调用。
-- **`scope-align`**:scope 对齐时如果涉及破面,可同步触发本 skill 做 5 维度判断。
+- **`scope`**:scope 对齐时如果涉及破面,可同步触发本 skill 做 5 维度判断。
 - **`commit-review`**:改动量大或破面时,commit-review 阶段可触发本 skill 做更深判断。
 - **`principles`**:本 skill 的判据建立在 principles 4 条哲学之上(好品味 / 不破坏 consumer / 实用主义 / 简洁)。
 - **`agent-skills:code-review-and-quality`**:那个跑五轴 review(correctness / readability / architecture / security / performance)是 review 的**框架**;本 skill 提供**判断标准**,可以被那个 skill 引用。两者并行不冲突。
+
+---
+
+## Auto-invoke chain
+
+design-review **不在主 chain 上**——它是横向判据,可在写代码中 / 后任意调用 N 次。
+
+完成单次 review 后:
+- 设计 OK → 继续写代码 / 进 `commit-review`
+- 需调整 → 改代码 → 再调 design-review
+
+大改动 commit 时,`commit-review` 闸门会内嵌调用本 skill。

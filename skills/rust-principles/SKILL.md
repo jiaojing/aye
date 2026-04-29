@@ -1,5 +1,5 @@
 ---
-description: Rust 项目专属设计原则 — 类型三分法(Service/Context/Value)、行为跟类型走、生命周期偏好、错误处理风格(thiserror/anyhow)、命名惯例(as_/to_/into_)、弃用替换(LazyLock/parking_lot)、Review checklist、Crate 成熟度模板。仅在 Rust 项目(Cargo.toml / .rs / cargo / rustc / 类型三分法 上下文)触发。新开 Rust 项目可作为 project CLAUDE.md 起点。
+description: Rust 项目专属设计原则(横切,语言特化)。仅在 Rust 项目(Cargo.toml / .rs / cargo / rustc / 类型三分法 上下文)触发,**非 Rust 项目零干扰**。包含类型三分法(Service/Context/Value)、行为跟类型走、生命周期偏好、错误处理(thiserror/anyhow)、命名惯例(as_/to_/into_)、弃用替换(LazyLock/parking_lot)、Review checklist、Crate 成熟度模板。新 Rust 项目可作为 project CLAUDE.md 起点。
 ---
 
 # Rust Principles
@@ -18,7 +18,7 @@ Rust 项目专属设计原则与 idiomatic 选择。**语言无关的代码品�
 **不触发**:
 - 非 Rust 项目(零干扰)
 - 具体编译错误 / 借用检查 / Send/Sync / ownership 问题 → 走 `rust-skills` 插件的 `m0x` 系列(各自有错误码 trigger)
-- 语言无关的代码品味问题 → 走 yebai 的 `principles` / `design-review`
+- 语言无关的代码品味问题 → 走 aye 的 `principles` / `design-review`
 
 ---
 
@@ -145,7 +145,7 @@ Rust 代码写完 / review 前快速扫:
 
 新开 Rust 项目时:
 1. 创建 project `CLAUDE.md`
-2. 引用本 skill:"设计原则见 `yebai/rust-principles` skill (LLM 自动 invoke)"
+2. 引用本 skill:"设计原则见 `aye/rust-principles` skill (LLM 自动 invoke)"
 3. 在 CLAUDE.md 里只写**项目特定**的部分(架构、crate 列表、build command),**不重复本 skill 的通用原则**
 
 这样:
@@ -157,8 +157,8 @@ Rust 代码写完 / review 前快速扫:
 
 ## 与其他 skill 的关系
 
-- **`principles`**(yebai 语言无关版):本 skill 是它的 Rust 特化扩展,sibling 关系。语言无关层在 `principles`,Rust 特化层在本 skill。
+- **`principles`**(aye 语言无关版):本 skill 是它的 Rust 特化扩展,sibling 关系。语言无关层在 `principles`,Rust 特化层在本 skill。
 - **`design-review`**:5 维度判据是语言无关的;本 skill 的 review checklist 是 Rust 实现层信号。两者并行不冲突——design-review 给设计决策,本 skill 给具体编码 / review 检查。
 - **`rust-skills` 插件的 m0x 系列**(独立 plugin):本 skill 讲**风格 / 设计选择**(高层);m0x 讲**具体编译错误 / 语义问题 / 错误码**(低层)。错位互补,不重复。
   - 例:本 skill 说"用 thiserror 写 custom error";`m06-error-handling` 说"如何用 ? 操作符传播 / when to panic vs Result / 具体错误码 E0277"。
-- **`flow` / `spec` / `scope-align` / `acceptance` / `commit-review`**(yebai 仪式层):正交关系,本 skill 是知识库,它们是流程。
+- **`flow` / `spec` / `scope` / `acceptance` / `commit-review`**(aye 仪式层):正交关系,本 skill 是知识库,它们是流程。

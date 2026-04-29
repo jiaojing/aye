@@ -1,12 +1,12 @@
 ---
-description: AI 动手前的 spec 仪式 — 模糊需求 / 新 epic / 新 feature 时,把 problem + users + scope + acceptance + non-goals 先结构化,用户点头才进 scope-align。这是 AI 协作的"闸门 0"——比 scope-align 还前置。
+description: 模糊需求结构化(Phase 1 闸门 0)。触发关键词:"加 X 功能 / 想做 Y / 优化下 Z / 整理一下 W / 新需求 / 新 feature / 新 epic / 这个怎么搞"。引导写 spec(problem / users / scope / acceptance / non-goals / open-questions),用户点头才进下一步。Auto-invoke: kanban(若 backlog 多 story 排队,待新增)或 scope(直接进 PR 级)。
 ---
 
 # Spec
 
-AI 协作的**闸门 0**:进 scope-align 之前,先把模糊需求结构化成 spec。
+AI 协作的**闸门 0**:进 scope 之前,先把模糊需求结构化成 spec。
 
-不写 spec 直接进 scope-align,是在"我以为你要的是 X"的错误前提上对齐 PR scope。**前提错了,后面再严的闸门也救不回来**。
+不写 spec 直接进 scope,是在"我以为你要的是 X"的错误前提上对齐 PR scope。**前提错了,后面再严的闸门也救不回来**。
 
 ---
 
@@ -34,7 +34,7 @@ AI 协作的**闸门 0**:进 scope-align 之前,先把模糊需求结构化成 s
 **不触发**:
 - bug fix(走 debugging,不需要写 spec)
 - typo / 局部重命名 / 一行修改
-- 已经有 spec 的小改(直接 scope-align)
+- 已经有 spec 的小改(直接 scope)
 - 明确的小任务("把 readme 里这句改了")
 
 ---
@@ -114,20 +114,20 @@ AI 写 spec 容易把"我不知道的"自己拍掉,变成"我假设 X"。**Open 
 
 ### 1. AI 提议 spec
 
-按上面模板输出**完整 spec**,然后等。**不动手实施,不开 scope-align**。
+按上面模板输出**完整 spec**,然后等。**不动手实施,不开 scope**。
 
 ### 2. 用户 review / 纠偏
 
 可能:
-- ✅ 整体 ok → 进 scope-align
+- ✅ 整体 ok → 进 scope
 - 🟡 调整某节(改 problem / 改 scope / 增减 acceptance)→ AI 改后再确认
 - ❌ 偏了 → 重提
 
 **Open questions 必须等用户回答**,不许自己拍。
 
-### 3. spec 落地 → 进 scope-align
+### 3. spec 落地 → 进 scope
 
-spec 写到合适位置(项目 backlog / PR description / 对话内任务条),作为后续 trail。然后才进 scope-align("基于这个 spec,本次 PR 改哪些文件")。
+spec 写到合适位置(项目 backlog / PR description / 对话内任务条),作为后续 trail。然后才进 scope("基于这个 spec,本次 PR 改哪些文件")。
 
 ---
 
@@ -151,7 +151,7 @@ Acceptance:
   - AC-2: 没匹配时显示"无结果",不报错
 ```
 
-技术选型留给实施阶段(scope-align / design-review)。
+技术选型留给实施阶段(scope / design-review)。
 
 ### 反模式 2:Out-of-scope 空白
 
@@ -182,14 +182,14 @@ Spec 讲 **what + why**,design doc 讲 **how**。混在一起 → spec 变成 20
 ❌ "spec 写完了,我开始改 src/search.rs..."
 ```
 
-Spec 只解决"做什么对吗",不解决"这次 PR 改哪些文件"。spec 之后**还要走 scope-align**(改文件清单)+ **acceptance**(可执行 DoD)。三道仪式不重叠,不替代。
+Spec 只解决"做什么对吗",不解决"这次 PR 改哪些文件"。spec 之后**还要走 scope**(改文件清单)+ **acceptance**(可执行 DoD)。三道仪式不重叠,不替代。
 
 ---
 
 ## 与其他 skill 的关系
 
 - **`flow`**:地图。本 skill 是流程入口的**闸门 0**(在所有实施仪式之前)。
-- **`scope-align`**:闸门 1。spec 决定"做什么对吗",scope-align 决定"这次 PR 改哪些文件"——颗粒比 spec 小一档。先 spec 后 scope。
+- **`scope`**:闸门 1。spec 决定"做什么对吗",scope 决定"这次 PR 改哪些文件"——颗粒比 spec 小一档。先 spec 后 scope。
 - **`acceptance`**:闸门 2。spec 里 acceptance criteria 是用户视角(较粗),acceptance skill 把它做成带 command 的可执行 checklist。两者不重复。
 - **`design-review`**:spec 阶段如果涉及大破面 / 多方案纠结(技术选型),可同步触发 design-review 做 5 维度判据。
 - **`principles`**:写 spec 时回去找判据(实用主义 / 不破坏 consumer / 简洁)——尤其在 out-of-scope 的取舍上。
@@ -205,8 +205,8 @@ spec 给用户时,**等待提示明确**:
 
 ---
 
-我**不进 scope-align**直到收到指示。请 review 后:
-- "ok" → 我进 scope-align(本次 PR 改文件清单)
+我**不进 scope**直到收到指示。请 review 后:
+- "ok" → 我进 scope(本次 PR 改文件清单)
 - "改 problem/scope/acceptance: ..." → 我改后再确认
 - "Open questions 我答了: Q1 ..., Q2 ..." → 我合入 spec 再确认
 - "重来" → 重新提议
@@ -216,6 +216,17 @@ spec 给用户时,**等待提示明确**:
 
 ## 一句话总结
 
-**Spec 是闸门 0:模糊需求 → problem + users + scope + acceptance + non-goals + open questions → 用户点头 → 才进 scope-align**。
+**Spec 是闸门 0:模糊需求 → problem + users + scope + acceptance + non-goals + open questions → 用户点头 → 才进 scope**。
 
 它不是 design doc,不讲 how;它是 AI 协作的"做什么对吗"契约,前提对了,后面三道闸门才有意义。
+
+---
+
+## Auto-invoke chain
+
+完成本 skill 后,LLM 自动 invoke 下一步:
+
+- **多 story 排队** → `kanban`(看板维护,选下一条 story)— *待新增,当前先手动维护 kanban.md*
+- **直接进 PR 级实施** → `scope`
+
+如用户说"先不动,放着",则不 chain。
