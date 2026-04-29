@@ -10,7 +10,13 @@ Designed for **solo dev + AI pair programming**, not team Scrum. Skills focus on
 
 ## Skills
 
-Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with handoff)**. Skills auto-invoke each other via chains; `/aye:flow` shows the full map.
+Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with handoff)**. Skills auto-invoke each other via chains.
+
+### Navigation (start here)
+
+| Skill | When |
+|-------|------|
+| `/aye:flow` | New session / lost / unsure where you are — show the workflow map |
 
 ### Phase 1 — Feature clarification
 
@@ -33,7 +39,6 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 
 | Skill | When |
 |-------|------|
-| `/aye:flow` | Lost / want the workflow map / unsure which skill applies |
 | `/aye:principles` | Stuck on a multi-option choice — decision framework (good taste / don't break consumer / pragmatism / simplicity) |
 | `/aye:rust-principles` | Auto-invoked in Rust projects (Cargo.toml / .rs / cargo) — type triage, lifetime preference, error-handling style |
 
