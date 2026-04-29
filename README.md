@@ -40,7 +40,18 @@ Two-phase workflow: **Phase 1 = requirements (cross-session)** → **Phase 2 = s
 
 ## Install
 
-**Local development:**
+**Via marketplace** (recommended, repo must be public):
+
+```
+/plugin marketplace add jiaojing/aye
+/plugin install aye@dongbai
+```
+
+- `jiaojing/aye` is the GitHub repo path (where the marketplace lives).
+- `dongbai` is the marketplace name — author/brand namespace, can host multiple plugins in the future.
+- `aye` is the plugin name within the marketplace.
+
+**Or local development** (clone + point Claude at the directory):
 
 ```bash
 git clone https://github.com/jiaojing/aye ~/Documents/projects/aye
@@ -48,11 +59,15 @@ git clone https://github.com/jiaojing/aye ~/Documents/projects/aye
 alias claude='claude --plugin-dir ~/Documents/projects/aye'
 ```
 
-**Or via marketplace** (after public push):
+## Verify
+
+After install, `/plugin` should list `aye` as enabled. Then try:
 
 ```
-/plugin marketplace add jiaojing/aye
+/aye:flow
 ```
+
+You should see the workflow map. If you say something like *"I want to add a search feature"*, the LLM should auto-invoke `/aye:spec` based on the description match.
 
 ## License
 
