@@ -37,9 +37,45 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 | `/aye:principles` | Stuck on a multi-option choice — decision framework (good taste / don't break consumer / pragmatism / simplicity) |
 | `/aye:rust-principles` | Auto-invoked in Rust projects (Cargo.toml / .rs / cargo) — type triage, lifetime preference, error-handling style |
 
+## Usage
+
+### Two trigger modes
+
+1. **Natural language (primary)** — say a keyword in chat, the LLM auto-invokes the matching skill via the `description` field in each `SKILL.md`. Examples:
+   - *"我想加个搜索功能"* / *"加 X 功能"* → `feature`
+   - *"开始改 / 准备写代码"* → `scope`
+   - *"测试绿了 / 改完了"* → `commit-review`
+   - *"今天到这 / context 满了"* → `handoff`
+
+   Each skill's full keyword list lives in its `SKILL.md` frontmatter.
+
+2. **Explicit slash (override)** — `/aye:<skill>` forces invocation. Use when:
+   - **Resuming a session** — first thing in a new session, type `/aye:flow` to re-orient.
+   - **Auto-invoke missed** — your phrasing didn't match any keyword but you want the skill anyway.
+   - **Re-entry** — already invoked once, want to re-run with fresh context (e.g. revisit `acceptance` after scope drift).
+
+### A full feature, end to end
+
+You say *"I want to add search to X"*:
+
+**Phase 1 — feature clarification (cross-session):**
+- LLM auto-invokes `/aye:feature` → produces a single `feature.md` (problem + users + scope + acceptance + tasks + status + notes)
+- You approve
+
+**Phase 2 — one task at a time (single session, ends with handoff):**
+- *"do tasks[0] — implement query parsing"*
+- → `/aye:scope` proposes which files change + open questions; you approve
+- → `/aye:acceptance` pins the DoD checklist (each item executable)
+- *(optional, big design)* → `/aye:design` writes `design.md` (problem + options + decision + impl) before coding
+- You write code; invoke `/aye:design-review` for 5-axis judgment whenever you want
+- *"tests green"* → `/aye:commit-review` shows the diff, waits for explicit "commit / push"
+- → `/aye:handoff` prints next-task pointer + caveats; session naturally ends
+
+Next session: open `feature.md`, pick the next unchecked task, repeat Phase 2. Cross-session memory lives in `feature.md`, not in chat history.
+
 ## Install
 
-**Via marketplace** (recommended, repo must be public):
+Repo must be public, then:
 
 ```
 /plugin marketplace add jiaojing/aye
@@ -49,14 +85,6 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 - `jiaojing/aye` is the GitHub repo path (where the marketplace lives).
 - `dongbai` is the marketplace name — author/brand namespace, can host multiple plugins in the future.
 - `aye` is the plugin name within the marketplace.
-
-**Or local development** (clone + point Claude at the directory):
-
-```bash
-git clone https://github.com/jiaojing/aye ~/Documents/projects/aye
-# In ~/.zshrc:
-alias claude='claude --plugin-dir ~/Documents/projects/aye'
-```
 
 ## Verify
 
