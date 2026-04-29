@@ -1,6 +1,6 @@
 # aye
 
-> *aye aye, captain.*
+> *aye aye, captain. ⚓*
 
 Lightweight AI-pair workflow skills for Claude Code.
 
