@@ -10,16 +10,15 @@ Designed for **solo dev + AI pair programming**, not team Scrum. Skills focus on
 
 ## Skills
 
-Two-phase workflow: **Phase 1 = requirements (cross-session)** → **Phase 2 = story iteration (single-session, ends with handoff)**. Skills auto-invoke each other via chains; `/aye:flow` shows the full map.
+Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with handoff)**. Skills auto-invoke each other via chains; `/aye:flow` shows the full map.
 
-### Phase 1 — Requirements clarification
+### Phase 1 — Feature clarification
 
 | Skill | Role | When |
 |-------|------|------|
-| `/aye:spec` | Gate 0 | Vague requirement / new feature — structure problem + users + scope + acceptance + non-goals + open-questions |
-| `/aye:kanban` *(planned)* | Backlog | Multiple stories queued — maintain `kanban.md`, pick next by priority |
+| `/aye:feature` | Gate 0 | Vague requirement / new feature — produce a single `feature.md` carrying problem + users + scope + acceptance + tasks + status + notes |
 
-### Phase 2 — Story iteration (single session)
+### Phase 2 — Task iteration (single session)
 
 | Skill | Role | When |
 |-------|------|------|
@@ -67,7 +66,7 @@ After install, `/plugin` should list `aye` as enabled. Then try:
 /aye:flow
 ```
 
-You should see the workflow map. If you say something like *"I want to add a search feature"*, the LLM should auto-invoke `/aye:spec` based on the description match.
+You should see the workflow map. If you say something like *"I want to add a search feature"*, the LLM should auto-invoke `/aye:feature` based on the description match.
 
 ## License
 

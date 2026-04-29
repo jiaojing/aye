@@ -161,4 +161,4 @@ Rust 代码写完 / review 前快速扫:
 - **`design-review`**:5 维度判据是语言无关的;本 skill 的 review checklist 是 Rust 实现层信号。两者并行不冲突——design-review 给设计决策,本 skill 给具体编码 / review 检查。
 - **`rust-skills` 插件的 m0x 系列**(独立 plugin):本 skill 讲**风格 / 设计选择**(高层);m0x 讲**具体编译错误 / 语义问题 / 错误码**(低层)。错位互补,不重复。
   - 例:本 skill 说"用 thiserror 写 custom error";`m06-error-handling` 说"如何用 ? 操作符传播 / when to panic vs Result / 具体错误码 E0277"。
-- **`flow` / `spec` / `scope` / `acceptance` / `commit-review`**(aye 仪式层):正交关系,本 skill 是知识库,它们是流程。
+- **`flow` / `feature` / `scope` / `acceptance` / `commit-review`**(aye 仪式层):正交关系,本 skill 是知识库,它们是流程。

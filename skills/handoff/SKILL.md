@@ -46,8 +46,8 @@ Session 交接给下一个 AI session(或下次自己)的规则:**只交事实,�
 
 ## 下个 session 起点
 
-- 下一条 backlog:F2 端到端 integration test
-- 详细见 docs/kanban.md 第 30 行
+- 下一条 task:T2 端到端 integration test
+- 详细见 docs/features/2026-04-shield-pricing/feature.md 的 Tasks 章节
 - 相关文件:src/shield-pricing/tests/(待新建 end_to_end.rs)
 
 ## 注意约定
@@ -143,6 +143,6 @@ handoff 是 chain **终点**,完成后:
 
 1. 输出交接信息(< 10 行)
 2. session 可关闭
-3. 下次新 session 起来,从 handoff 信息恢复上下文,继续从 Phase 1(看板选下条)或 Phase 2(spec 已写好的 story)开始
+3. 下次新 session 起来,从 handoff 信息恢复上下文,继续从 Phase 1(写新 feature)或 Phase 2(feature.md 已就绪,拉下条 task)开始
 
 handoff 本身**不 chain 到任何 skill**——它是 session 自然终点。

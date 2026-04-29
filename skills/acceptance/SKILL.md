@@ -1,5 +1,5 @@
 ---
-description: 钉死可执行 DoD(Phase 2 第二步)。触发关键词:"DoD / 验收 / 什么算完 / acceptance / 怎么验证 / 确认目标 / 完成标准"。在 scope 对齐之后、写代码之前,把 spec.acceptance(用户视角粗版)细化成带 command 的 checklist。Auto-invoke: design-doc(若大功能,待新增)或开始写代码.
+description: 钉死可执行 DoD(Phase 2 第二步)。触发关键词:"DoD / 验收 / 什么算完 / acceptance / 怎么验证 / 确认目标 / 完成标准"。在 scope 对齐之后、写代码之前,把 feature.acceptance(用户视角粗版)细化成带 command 的 checklist。Auto-invoke: design-doc(若大功能,待新增)或开始写代码.
 ---
 
 # Acceptance
@@ -24,7 +24,7 @@ AI 容易"看起来对就交付":
 ## 触发场景
 
 - Scope 已对齐(`scope` 完成),即将动手写代码
-- 接 story / 任务,但 DoD 没明确
+- 接 task / 任务,但 DoD 没明确
 - 改动涉及多个变体 / 边界 case
 - 改公开 API / 持久化数据 / 外部接口(更需要刚性 DoD)
 
@@ -69,7 +69,7 @@ DoD-3: 文档 docs/auth.md 同步更新
 
 | 场景 | 写在 |
 |------|------|
-| 项目内部 backlog | kanban.md / TODO.md story 条目下 |
+| 项目内部 backlog | feature.md 的 Tasks 条目下 |
 | PR 流程 | PR description 顶部 "Acceptance" section |
 | 对话内 ad-hoc 任务 | 对话开头,scope 对齐后下一段 |
 | 长任务 | 任务列表(每个子任务自己的 DoD) |
@@ -148,7 +148,7 @@ DoD **必须前置**。事后凑 = 没 DoD。
 ❌ 12 条 DoD,做完发现工作量 = 3 天
 ```
 
-DoD 多 = scope 太大,**回去拆 story**,不是硬上。一个 story 通常 3-5 条 DoD。
+DoD 多 = scope 太大,**回去拆 task**,不是硬上。一个 task 通常 3-5 条 DoD。
 
 ---
 
@@ -157,7 +157,7 @@ DoD 多 = scope 太大,**回去拆 story**,不是硬上。一个 story 通常 3-
 - **`flow`**:地图。本 skill 是闸门 2(scope 对齐**之后**)。
 - **`scope`**:闸门 1。先 scope 后 DoD——scope 定边界,DoD 定完成度。顺序不能反。
 - **`commit-review`**:闸门 3(commit 前)。commit 前回头核对 DoD 是否全勾掉。
-- **`flow`** 的"Story 拆分"步骤产出 DoD 的雏形,本 skill 把它做成可验证的 checklist。
+- **`feature`** 的 Acceptance 章节(用户视角粗版)是本 skill 的输入,本 skill 把它做成可验证的带 command checklist。
 
 ---
 
