@@ -1,5 +1,7 @@
 # aye
 
+> *aye aye, captain.*
+
 Lightweight AI-pair workflow skills for Claude Code.
 
 Designed for **solo dev + AI pair programming**, not team Scrum. Skills focus on the rituals that an AI partner most easily skips:
