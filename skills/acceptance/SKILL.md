@@ -1,0 +1,160 @@
+---
+description: 动手前钉死 DoD(Definition of Done)的仪式 — 防止"看起来 work 就交付"。Story 接到、scope 已对齐、还没写代码前调用。这是 AI 协作的"闸门 2"。
+---
+
+# Acceptance
+
+AI 协作的**闸门 2**:动手前钉死"什么算完"。
+
+测试绿不等于完成。"看起来 work" 不等于完成。**完成的定义必须在写代码前显式钉死**,不是事后看心情。
+
+---
+
+## 为什么需要
+
+AI 容易"看起来对就交付":
+- 跑了几个 happy path → 觉得 work 了
+- 实现了一个变体 → 忘了边界 case
+- 改了主路径 → 忘了相关迁移 / 文档
+
+人也会犯这种错,但 AI 更甚——因为 AI 没有"这个改动会影响什么"的长期工作记忆,需要**显式 acceptance criteria 当外置 checklist**。
+
+---
+
+## 触发场景
+
+- Scope 已对齐(`scope-align` 完成),即将动手写代码
+- 接 story / 任务,但 DoD 没明确
+- 改动涉及多个变体 / 边界 case
+- 改公开 API / 持久化数据 / 外部接口(更需要刚性 DoD)
+
+**不触发**:1 行 typo 修复 / 局部重命名(DoD 显然 = "改完编译过")。
+
+---
+
+## DoD 三要素
+
+每条 DoD 必须满足:
+
+### 1. 具体
+
+| ❌ 模糊 | ✅ 具体 |
+|---------|---------|
+| "代码 work" | "POST /users 在 email 重复时返回 409,body 含 error_code: EMAIL_TAKEN" |
+| "性能不退化" | "p99 latency 不增加 > 10%(基线 50ms)" |
+| "测试通过" | "tests/auth_flow.rs 新增 3 个 case 全绿" |
+
+### 2. 可测试
+
+DoD 写完,问:**怎么验证它满足了?**
+- 自动化(测试 / 命令断言)→ 最好
+- 手动操作(curl 一下 / UI 点一下)→ 可以,但写下命令
+- "感觉对了就 OK" → ❌ 不算 DoD
+
+### 3. 可验证(give me the command)
+
+最好附上**怎么跑出来**:
+
+```
+DoD-1: cargo test --test auth_flow 全绿
+DoD-2: curl -X POST /users -d '{"email":"a@b.com"}' 两次,第二次返回 409
+DoD-3: 文档 docs/auth.md 同步更新
+```
+
+---
+
+## 写在哪
+
+按场景选合适位置:
+
+| 场景 | 写在 |
+|------|------|
+| 项目内部 backlog | sprint.md / TODO.md story 条目下 |
+| PR 流程 | PR description 顶部 "Acceptance" section |
+| 对话内 ad-hoc 任务 | 对话开头,scope 对齐后下一段 |
+| 长任务 | 任务列表(每个子任务自己的 DoD) |
+
+**不要**只放在脑子里——AI session 切换 / 自己几小时后回来,都会忘。
+
+---
+
+## DoD 模板
+
+### 通用模板
+
+```markdown
+## Acceptance Criteria
+
+- [ ] DoD-1: <具体行为/产出> | 验证:<command 或操作>
+- [ ] DoD-2: <具体行为/产出> | 验证:<command 或操作>
+- [ ] DoD-3: <具体行为/产出> | 验证:<command 或操作>
+
+## 已知 out-of-scope(不进 DoD)
+
+- <主动排除的相关项,留给独立任务>
+```
+
+### 实例(integration test 类任务)
+
+```markdown
+## Acceptance Criteria
+
+- [ ] DoD-1: tests/end_to_end.rs 新建,3 个 case 全绿
+      | 验证:cargo test --test end_to_end
+- [ ] DoD-2: 不修改 src/ 下任何文件(纯外部 consumer 视角测试)
+      | 验证:git diff --stat src/ 为空
+- [ ] DoD-3: README "Quick Start" 段落引用其中一个 case 作 demo
+      | 验证:grep "tests/end_to_end" README.md
+
+## Out-of-scope
+
+- 性能基准(独立任务,见 backlog 中 perf-baseline)
+- 校准链路 case(独立任务)
+```
+
+---
+
+## 反模式
+
+### 反模式 1:DoD = "做完 X"
+
+```
+❌ DoD: 实现 user registration 功能
+```
+
+"实现"不是 DoD,是任务描述。DoD 必须答"怎么知道实现完了"。
+
+### 反模式 2:事后凑 DoD
+
+```
+代码改完 → "我们的 DoD 是什么来着" → 现编一个让自己通过
+```
+
+DoD **必须前置**。事后凑 = 没 DoD。
+
+### 反模式 3:DoD 全是"代码 work"
+
+```
+❌ - 代码编译过
+   - 测试不挂
+   - 看起来正常
+```
+
+这是**编程基本功**,不是 DoD。DoD 应该说**这次改动特有的**验收点。
+
+### 反模式 4:DoD 太多导致工作量爆炸
+
+```
+❌ 12 条 DoD,做完发现工作量 = 3 天
+```
+
+DoD 多 = scope 太大,**回去拆 story**,不是硬上。一个 story 通常 3-5 条 DoD。
+
+---
+
+## 与其他 skill 的关系
+
+- **`flow`**:地图。本 skill 是闸门 2(scope 对齐**之后**)。
+- **`scope-align`**:闸门 1。先 scope 后 DoD——scope 定边界,DoD 定完成度。顺序不能反。
+- **`commit-review`**:闸门 3(commit 前)。commit 前回头核对 DoD 是否全勾掉。
+- **`flow`** 的"Story 拆分"步骤产出 DoD 的雏形,本 skill 把它做成可验证的 checklist。

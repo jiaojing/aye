@@ -1,0 +1,16 @@
+{
+  "name": "yebai",
+  "owner": {
+    "name": "jiaojing"
+  },
+  "metadata": {
+    "description": "Lightweight AI-pair workflow skills."
+  },
+  "plugins": [
+    {
+      "name": "yebai",
+      "source": "./",
+      "description": "Scope alignment, acceptance criteria, pull-based iteration for AI-pair programming."
+    }
+  ]
+}
