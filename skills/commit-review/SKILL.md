@@ -123,12 +123,16 @@ session 层不再持有 user 业务状态。
 - [ ] 没有越界改 scope 之外的文件
 - [ ] 没有调试代码 / TODO 残留
 
-## 等指示
+## 等指示(默认 [1] review)
 
-我**不会**自己 commit。请 review 后明确指示:
-- "commit" — 我创建 commit(用上面规范的 message)
-- "push" — commit 已建,推到 remote
-- 或具体修改建议
+- [1] **review**  — 摆 diff 逐文件过,我等你 commit / push 明确指令
+- [2] **direct**  — 跳 review,直接 commit + push 本波改动(信任快路径)
+- [3] **hold**    — 暂停,继续改不 commit
+- [4] **split**   — 本波多 deliverable,先拆多个 commit 再选
+
+回复数字 / 关键字 / 具体修改意见。
+
+**AI 不许自己默认 [2]**——只有用户明确选了才走 direct。
 ```
 
 ---
