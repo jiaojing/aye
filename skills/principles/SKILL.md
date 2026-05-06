@@ -57,6 +57,56 @@ description: 工程哲学底座(横切,始终 active)。触发关键词:"多种�
 
 ---
 
+## 设计原则
+
+### ADT + Type Class 模式(跨语言通用)
+
+数据建模时,把类型分两类——**数据**承载状态、**行为**承载操作,各自独立演化。
+
+| 层 | 角色 | 工具 |
+|---|---|---|
+| **数据 (ADT)** | 承载状态、零行为 | sum type + product type |
+| **行为 (Type Class)** | 承载操作、无状态 | 接口签名 + 解释器实现两步 |
+
+行为再细分两步:
+
+- **接口签名**:"应该有什么操作"——`class` / `trait` / `interface`
+- **解释器实现**:"具体如何操作"——`instance` / `impl` / 实现类 + 顶层扩展
+
+#### 跨语言映射
+
+| | 数据 | 接口签名 | 解释器实现 |
+|---|---|---|---|
+| Haskell | `data Expr = ...` | `class Eval a where` | `instance Eval Int where` |
+| OCaml | `type expr = ...` | `module type EVAL = sig` | `module IntEval : EVAL = struct` |
+| Rust | `enum Expr { ... }` | `trait Eval { ... }` | `impl Eval for Int { ... }` |
+| Kotlin | `sealed interface Expr` | `interface Eval<R>` | `class : Eval<Int>` + 顶层扩展 |
+
+本质同一件事:**数据是数据,行为是行为,各自独立演化**。
+
+#### 为什么立这条
+
+- **加新数据 case** → 加子类,所有 instance 编译报错指着改(穷举安全)
+- **加新行为** → 加新 instance,数据零改动
+- **领域类型增强**(原始类型升 newtype / value class)→ 调用方零感知——因行为不绑数据
+- 反例:数据 + 行为耦合在 class 里 → 加 case 要改全部方法、加方法要改全部 class,**双向膨胀**
+
+#### 反模式
+
+- ❌ 领域行为写在 data class / struct 内(`class Order { fun submit() }`)
+- ❌ Service 持领域状态(`class OrderService { val orders: MutableList<...> }`)
+- ❌ 领域行为写成顶层自由函数 / 扩展函数(应是接口 + 实现,有命名归属)
+
+#### 相关概念(可搜)
+
+ADT(Algebraic Data Type)/ Type Class(Haskell)/ Interpreter Pattern(GoF)/ Initial Algebra / Tagless Final / Object Algebras(Oliveira-Cook 2012)/ Data vs Codata(Videla 等)
+
+#### 与其他三分法的关系
+
+本条讲**设计角度**(怎么建模)。**运行时角度**(谁活多久、怎么传)在 `rust-principles` 的"运行时三分法"(Service / Context / Value)。两者**维度正交**,各自独立命名。
+
+---
+
 ## 元规则
 
 ### 一次只做一件事

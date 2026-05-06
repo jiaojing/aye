@@ -1,6 +1,6 @@
 ---
 name: rust-principles
-description: Rust 项目专属设计原则(横切,语言特化)。仅在 Rust 项目(Cargo.toml / .rs / cargo / rustc / 类型三分法 上下文)触发,**非 Rust 项目零干扰**。包含类型三分法(Service/Context/Value)、行为跟类型走、生命周期偏好、错误处理(thiserror/anyhow)、命名惯例(as_/to_/into_)、弃用替换(LazyLock/parking_lot)、Review checklist、Crate 成熟度模板。新 Rust 项目可作为 project CLAUDE.md 起点。
+description: Rust 项目专属设计原则(横切,语言特化)。仅在 Rust 项目(Cargo.toml / .rs / cargo / rustc / 运行时三分法 / 类型三分法 上下文)触发,**非 Rust 项目零干扰**。包含运行时三分法(Service/Context/Value)、行为跟类型走、生命周期偏好、错误处理(thiserror/anyhow)、命名惯例(as_/to_/into_)、弃用替换(LazyLock/parking_lot)、Review checklist、Crate 成熟度模板。新 Rust 项目可作为 project CLAUDE.md 起点。
 ---
 
 # Rust Principles
@@ -25,7 +25,9 @@ Rust 项目专属设计原则与 idiomatic 选择。**语言无关的代码品�
 
 ## 核心设计原则
 
-### 1. 类型三分法
+### 1. 运行时三分法
+
+> **设计层三分**(怎么建模)在 `principles` 的"ADT + Type Class 模式";本节讲**运行时层三分**(谁活多久、怎么传),两者**维度正交**。
 
 动手前先分类每个类型,决定生命周期和传递方式:
 
