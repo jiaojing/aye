@@ -93,6 +93,10 @@ Repo must be public, then:
 - `dongbai` is the marketplace name — author/brand namespace, can host multiple plugins in the future.
 - `aye` is the plugin name within the marketplace.
 
+## For maintainers
+
+When editing any `skills/*/SKILL.md`, bump `version` in `.claude-plugin/plugin.json` (semver) and push. Otherwise `/plugin update aye` shows no-op despite new commits — marketplace caches by manifest version, not by commit sha.
+
 ## Verify
 
 After install, `/plugin` should list `aye` as enabled. Then try:

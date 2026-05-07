@@ -45,21 +45,21 @@
 
 ## Acceptance
 
-- [ ] AC-1: `docs/features/2026-05-aye-simplify/review.md` 存在，含全 11 skill 评估 + 砍合留清单 + 简化形态草图
-- [ ] AC-2: review 结论里标"砍 / 合"的项，**全部完成实施**（SKILL.md 改完 / skill 删干净 / 引用同步）
-- [ ] AC-3: 实施后，`flow.md` / `README.md` / `plugin.json` 引用与新形态一致
-- [ ] AC-4: 实施后 bump 版本号（minor 或 major 视改动幅度），push origin
-- [ ] AC-5: dogfood 痛点至少 3 个被 review 回应或修复
+- [x] AC-1: `docs/features/2026-05-aye-simplify/review.md` 存在，含全 11 skill 评估 + 砍合留清单 + 简化形态草图
+- [x] AC-2: review 结论里标"砍 / 合"的项，**全部完成实施**（handoff 内嵌 commit-review，删 skill；其他 skill 保留 + 精修）
+- [x] AC-3: 实施后，`flow.md` / `README.md` / `plugin.json` 引用与新形态一致
+- [x] AC-4: 实施后 bump 版本号 0.3.0（major：删 handoff skill = 破坏性），push origin
+- [x] AC-5: dogfood 痛点至少 3 个被 review 回应或修复（痛点 1 颗粒度铁律已治；痛点 2 commit-review 加回打勾；痛点 4 反模式 8 + acceptance 跳过逃生口；痛点 5 SKILL.md 瘦身）
 
 ## Tasks
 
-- [x] T1: 写 `review.md`（单 skill 评估 + 横向重叠 + dogfood 回应 + 砍合留清单 + 简化形态草图，一次过）（v1 草率，v2 深度阅读后修订）
-- [ ] T2: `commit-review` 收尾增强,handoff 内嵌
-- [ ] T3: `acceptance` 加跳过逃生口
-- [ ] T4: `feature` 瘦身 + 反模式 8
-- [ ] T5: `kotlin-principles` 拆 reference.md
-- [ ] T6: `flow` 哲学论证挪 `principles`
-- [ ] T7: 收尾(README bump 备忘 / "5 维度"重命名 / feature 打勾 / bump 0.3.0 / push)
+- [x] T1: 写 `review.md`（v1 草率,v2 深度阅读后修订）(done @ 2238c0d)
+- [x] T2: `commit-review` 收尾增强,handoff 内嵌 (done @ 8e4d6ff)
+- [x] T3: `acceptance` 加跳过逃生口 (done @ b87da2d)
+- [x] T4: `feature` 加反模式 8（瘦身放 T6 跟 flow 一起做） (done @ 1fab67d)
+- [x] T5: `kotlin-principles` 拆 reference.md (done @ a01bd71)
+- [x] T6: 哲学论证归位 principles（flow + feature 同步引用） (done @ fec5275)
+- [x] T7: 收尾(README bump 备忘 / "5 维度"重命名 / feature 打勾 / bump 0.3.0 / push)
 
 ## Notes
 

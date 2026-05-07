@@ -137,7 +137,7 @@ ADT(Algebraic Data Type)/ Type Class(Haskell)/ Interpreter Pattern(GoF)/ Initial
 
 存在多个有效方法时,按以下优先级判断:
 
-| 优先级 | 维度 | 一句话 |
+| 优先级 | 判据 | 一句话 |
 |--------|------|--------|
 | 1 | 可测试性 | 我能轻松测试这个吗? |
 | 2 | 可读性 | 6 个月后有人能理解这个吗? |
@@ -146,6 +146,8 @@ ADT(Algebraic Data Type)/ Type Class(Haskell)/ Interpreter Pattern(GoF)/ Initial
 | 5 | 可逆性 | 以后改变有多困难? |
 
 **关键判断不是 "会不会错",而是 "错了改起来贵不贵"**——可逆性优先。
+
+> 跟 `design-review` 的"5 维度"区分:本段是**元规则判据**(语言无关,跨多方案纠结);`design-review` 的 5 维度是**审视标准**(类型抽象 / Builder / Trait / 命名 / 重构,语言中立但更具体)。两者层次不同,不冲突。
 
 ---
 
