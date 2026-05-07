@@ -97,6 +97,8 @@ Repo must be public, then:
 
 When editing any `skills/*/SKILL.md`, bump `version` in `.claude-plugin/plugin.json` (semver) and push. Otherwise `/plugin update aye` shows no-op despite new commits — marketplace caches by manifest version, not by commit sha.
 
+After bump + push, **users must run BOTH `/plugin update aye` AND `/reload-plugins`** to switch their running cache to the new version. `/plugin update` alone fetches the new manifest but doesn't reload skills already loaded in the current Claude Code session.
+
 ## Verify
 
 After install, `/plugin` should list `aye` as enabled. Then try:
