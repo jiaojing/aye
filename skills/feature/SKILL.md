@@ -13,12 +13,7 @@ AI 协作的**闸门 0**:进 scope 之前,先把模糊需求结构化成 **featu
 
 ## 为什么需要
 
-5 条 AI 协作硬约束推导:
-
-- AI **没持久记忆** → feature.md 是 self-describing 工件,新 session 拿来就能用
-- AI **理解会偏** → feature.md 是显式契约,避免"我以为你要的是 X"
-- AI **容易越界** → feature.md 钉死 non-goals,scope 才有所本
-- AI **PR ≈ context 容量** → feature.md 帮人判断"这个 feature 一次能搞定吗",大了拆 task
+feature.md 是 AI 协作硬约束(没记忆 / 理解偏 / 容易越界 / PR≈context)的**显式契约**——把这些约束变成可 hand-off 的工件。约束本身见 `principles` 的 AI 协作篇,本段不重复论证。
 
 ---
 

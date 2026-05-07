@@ -169,6 +169,31 @@ ADT(Algebraic Data Type)/ Type Class(Haskell)/ Interpreter Pattern(GoF)/ Initial
 
 ---
 
+## AI 协作硬约束(aye 流程的支撑)
+
+教科书 Scrum 假设"团队协作 + 标准化降低沟通成本"。AI 协作场景**完全不同**:
+
+1. **AI 没持久记忆** → 任务必须自描述,不能靠"上次我们说过"。**优势化**:session = 迭代 = task = PR,自然边界
+2. **AI 写快人 review 慢** → 瓶颈是人的 review 带宽,不是 AI 产出速度
+3. **AI 容易越界** → 给个修 bug,顺手"清理"周边代码;需要显式 scope 纪律
+4. **AI 的理解会偏** → 把模糊需求误解成另一种 deliverable,只能人类校正
+5. **PR 是天然 mental scope** → 一个 PR ≈ AI 一个 conversation 容量;PR 大了 AI 自己也会丢线
+
+这 5 条推导出 aye 的**两段论 + 闸门链 + 横切判据**形状(具体编排见 `flow`)。
+
+### Scrum 仪式不必照搬
+
+| 累赘 | 为什么不要 |
+|------|----------|
+| Sprint planning(批量规划)| Kanban 拉式即可,完一项拉一项 |
+| Daily standup | 对话本身就是 standup |
+| Estimate / 故事点 / velocity | AI 速度方差大,velocity 概念失效 |
+| 固定 sprint 周期 | 节拍器对 AI 没用,完了就拉下一个 |
+| 周期性 retro | 用户一句"这样不对"就是即时 retro |
+| Spec / story / kanban 多份文档 | 一份 `feature.md` 起步,需要时同目录加辅助文档 |
+
+---
+
 ## 与其他 skill 的关系
 
 `principles` 是**底座**,不是 step。具体仪式调对应 skill:

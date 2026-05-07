@@ -20,17 +20,7 @@ AI 协作的工作流地图。**不是教科书 Scrum**——为单人 + AI 实�
 
 ---
 
-## 5 条 AI 协作硬约束(为什么这套和教科书 Scrum 不同)
-
-教科书 Scrum 假设"团队协作 + 标准化降低沟通成本"。AI 协作场景**完全不同**:
-
-1. **AI 没持久记忆** → 任务必须自描述,不能靠"上次我们说过"。**优势化**:session = 迭代 = task = PR,自然边界
-2. **AI 写快人 review 慢** → 瓶颈是人的 review 带宽,不是 AI 产出速度
-3. **AI 容易越界** → 给个修 bug,顺手"清理"周边代码;需要显式 scope 纪律
-4. **AI 的理解会偏** → 把模糊需求误解成另一种 deliverable,只能人类校正
-5. **PR 是天然 mental scope** → 一个 PR ≈ AI 一个 conversation 容量;PR 大了 AI 自己也会丢线
-
-这 5 条约束推导出**两段论 + 4 闸门 + 横切判据**的工作流形状。
+> **为什么 aye 长这样**:5 条 AI 协作硬约束推导出"两段论 + 闸门链 + 横切判据"的形状,详见 `principles` 的 AI 协作篇。本 skill 是地图,只画工作流形状,不重复论证。
 
 ---
 
@@ -151,19 +141,6 @@ docs/features/
 ```
 
 默认只有 `feature.md` 一份;需要时同目录下直接加 `design.md` / `decisions.md` 等,无 promote 仪式。详见 `aye:feature`。
-
----
-
-## 不要做的事(教科书 Scrum 的累赘)
-
-| 累赘 | 为什么不要 |
-|------|----------|
-| Sprint planning(批量规划)| Kanban 拉式即可,完一项拉一项 |
-| Daily standup | 对话本身就是 standup |
-| Estimate / 故事点 / velocity | AI 速度方差大,velocity 概念失效 |
-| 固定 sprint 周期 | 节拍器对 AI 没用,完了就拉下一个 |
-| 周期性 retro | 用户一句"这样不对"就是即时 retro |
-| Spec / story / kanban 多份文档 | 一份 `feature.md` 起步,需要时同目录加辅助文档 |
 
 ---
 
