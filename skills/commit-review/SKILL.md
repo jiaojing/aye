@@ -137,21 +137,36 @@ session 层不再持有 user 业务状态。
 
 ---
 
-## Push 后 → 回 feature.md 打勾 + 交接摘要
+## Push 后
 
-push 成功后,**两步 inline 收尾**(不 chain 到独立 skill,本 skill 自带):
+push 成功后**默认走简短模式**——不主动给摘要噪音。**两种模式按上下文分流**。
 
-### 1. 回 feature.md 打勾(机制层防漏)
+### 默认模式(连续做事)
 
-找本轮迭代对应的 `docs/features/<slug>/feature.md`,把对应 task 改成:
+每次 push 完都跑这步,**不主动给"交接摘要 + 提示关 session"**:
 
-```
-- [x] T<n>: ... (done @ <commit-sha>)
-```
+1. 简短报 push 结果(`xxx..yyy`)
+2. **回 feature.md 打勾**(机制层防漏)——找本轮迭代对应的 `docs/features/<slug>/feature.md`,task 改成:
 
-相关 acceptance 一并打勾。commit-review 闸门**自动闭环到 feature 收口**——不再依赖 LLM 自觉记得回打勾。
+   ```
+   - [x] T<n>: ... (done @ <commit-sha>)
+   ```
 
-### 2. 交接摘要(< 10 行,只交事实)
+   相关 acceptance 一并打勾。
+
+**为什么不默认给摘要**:连续做 task 时,每个 commit 都摆"收尾姿态" → AI 反复说"session 可关",变成噪音。摘要应在用户**明示要关**时才出现。
+
+### Handoff 模式(用户要关 session)
+
+**触发条件**:用户最近一条消息含 `今天到这 / 收 / 暂停 / handoff / context 满了 / 下次继续` 等关键词。
+
+满足才走完整 handoff 仪式:
+
+1. 默认模式两步先走(短确认 + 回打勾)
+2. 给 < 10 行交接摘要(模板见下)
+3. 提示"session 可关,摘要让交接无痛"
+
+#### 摘要模板(< 10 行)
 
 ```markdown
 ## Today
@@ -169,7 +184,7 @@ push 成功后,**两步 inline 收尾**(不 chain 到独立 skill,本 skill 自�
 
 **硬上限:10 行**。超了 = 在偷塞决策。
 
-### 摘要反模式(协议)
+#### 摘要反模式(协议)
 
 **只交事实,不替下家拍决策**。下家本应 fresh eyes 自己评估,前任的"倾向"是污染。
 
@@ -194,11 +209,9 @@ push 成功后,**两步 inline 收尾**(不 chain 到独立 skill,本 skill 自�
 
 push 完成后:
 
-1. **inline 完成"回 feature.md 打勾 + 交接摘要"**(本 skill 自带,不 chain 独立 skill)
-2. **用户选**:
-   - 关 session → 摘要让交接无痛(下次新 session 从 feature.md 拉下条 task)
-   - 拉下条 task → 直接进 `scope`(摘要也已就位,后续想关随时无缝)
+1. **默认走简短模式**——短确认 push + 回 feature.md 打勾。**不主动给摘要,不主动提"session 可关"**
+2. 用户**喊 `关 / 暂停 / 今天到这 / handoff / context 满了`** 才进 Handoff 模式(完整摘要 + 提示可关)
 
-不强制关 session——摘要的角色是**为可能的关闭提供无痛出口**,不是闸门。
+**关键**:连续做 task 时 AI 不该每个 commit 都摆收尾姿态。摘要只在用户明示要关时给,默认让 AI 顺势继续 / 等下条指示。
 
 大改动(>200 行 / 改公开 API / 改持久化)进入 commit-review 时,**先内嵌调用** `design-review` 做 5 维度审查,再摆 diff。
