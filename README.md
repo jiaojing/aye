@@ -12,7 +12,7 @@ Designed for **solo dev + AI pair programming**, not team Scrum. Skills focus on
 
 ## Skills
 
-Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with handoff)**. Skills auto-invoke each other via chains.
+Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with commit-review push + summary)**. Skills auto-invoke each other via chains.
 
 ### Navigation (start here)
 
@@ -34,8 +34,7 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 | `/aye:acceptance` | Gate 2 | Scope locked — pin down "done" with executable DoD checklist |
 | `/aye:design` | Big-design (Gate 2.5, optional) | Cross-crate / public API / persistence change / multi-option dilemma — produce `design.md` (problem + options + decision + impl) before coding |
 | `/aye:design-review` | Cross-cut | While coding / before commit — 5-axis judgment (types / builder / trait / naming / refactoring) |
-| `/aye:commit-review` | Gate 3 | Tests green — show diff, wait for explicit "commit" / "push" before touching git |
-| `/aye:handoff` | Iteration end | Auto-invoked after `commit-review` push — hand off facts only, ready to close session |
+| `/aye:commit-review` | Gate 3 | Tests green — show diff, wait for explicit "commit" / "push" before touching git. Push 后自带"回 feature.md 打勾 + 交接摘要" |
 
 ### Cross-cutting (always-on)
 
@@ -53,7 +52,7 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
    - *"我想加个搜索功能"* / *"加 X 功能"* → `feature`
    - *"开始改 / 准备写代码"* → `scope`
    - *"测试绿了 / 改完了"* → `commit-review`
-   - *"今天到这 / context 满了"* → `handoff`
+   - *"今天到这 / context 满了"* → `commit-review` (push 后自带交接摘要)
 
    Each skill's full keyword list lives in its `SKILL.md` frontmatter.
 
@@ -70,14 +69,14 @@ You say *"I want to add search to X"*:
 - LLM auto-invokes `/aye:feature` → produces a single `feature.md` (problem + users + scope + acceptance + tasks + status + notes)
 - You approve
 
-**Phase 2 — one task at a time (single session, ends with handoff):**
+**Phase 2 — one task at a time (single session, ends with commit-review + summary):**
 - *"do tasks[0] — implement query parsing"*
 - → `/aye:scope` proposes which files change + open questions; you approve
 - → `/aye:acceptance` pins the DoD checklist (each item executable)
 - *(optional, big design)* → `/aye:design` writes `design.md` (problem + options + decision + impl) before coding
 - You write code; invoke `/aye:design-review` for 5-axis judgment whenever you want
 - *"tests green"* → `/aye:commit-review` shows the diff, waits for explicit "commit / push"
-- → `/aye:handoff` prints next-task pointer + caveats; session naturally ends
+- → `commit-review` push 后自动产出 next-task pointer + caveats summary（< 10 行,只交事实）。You then choose: close the session (summary makes it painless) or pull next task.
 
 Next session: open `feature.md`, pick the next unchecked task, repeat Phase 2. Cross-session memory lives in `feature.md`, not in chat history.
 

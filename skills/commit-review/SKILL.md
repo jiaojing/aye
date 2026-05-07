@@ -1,6 +1,6 @@
 ---
 name: commit-review
-description: commit + push 闸门(Phase 2 末尾)。触发关键词:"测试绿了 / 完成了 / commit / 提交 / push / 推送 / 准备好了 / 可以了 / 改完了"。摆 diff → 等明确点头才动 git。大改动(>200 行 / 改公开 API / 改持久化数据)时先内嵌调用 design-review 做 5 维度审查。包含 commit message 规范(中文 ≤15 字 / 只讲 why / 不带 Co-Authored-By / 副作用改动不进 message)。push 完 auto-invoke: handoff.
+description: commit + push 闸门(Phase 2 末尾,含交接摘要)。触发关键词:"测试绿了 / 完成了 / commit / 提交 / push / 推送 / 准备好了 / 可以了 / 改完了 / 今天到这 / context 满了 / 收 / 暂停"。摆 diff → 等明确点头才动 git。大改动(>200 行 / 改公开 API / 改持久化数据)时先内嵌调用 design-review 做 5 维度审查。包含 commit message 规范(中文 ≤15 字 / 只讲 why / 不带 Co-Authored-By / 副作用改动不进 message)。push 完 inline 完成:回 feature.md 打勾 + 交接摘要(< 10 行,只交事实)。
 ---
 
 # Commit Review
@@ -137,18 +137,68 @@ session 层不再持有 user 业务状态。
 
 ---
 
+## Push 后 → 回 feature.md 打勾 + 交接摘要
+
+push 成功后,**两步 inline 收尾**(不 chain 到独立 skill,本 skill 自带):
+
+### 1. 回 feature.md 打勾(机制层防漏)
+
+找本轮迭代对应的 `docs/features/<slug>/feature.md`,把对应 task 改成:
+
+```
+- [x] T<n>: ... (done @ <commit-sha>)
+```
+
+相关 acceptance 一并打勾。commit-review 闸门**自动闭环到 feature 收口**——不再依赖 LLM 自觉记得回打勾。
+
+### 2. 交接摘要(< 10 行,只交事实)
+
+```markdown
+## Today
+<commits / push 状态 / 1-2 行重点>
+
+## 状态
+<test 状态 / worktree 状态>
+
+## 下个 session 起点
+<下一条 task 编号 + 一句话标题 + 文件 + 行>
+
+## 注意约定
+<最近犯过的错的提醒,1-3 条>
+```
+
+**硬上限:10 行**。超了 = 在偷塞决策。
+
+### 摘要反模式(协议)
+
+**只交事实,不替下家拍决策**。下家本应 fresh eyes 自己评估,前任的"倾向"是污染。
+
+不交:
+- 决策点 + "我倾向" / "推荐"
+- Trade-off 矩阵
+- 推荐执行顺序("先做 A 再做 B")
+- Leading question("我觉得用 X 更好,你怎么看?")
+- 用词约定 / 流程铁律(交接不是教学,1-2 条提醒就够)
+
+---
+
 ## 与其他 skill 的关系
 
 - **`scope`**:动手前对齐 scope。本 skill 是动手**后**、commit 前的闸门。前者防越界,后者防自作主张。
 - **`design-review`**:5 维度设计审查。改动量大或破面时,review 阶段可触发它做更深判断。
-- **`agent-skills:git-workflow-and-versioning`**:git 操作的通用流程参考。本 skill 强调"等用户点头才动"这一刚性边界,是它的补充。
+- **`feature`**:本 skill push 后回 feature.md 打勾,机制层闭环。
 
 ---
 
 ## Auto-invoke chain
 
-push 完成后,LLM **自动 invoke**: `handoff`(迭代终点交接)。
+push 完成后:
 
-如果用户明确说"继续下一条 / 不交接 / 接着做",则跳过 handoff,继续 Phase 1(看板选下条)。
+1. **inline 完成"回 feature.md 打勾 + 交接摘要"**(本 skill 自带,不 chain 独立 skill)
+2. **用户选**:
+   - 关 session → 摘要让交接无痛(下次新 session 从 feature.md 拉下条 task)
+   - 拉下条 task → 直接进 `scope`(摘要也已就位,后续想关随时无缝)
+
+不强制关 session——摘要的角色是**为可能的关闭提供无痛出口**,不是闸门。
 
 大改动(>200 行 / 改公开 API / 改持久化)进入 commit-review 时,**先内嵌调用** `design-review` 做 5 维度审查,再摆 diff。

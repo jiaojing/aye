@@ -55,10 +55,11 @@ AI 协作的工作流地图。**不是教科书 Scrum**——为单人 + AI 实�
 │                                            │
 │   scope ──→ acceptance ──→ design?     │
 │   ──→ [写代码 ↔ design-review N 次]        │
-│   ──→ commit-review ──→ push ──→ handoff   │
+│   ──→ commit-review (含 push + 打勾 + 摘要) │
 │                                            │
 │   产出:1 个 PR + feature.md task 打勾      │
-│         + 1 次 handoff(session 关)         │
+│         + 1 次交接摘要(给"想关 session"     │
+│         的无痛出口,不强制关)               │
 └────────────────────────────────────────────┘
                     │
                     ▼ 新 session 接力
@@ -70,7 +71,7 @@ AI 协作的工作流地图。**不是教科书 Scrum**——为单人 + AI 实�
 - **session = task = PR**,三位一体——AI 没记忆从约束**变成 feature**,迭代天然 self-contained
 - **Phase 1 跨 session**(feature.md 持久化),**Phase 2 单 session**(自然闭环)
 - 一个 feature 内的多个 task 各自走 Phase 2,不重新走 Phase 1
-- handoff 是 Phase 2 终点,**不是横切元规则**
+- 交接摘要是 commit-review push 后自带步骤,不再独立 skill
 
 ---
 
@@ -89,10 +90,11 @@ design ─→ [写代码]
 [写代码 + design-review N 次]
               │
               ▼ 测试绿
-commit-review ─→ push ─→ handoff(自动)
+commit-review ─→ push ─→ 回 feature.md 打勾 + 交接摘要(自带)
                           │
-                          ▼ session 关
-                     [新 session: 拉下个 task,直接进 scope]
+                          ▼ 用户选:
+                          ├─ 关 session  → 摘要已就位,无痛
+                          └─ 拉下条 task → 直接进 scope,不绕回 Phase 1
 
 横切判据(任意阶段调用):
   principles        — 哲学底座
@@ -124,14 +126,14 @@ commit-review ─→ push ─→ handoff(自动)
 ┌─ Phase 2:围绕 task 迭代 ────────────────────────┐
 │  scope          PR 级 scope 对齐(闸门 1)        │
 │  acceptance     钉死可执行 DoD(闸门 2)          │
-│  design     大功能设计文档(可选闸门 2.5)    │
+│  design         大功能设计文档(可选闸门 2.5)    │
 │  design-review  5 维度判据(横向 N 次)           │
-│  commit-review  commit + push 闸门(闸门 3)      │
-│  handoff        迭代终点交接(自动)              │
+│  commit-review  commit + push + 回打勾 + 摘要   │
+│                 (闸门 3,含原 handoff 内容)      │
 └──────────────────────────────────────────────────┘
 ```
 
-**全 11 个 skill 全部交付**(横切 4 + Phase 1 的 feature + Phase 2 六个)。
+**全 10 个 skill 全部交付**(横切 4 + Phase 1 的 feature + Phase 2 五个)。
 
 ---
 
@@ -167,7 +169,7 @@ docs/features/
 
 ## 一句话总结
 
-**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design] → 写代码 + design-review → commit-review → push → handoff)围绕单个 task 单 session 闭环。
+**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design] → 写代码 + design-review → commit-review:含 push + 回打勾 + 摘要)围绕单个 task 单 session 闭环。
 
 **session = task = PR**——AI 无记忆从约束变 feature。
 
@@ -179,7 +181,7 @@ docs/features/
 
 本 skill 是**地图入口**,不替代任何具体仪式 skill:
 - 落到 Phase 1 → `feature`
-- 落到 Phase 2 → `scope` / `acceptance` / `design` / `design-review` / `commit-review` / `handoff`
+- 落到 Phase 2 → `scope` / `acceptance` / `design` / `design-review` / `commit-review`
 - 想要哲学底座 → `principles` / `rust-principles`(Rust 项目) / `kotlin-principles`(Kotlin 项目)
 
 如果 AI 在新 feature 不知如何下手,**先调本 skill 看地图**,再点对应 step skill。
