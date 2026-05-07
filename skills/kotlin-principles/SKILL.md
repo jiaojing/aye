@@ -553,7 +553,23 @@ data class Mut(val items: MutableList<Int>)    // ❌ mutable 字段:copy 后共
 
 > 末尾 checklist,可被 `design-review` / `commit-review` 引用。
 
-(展开见后续 T7)
+Kotlin 代码写完 / review 前快速扫:
+
+```
+[ ] 没有 !!(用 ?.let / ?: / requireNotNull)            ── 维度 2 / 11
+[ ] 没有 GlobalScope.launch / runBlocking 在 suspend 内 ── 维度 4
+[ ] 协程内 runCatching / catch 必须透传 CancellationException ── 维度 4
+[ ] 没有 lateinit var(用构造器注入 / by lazy)            ── 维度 11
+[ ] data class 没有 var / Array / mutable 引用字段       ── 维度 6 / 15
+[ ] 没有暴露 MutableList / MutableMap(暴露 List / Map)   ── 维度 6
+[ ] 没有嵌套 scope 函数;apply 不当 let 用                ── 维度 3
+[ ] 没有用 nullable 表"操作失败"(用 sealed result)        ── 维度 5
+[ ] 库 public 函数显式标返回类型,不暴露 ConcurrentHashMap 等实现类 ── 维度 12
+[ ] 没有 getX() / checkX()(用 val x / isX)               ── 维度 10
+[ ] 函数 < 50 行 / 嵌套 ≤ 3 / 参数 ≤ 5                    ── 维度 13
+```
+
+**和 `design-review` 5 维度的关系**:本 checklist 是 Kotlin 实现层信号(具体到 keyword 级);`design-review` 是设计判据(抽象到决策级)。两者都跑,不重复。
 
 ---
 
