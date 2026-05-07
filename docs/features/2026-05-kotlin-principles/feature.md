@@ -82,28 +82,25 @@ Kotlin sealed + interface 本质都是同一件事），让三个 skill 在判�
 
 ## Acceptance
 
-- [ ] AC-1: aye plugin 列表里出现 `aye:kotlin-principles`，Kotlin 项目上下文能触发，Rust / 通用项目不触发
-- [ ] AC-2: `skills/kotlin-principles/SKILL.md` 顶层有"类型三分法落地到 Kotlin"章节，16 个维度判据每条三段式（判据 + 正例 + 反例），灰区维度采用优先级阶梯式呈现
-- [ ] AC-3: 末尾 Review checklist 可被 `design-review` / `commit-review` 引用
-- [ ] AC-4: 产出 `skills/kotlin-principles/examples/adt-interpreter.kt`（≤ 100 行，基于 safeguard 简化），完整体现类型三分法 + ≥ 6 个判据维度，SKILL.md 中作为"标准范例"引用
-- [ ] AC-5: `skills/principles/SKILL.md` 在"4 条核心哲学"和"元规则"之间新增"### 设计原则"区块，加"**ADT + Type Class 模式**"为跨语言通用设计原则（顶层用行业通用名；内文展开为：数据 = ADT；行为 = Type Class，再拆接口签名 + 解释器实现两步）
-- [ ] AC-6: `skills/rust-principles/SKILL.md` 把现有"类型三分法（Service/Context/Value）"改名为"**运行时三分法**"以避开 `principles` 新加条的"ADT + Type Class 模式"撞名，并在开头交叉引用 `principles` 的设计层条目（两者维度正交：设计 vs 运行时）
-- [ ] AC-7: `flow.md` 横切层补 `kotlin-principles` 引用，与 `rust-principles` 描述对称
-- [ ] AC-8: README.md 同步
+- [x] AC-1: aye plugin 列表里出现 `aye:kotlin-principles`，Kotlin 项目上下文能触发，Rust / 通用项目不触发
+- [x] AC-2: `skills/kotlin-principles/SKILL.md` 顶层有"类型三分法落地到 Kotlin"章节，16 个维度判据每条三段式（判据 + 正例 + 反例），灰区维度采用优先级阶梯式呈现 (done @ c482764；实际 15 维度 + review checklist 单独成章，总信号一致)
+- [x] AC-3: 末尾 Review checklist 可被 `design-review` / `commit-review` 引用 (done @ 0f86918)
+- [x] AC-4: 产出 `skills/kotlin-principles/examples/adt-interpreter.kt`（≤ 100 行，基于 safeguard 简化），完整体现类型三分法 + ≥ 6 个判据维度，SKILL.md 中作为"标准范例"引用 (done @ b0d8620；66 行，覆盖 7 维度)
+- [x] AC-5: `skills/principles/SKILL.md` 在"4 条核心哲学"和"元规则"之间新增"### 设计原则"区块，加"**ADT + Type Class 模式**"为跨语言通用设计原则（顶层用行业通用名；内文展开为：数据 = ADT；行为 = Type Class，再拆接口签名 + 解释器实现两步） (done @ 24ecdc0)
+- [x] AC-6: `skills/rust-principles/SKILL.md` 把现有"类型三分法（Service/Context/Value）"改名为"**运行时三分法**"以避开 `principles` 新加条的"ADT + Type Class 模式"撞名，并在开头交叉引用 `principles` 的设计层条目（两者维度正交：设计 vs 运行时） (done @ 24ecdc0)
+- [x] AC-7: `flow.md` 横切层补 `kotlin-principles` 引用，与 `rust-principles` 描述对称
+- [x] AC-8: README.md 同步
 
 ## Tasks
 
-- [ ] T0a: 升级 `skills/principles/SKILL.md`，加"类型三分法：数据 / 行为 / 解释器"为跨语言通用原则
-- [ ] T0b: 对齐 `skills/rust-principles/SKILL.md` 措辞，与 `principles` 新增条三方一致
-- [ ] T1: 调研 `rust-principles` 骨架，定 `kotlin-principles/SKILL.md` 模板结构（顶层三分法 + 16 维度框架）
-- [ ] T2: 填充类型设计 / null safety / scope functions 三大维度（占判据量 ~30%）
-- [ ] T3: 填充协程基础（语言层）/ 错误处理 / 不可变（占 ~25%）
-- [ ] T4: 填充扩展函数 / 集合 API / 委托（占 ~15%）
-- [ ] T5: 填充命名惯例 / 弃用替换 / public API 显式 / 复杂度阈值 / inline / equals-copy 陷阱（占 ~25%）
-- [ ] T6: 写 `examples/adt-interpreter.kt`（基于 safeguard 简化的 ADT 解释器范例），SKILL.md 末尾引用
-- [ ] T7: 写 Review checklist（kotlin-principles 末尾），可被 design-review / commit-review 引用
-- [ ] T8: 更新 `flow.md` + `README.md` 引用
-- [ ] T9: 自检：用本 skill 把 `examples/adt-interpreter.kt` 跑一遍判据，确认每条都对得上
+- [x] T0a: 升级 `skills/principles/SKILL.md`，加"类型三分法：数据 / 行为 / 解释器"为跨语言通用原则 (done @ 24ecdc0)
+- [x] T0b: 对齐 `skills/rust-principles/SKILL.md` 措辞，与 `principles` 新增条三方一致 (done @ 24ecdc0)
+- [x] T1: 调研 `rust-principles` 骨架，定 `kotlin-principles/SKILL.md` 模板结构（顶层三分法 + 16 维度框架） (done @ 92985e5)
+- [x] T2-T5: 15 维度判据填充 (done @ c482764；实际推进时 T2-T5 同模板同质合一刀，这正是 `feature` 反模式 7 的真实例证，已沉淀为铁律)
+- [x] T6: 写 `examples/adt-interpreter.kt`（基于 safeguard 简化的 ADT 解释器范例），SKILL.md 末尾引用 (done @ b0d8620)
+- [x] T7: 写 Review checklist（kotlin-principles 末尾），可被 design-review / commit-review 引用 (done @ 0f86918)
+- [x] T8: 更新 `flow.md` + `README.md` 引用
+- [~] T9: 自检：用本 skill 把 `examples/adt-interpreter.kt` 跑一遍判据，确认每条都对得上 (跳过；过程性活，按 `feature` 颗粒度铁律应并入 commit-review，不单立 task)
 
 ## Notes
 

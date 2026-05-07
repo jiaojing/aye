@@ -43,6 +43,7 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 |-------|------|
 | `/aye:principles` | Stuck on a multi-option choice — decision framework (good taste / don't break consumer / pragmatism / simplicity) |
 | `/aye:rust-principles` | Auto-invoked in Rust projects (Cargo.toml / .rs / cargo) — type triage, lifetime preference, error-handling style |
+| `/aye:kotlin-principles` | Auto-invoked in Kotlin projects (*.kt / build.gradle.kts) — ADT + type class layout, scope functions, coroutine boundaries |
 
 ## Usage
 

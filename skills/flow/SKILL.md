@@ -95,9 +95,10 @@ commit-review ─→ push ─→ handoff(自动)
                      [新 session: 拉下个 task,直接进 scope]
 
 横切判据(任意阶段调用):
-  principles       — 哲学底座
-  rust-principles  — Rust 项目特化
-  design-review    — 5 维度判据(写代码中 / commit 前)
+  principles        — 哲学底座
+  rust-principles   — Rust 项目特化
+  kotlin-principles — Kotlin 项目特化
+  design-review     — 5 维度判据(写代码中 / commit 前)
 ```
 
 每个 skill 自己的 SKILL.md 末尾有"Auto-invoke chain"段说明完成后下一步。
@@ -108,10 +109,11 @@ commit-review ─→ push ─→ handoff(自动)
 
 ```
 ┌─ 横切层(常驻判据 / 元规则)──────────────────────┐
-│  principles      工程哲学(好品味 / 不破坏 consumer│
-│                  / 实用主义 / 简洁)              │
-│  rust-principles Rust idiomatic 设计原则         │
-│  flow            工作流地图(本 skill)            │
+│  principles        工程哲学(好品味 / 不破坏 consumer│
+│                    / 实用主义 / 简洁)              │
+│  rust-principles   Rust idiomatic 设计原则         │
+│  kotlin-principles Kotlin idiomatic 设计原则       │
+│  flow              工作流地图(本 skill)            │
 └──────────────────────────────────────────────────┘
 
 ┌─ Phase 1:feature 明确 ──────────────────────────┐
@@ -129,7 +131,7 @@ commit-review ─→ push ─→ handoff(自动)
 └──────────────────────────────────────────────────┘
 ```
 
-**全 10 个 skill 全部交付**(横切 3 + Phase 1 的 feature + Phase 2 六个)。
+**全 11 个 skill 全部交付**(横切 4 + Phase 1 的 feature + Phase 2 六个)。
 
 ---
 
@@ -169,7 +171,7 @@ docs/features/
 
 **session = task = PR**——AI 无记忆从约束变 feature。
 
-横切判据:`principles` / `rust-principles` / `design-review` 任意阶段调用。
+横切判据:`principles` / `rust-principles` / `kotlin-principles` / `design-review` 任意阶段调用。
 
 ---
 
@@ -178,6 +180,6 @@ docs/features/
 本 skill 是**地图入口**,不替代任何具体仪式 skill:
 - 落到 Phase 1 → `feature`
 - 落到 Phase 2 → `scope` / `acceptance` / `design` / `design-review` / `commit-review` / `handoff`
-- 想要哲学底座 → `principles` / `rust-principles`(Rust 项目)
+- 想要哲学底座 → `principles` / `rust-principles`(Rust 项目) / `kotlin-principles`(Kotlin 项目)
 
 如果 AI 在新 feature 不知如何下手,**先调本 skill 看地图**,再点对应 step skill。
