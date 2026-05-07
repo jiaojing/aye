@@ -213,12 +213,23 @@ ASSUMPTIONS I'M MAKING:
 
 ## Tasks 章节怎么写
 
-Tasks 是**粗到中粒的实施步骤**,不是 commit 级 task(commit 级在写代码时即兴拆)。
+> **为什么颗粒度是头号问题**:aye 闸门成本固定(scope → acceptance → 可能 design → build → commit-review)。
+> task 拆得越细,闸门重复跑得越多——同质活每次问"这条改哪些文件"是纯噪音,决策早在 feature 阶段定完。
+> 合并 task 跑一次是规避,不是修复:回去打勾时 task list 跟 commit 对不上,feature 收口失真。
 
-颗粒判据:每个 task 应该:
+### 颗粒度铁律(写 task 时强制自检)
+
+| # | 规则 | 检查动作 |
+|---|---|---|
+| 1 | **一 task = 一 commit** | 拆完反问:"这条会变成 1 次 commit 吗?如果是 0 次或 N 次,重切" |
+| 2 | **同质必合** | 相邻 task 操作同模板 / 同文件类型 / 同验证标准 → 合一条。不靠"行数 / 维度个数"凑 task |
+| 3 | **零新决策** | task 内不该有"还要决定"的事——决策应在 feature / scope 阶段定完。"调研 X 再写"不是 task,是 spec 缺漏 |
+| 4 | **数量软线 5-7** | 超了优先用规则 2 合,而不是接受细碎 |
+
+每个 task 应该:
 
 - 能在一个 session 内完成
-- 对应一个或几个相关 commit
+- 对应**一个 commit**(不是"几个相关 commit"——那是允许细碎的口子)
 - 有清晰的"完成 = 什么"(心里有数即可,不必写出 acceptance)
 
 例(给"补全 aye 漏掉的 skill"这个 feature):
@@ -301,6 +312,25 @@ Feature 讲 **what + why + 粗 task**,design doc 讲 **how**(实现细节、架�
 ```
 
 Feature 解决"做什么对吗",不解决"这次 task 改哪些文件"。Feature 之后**还要走 scope**(改文件清单)+ **acceptance**(可执行 DoD)。三道仪式不重叠,不替代。
+
+### 反模式 7:按"内容覆盖"切同质 task
+
+```
+❌ Tasks:
+   - T2: 填充类型设计 / null safety / scope functions(覆盖 30%)
+   - T3: 填充协程 / 错误处理 / 不可变(覆盖 25%)
+   - T4: 填充扩展 / 集合 / 委托(覆盖 15%)
+   - T5: 填充命名 / 弃用 / public API / 复杂度 / inline / equals(覆盖 25%)
+```
+
+T2-T5 同模板(三段式判据)、同文件、同验证——切 4 条只是凑数。实际一刀完成、一次 commit,中间闸门全是噪音。
+
+```
+✅ Tasks:
+   - T2: 15 维度判据填充
+```
+
+何时该真拆:维度间有**新决策差异**(例:某维度需要先调研一手出处)→ 那条拆出来当独立 task。同质 + 无新决策 = 不拆。
 
 ---
 
