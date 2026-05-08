@@ -22,15 +22,37 @@ AI 在两个方向天然容易越界:
 
 ---
 
-## 触发场景
+## 何时必走 / 何时跳过(硬清单)
 
-- AI 准备开始动手实施(改文件 / 写新代码)
-- 任务描述模糊("把 X 整理一下" / "优化下 Y")
+**必走**(任一命中):
+
+- 改 ≥ 2 个文件
+- 改公开 API / 持久化 schema / 跨 crate 边界
+- 任务描述模糊("整理 / 优化 / 重构")
 - feature 有多种合理解读
+- 陌生模块第一次动
 - AI 自己感觉"这块还有顺手能做的"
-- 第一次接触陌生模块,不确定边界
 
-**不触发**:typo 修复 / 单行明确改动 / 紧急 hotfix(那时直接动手)。
+**跳过**(任一命中即可直接进写代码):
+
+- typo 修复 / 单行明确改动
+- 紧急 hotfix
+- 单文件 + 任务边界显然(用户已指明改哪个 fn / 哪几行)
+- 文档型 task(写 markdown / review.md / SKILL.md)
+
+跳过 ≠ 不对齐——心里仍要清楚"改哪些 / 不改哪些",只是不必走全套仪式。
+
+---
+
+## 触发场景(用户口语)
+
+用户说这些话时,AI 自动 invoke:
+
+- "开始改 / 动手 / 做这条 / 实现一下"
+- "改 X / 修一下 / 这个怎么改"
+- "准备写代码 / 实施"
+
+但**先看"何时必走 / 跳过"硬清单**——简单 task 即使触发也跳过仪式。
 
 ---
 
@@ -137,8 +159,12 @@ scope 提议给用户时,**用代码块包起来**(更醒目),并明确等待:
 
 ---
 
-## Auto-invoke chain
+## Auto-invoke chain(conditional,不强 push)
 
-完成本 skill 后,LLM **自动 invoke**: `acceptance`(钉死可执行 DoD)。
+完成本 skill 后,**按 task 性质分流**(不再 strict push):
 
-如用户已经在 feature.md 里钉好 DoD 且本次足够小,可跳过直接写代码。
+- 有 test command DoD / 改公开 API / DoD 描述模糊 → invoke `acceptance`
+- 文档型 task / feature.md AC 已细化到 command / 简单重构 → **直接进写代码**,跳过 acceptance
+- 大功能 / 多方案纠结 / schema 改 / 跨 crate → 直接 invoke `design`(可选闸门 2.5)
+
+判据见 `acceptance` 头部"何时必走 / 跳过"清单。
