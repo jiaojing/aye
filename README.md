@@ -34,7 +34,8 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 | `/aye:acceptance` | Gate 2 | Scope locked — pin down "done" with executable DoD checklist |
 | `/aye:design` | Big-design (Gate 2.5, optional) | Cross-crate / public API / persistence change / multi-option dilemma — produce `design.md` (problem + options + decision + impl) before coding |
 | `/aye:design-review` | Cross-cut | While coding / before commit — 5-axis judgment (types / builder / trait / naming / refactoring) |
-| `/aye:commit-review` | Gate 3 | Tests green — show diff, wait for explicit "commit" / "push" before touching git. Push 后自带"回 feature.md 打勾 + 交接摘要" |
+| `/aye:commit-review` | Gate 3 | Tests green — show diff, wait for explicit "commit" / "push" before touching git. Push 后短确认 + 回 feature.md 打勾(摘要由独立 handoff skill 触发) |
+| `/aye:handoff` | Iteration end (user-triggered) | 用户喊"今天到这 / 收 / 暂停 / handoff / context 满了" → 写 `docs/features/handoff-<date>.md` + inline 摘要(< 10 行,只交事实) |
 
 ### Cross-cutting (always-on)
 
@@ -43,6 +44,7 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 | `/aye:principles` | Stuck on a multi-option choice — decision framework (good taste / don't break consumer / pragmatism / simplicity) |
 | `/aye:rust-principles` | Auto-invoked in Rust projects (Cargo.toml / .rs / cargo) — type triage, lifetime preference, error-handling style |
 | `/aye:kotlin-principles` | Auto-invoked in Kotlin projects (*.kt / build.gradle.kts) — ADT + type class layout, scope functions, coroutine boundaries |
+| `/aye:pua` | User-triggered: "以终为始 / 看行业标准 / 不要捡简单的 / 站领域专家" — 跳出代码细节,做 research,产出"行业上对的"判断 |
 
 ## Usage
 

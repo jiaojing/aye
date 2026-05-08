@@ -80,50 +80,44 @@ design ─→ [写代码]
 [写代码 + design-review N 次]
               │
               ▼ 测试绿
-commit-review ─→ push ─→ 回 feature.md 打勾 + 交接摘要(自带)
+commit-review ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主动给摘要)
                           │
                           ▼ 用户选:
-                          ├─ 关 session  → 摘要已就位,无痛
-                          └─ 拉下条 task → 直接进 scope,不绕回 Phase 1
+                          ├─ 拉下条 task → 直接进 scope
+                          └─ 喊"今天到这 / 收 / 暂停" → invoke handoff(写文件 + inline)
 
 横切判据(任意阶段调用):
   principles        — 哲学底座
   rust-principles   — Rust 项目特化
   kotlin-principles — Kotlin 项目特化
   design-review     — 5 维度判据(写代码中 / commit 前)
+  pua               — 跳出代码 / 站领域专家 / research(用户主动喊)
 ```
 
 每个 skill 自己的 SKILL.md 末尾有"Auto-invoke chain"段说明完成后下一步。
 
 ---
 
-## Skill 10 个 + 三层结构
+## Skill 必走 / 可选
 
-```
-┌─ 横切层(常驻判据 / 元规则)──────────────────────┐
-│  principles        工程哲学(好品味 / 不破坏 consumer│
-│                    / 实用主义 / 简洁)              │
-│  rust-principles   Rust idiomatic 设计原则         │
-│  kotlin-principles Kotlin idiomatic 设计原则       │
-│  flow              工作流地图(本 skill)            │
-└──────────────────────────────────────────────────┘
+| skill | 性质 | 何时进入 |
+|---|---|---|
+| `feature` | **必走**(闸门 0) | 模糊需求结构化,所有新工作的起点 |
+| `commit-review` | **必走**(闸门 3) | 动 git 前必经 |
+| `scope` | conditional | 改 ≥ 2 文件 / 改公开 API / 任务模糊 → 走;typo / 单文件显然 → 跳 |
+| `acceptance` | conditional | 有 test command DoD / 改公开 API → 走;文档型 / 简单 → 跳 |
+| `design` | conditional(闸门 2.5) | 大功能 / 多方案 / 跨 crate → 走;否则跳 |
+| `design-review` | 横切 | 写代码中 / commit 前,任意阶段调用 |
+| `principles` | 横切 | 多方案纠结时,哲学底座 |
+| `rust-principles` | 横切(语言特化) | Rust 项目自动 active |
+| `kotlin-principles` | 横切(语言特化) | Kotlin 项目自动 active |
+| `pua` | 横切(用户主动) | 喊"以终为始 / 看行业标准 / 不要捡简单的" |
+| `handoff` | 横切(用户主动) | 喊"今天到这 / 收 / 暂停 / handoff" |
+| `flow` | 横切(导航) | 不知道用哪个 skill 时,本 skill 给地图 |
 
-┌─ Phase 1:feature 明确 ──────────────────────────┐
-│  feature  单文档承载需求 + acceptance + tasks    │
-│           + status(闸门 0)                       │
-└──────────────────────────────────────────────────┘
+**全 12 个 skill**(横切 6 + 必走 2 + conditional 4)。
 
-┌─ Phase 2:围绕 task 迭代 ────────────────────────┐
-│  scope          PR 级 scope 对齐(闸门 1)        │
-│  acceptance     钉死可执行 DoD(闸门 2)          │
-│  design         大功能设计文档(可选闸门 2.5)    │
-│  design-review  5 维度判据(横向 N 次)           │
-│  commit-review  commit + push + 回打勾 + 摘要   │
-│                 (闸门 3,含原 handoff 内容)      │
-└──────────────────────────────────────────────────┘
-```
-
-**全 10 个 skill 全部交付**(横切 4 + Phase 1 的 feature + Phase 2 五个)。
+**Phase 2 chain 是 conditional 不是 strict**——简单 task 可只走 `feature` → `commit-review`,复杂才全套。
 
 ---
 

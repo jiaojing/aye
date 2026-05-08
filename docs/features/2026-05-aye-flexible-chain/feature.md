@@ -60,19 +60,19 @@ aye 0.3.x 是 strict chain auto-invoke——`feature → scope → acceptance �
 
 ## Acceptance
 
-- [ ] AC-1: `skills/handoff/SKILL.md` 复活（中文极简版，~30-50 行，inline 摘要协议）
-- [ ] AC-2: `skills/pua/SKILL.md` 新建（中文，覆盖：以终为始 / 领域专家 lens / research / 拒绝简单 / 反模式协议）
-- [ ] AC-3: `scope` / `acceptance` / `design` SKILL.md 头部加"何时必走 / 何时跳过"硬清单段
-- [ ] AC-4: 各可选闸门 auto-invoke 段从 strict 改 conditional；`commit-review` 砍 0.3.1 双模式段
-- [ ] AC-5: `flow` skill 列表加表格标"必走 / 可选" + 加 `handoff` / `pua` 引用；`README` 同步；`plugin.json` bump 0.4.0
+- [x] AC-1: `skills/handoff/SKILL.md` 复活（中文极简，**双输出**：写文件 `docs/features/handoff-<date>.md` + inline 摘要） (done @ 7150482 + c35eab6)
+- [x] AC-2: `skills/pua/SKILL.md` 新建（中文，覆盖：以终为始 / 领域专家 lens / research / 拒绝简单 / 反模式协议） (done @ 31c2957)
+- [x] AC-3: `scope` / `acceptance` / `design` SKILL.md 头部加"何时必走 / 何时跳过"硬清单段 (done @ 0733353)
+- [x] AC-4: 各可选闸门 auto-invoke 段从 strict 改 conditional；`commit-review` 砍 0.3.1 双模式段 (done @ 7150482 + 0733353)
+- [x] AC-5: `flow` skill 列表加表格标"必走 / 可选" + 加 `handoff` / `pua` 引用；`README` 同步；`plugin.json` bump 0.4.0
 - [ ] AC-6: push origin
 
 ## Tasks（按颗粒度铁律切，软线 5-7）
 
-- [ ] T1: 复活 `handoff`（中文极简）+ `commit-review` 砍 0.3.1 双模式段（同一动作的两面：handoff 接管 = commit-review 不再背）
-- [ ] T2: 各可选闸门（`scope` / `acceptance` / `design`）加"何时必走 / 跳过"段 + auto-invoke conditional + description 场景化（同质合一刀）
-- [ ] T3: 写 `aye:pua` skill（中文）
-- [ ] T4: `flow` skill 列表 + 加 handoff/pua 引用 + `README` 同步 + `plugin.json` bump 0.4.0
+- [x] T1: 复活 `handoff`（中文极简）+ `commit-review` 砍 0.3.1 双模式段 (done @ 7150482, c35eab6 加文件输出修订)
+- [x] T2: 各可选闸门（`scope` / `acceptance` / `design`）加"何时必走 / 跳过"段 + auto-invoke conditional + description 场景化 (done @ 0733353)
+- [x] T3: 写 `aye:pua` skill（中文） (done @ 31c2957)
+- [x] T4: `flow` skill 列表 + 加 handoff/pua 引用 + `README` 同步 + `plugin.json` bump 0.4.0
 - [ ] T5: 收尾（push + feature.md 打勾）
 
 ## Notes
