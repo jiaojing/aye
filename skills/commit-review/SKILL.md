@@ -1,6 +1,6 @@
 ---
 name: commit-review
-description: commit + push 闸门(Phase 2 末尾,含交接摘要)。触发关键词:"测试绿了 / 完成了 / commit / 提交 / push / 推送 / 准备好了 / 可以了 / 改完了 / 今天到这 / context 满了 / 收 / 暂停"。摆 diff → 等明确点头才动 git。大改动(>200 行 / 改公开 API / 改持久化数据)时先内嵌调用 design-review 做 5 维度审查。包含 commit message 规范(中文 ≤15 字 / 只讲 why / 不带 Co-Authored-By / 副作用改动不进 message)。push 完 inline 完成:回 feature.md 打勾 + 交接摘要(< 10 行,只交事实)。
+description: commit + push 闸门(Phase 2 末尾)。触发关键词:"测试绿了 / 完成了 / commit / 提交 / push / 推送 / 准备好了 / 可以了 / 改完了"。摆 diff → 等明确点头才动 git。大改动(>200 行 / 改公开 API / 改持久化数据)时先内嵌调用 design-review 做 5 维度审查。包含 commit message 规范(中文 ≤15 字 / 只讲 why / 不带 Co-Authored-By / 副作用改动不进 message)。push 完短确认 + 回 feature.md 打勾;交接摘要由独立 `handoff` skill 触发(用户喊"今天到这 / 收"才走)。
 ---
 
 # Commit Review
@@ -139,11 +139,7 @@ session 层不再持有 user 业务状态。
 
 ## Push 后
 
-push 成功后**默认走简短模式**——不主动给摘要噪音。**两种模式按上下文分流**。
-
-### 默认模式(连续做事)
-
-每次 push 完都跑这步,**不主动给"交接摘要 + 提示关 session"**:
+push 成功后:
 
 1. 简短报 push 结果(`xxx..yyy`)
 2. **回 feature.md 打勾**(机制层防漏)——找本轮迭代对应的 `docs/features/<slug>/feature.md`,task 改成:
@@ -154,46 +150,9 @@ push 成功后**默认走简短模式**——不主动给摘要噪音。**两种
 
    相关 acceptance 一并打勾。
 
-**为什么不默认给摘要**:连续做 task 时,每个 commit 都摆"收尾姿态" → AI 反复说"session 可关",变成噪音。摘要应在用户**明示要关**时才出现。
+**默认不主动给摘要,不主动提"session 可关"**——连续做 task 时,每个 commit 都摆收尾姿态会变成噪音。
 
-### Handoff 模式(用户要关 session)
-
-**触发条件**:用户最近一条消息含 `今天到这 / 收 / 暂停 / handoff / context 满了 / 下次继续` 等关键词。
-
-满足才走完整 handoff 仪式:
-
-1. 默认模式两步先走(短确认 + 回打勾)
-2. 给 < 10 行交接摘要(模板见下)
-3. 提示"session 可关,摘要让交接无痛"
-
-#### 摘要模板(< 10 行)
-
-```markdown
-## Today
-<commits / push 状态 / 1-2 行重点>
-
-## 状态
-<test 状态 / worktree 状态>
-
-## 下个 session 起点
-<下一条 task 编号 + 一句话标题 + 文件 + 行>
-
-## 注意约定
-<最近犯过的错的提醒,1-3 条>
-```
-
-**硬上限:10 行**。超了 = 在偷塞决策。
-
-#### 摘要反模式(协议)
-
-**只交事实,不替下家拍决策**。下家本应 fresh eyes 自己评估,前任的"倾向"是污染。
-
-不交:
-- 决策点 + "我倾向" / "推荐"
-- Trade-off 矩阵
-- 推荐执行顺序("先做 A 再做 B")
-- Leading question("我觉得用 X 更好,你怎么看?")
-- 用词约定 / 流程铁律(交接不是教学,1-2 条提醒就够)
+**交接摘要由独立 `handoff` skill 触发**:用户喊"今天到这 / 收 / 暂停 / handoff / context 满了 / 下次继续"才走 handoff 摘要仪式。
 
 ---
 
@@ -209,9 +168,8 @@ push 成功后**默认走简短模式**——不主动给摘要噪音。**两种
 
 push 完成后:
 
-1. **默认走简短模式**——短确认 push + 回 feature.md 打勾。**不主动给摘要,不主动提"session 可关"**
-2. 用户**喊 `关 / 暂停 / 今天到这 / handoff / context 满了`** 才进 Handoff 模式(完整摘要 + 提示可关)
-
-**关键**:连续做 task 时 AI 不该每个 commit 都摆收尾姿态。摘要只在用户明示要关时给,默认让 AI 顺势继续 / 等下条指示。
+1. **inline 短确认 + 回 feature.md 打勾**(本 skill 自带)
+2. 用户决定继续做下条 task / 关 session / 让 AI 等下一条指示
+3. 用户喊"今天到这 / 收 / 暂停 / handoff / context 满了 / 下次继续" → auto-invoke `handoff`
 
 大改动(>200 行 / 改公开 API / 改持久化)进入 commit-review 时,**先内嵌调用** `design-review` 做 5 维度审查,再摆 diff。

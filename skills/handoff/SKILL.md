@@ -1,0 +1,81 @@
+---
+name: handoff
+description: 迭代终点交接(用户主动触发)。触发关键词:"今天到这 / 收 / 暂停 / handoff / context 满了 / 下次继续"。inline 摘要 < 10 行,只交事实,不替下家拍决策。
+---
+
+# Handoff
+
+Session 交接给下一个 AI session(或下次自己)的协议:**只交事实,不替下家拍决策**。
+
+下家应该 fresh eyes 读完代码 + 文档后再开口提决策点和方案——**不该被前任的预设引导**。
+
+---
+
+## 触发
+
+用户明示要关 session 时:
+
+- "今天到这 / 收 / 暂停"
+- "handoff / 交接"
+- "context 满了 / 下次继续"
+
+`commit-review` push 完后**默认不触发**摘要。除非用户喊上面的关键词,LLM 不主动摆收尾姿态——避免"每个 commit 都给摘要"的噪音。
+
+---
+
+## 摘要模板(< 10 行,inline 输出)
+
+```markdown
+## Today
+<commits / push 状态 / 1-2 行重点>
+
+## 状态
+<test 状态 / worktree 状态>
+
+## 下个 session 起点
+<下一条 task 编号 + 一句话标题 + 文件 + 行>
+
+## 注意约定
+<最近犯过的错的提醒,1-3 条>
+```
+
+**硬上限:10 行**。超了 = 在偷塞决策。
+
+---
+
+## 反模式协议(只交事实)
+
+不交:
+
+- ❌ 决策点 + "我倾向" / "推荐"
+- ❌ Trade-off 矩阵
+- ❌ 推荐执行顺序("先做 A 再做 B")
+- ❌ Leading question("我觉得用 X 更好,你怎么看?")
+- ❌ 用词约定 / 流程铁律(交接不是教学,1-2 条提醒就够)
+
+**重复**:已在 commit / PR / `feature.md` / ADR 里的内容,**引用路径或 commit-sha 即可,不复述**。
+
+---
+
+## 何时跳过
+
+- 单 task 内 push 后继续做下条 → 不触发
+- 短 commit(typo / doc-only) + 用户没喊 → 不触发
+- 用户明示"继续 / 不交接 / 接着做" → 跳过
+
+---
+
+## 与其他 skill 的关系
+
+- `commit-review`:本 skill 在 commit-review push **之后**触发(用户主动喊)。commit-review 默认行为是短确认 + 回打勾,**不带摘要**
+- `feature.md`:摘要"下个 session 起点"指向 feature.md 待办 task
+
+---
+
+## Auto-invoke chain
+
+handoff 是 chain **终点**,完成后:
+
+1. 输出摘要(< 10 行)
+2. session 可关闭——但**不强制**,用户可继续
+3. 下次新 session 起来,从 feature.md 拉下条 task,直接进 scope
