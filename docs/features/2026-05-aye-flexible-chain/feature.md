@@ -50,7 +50,7 @@ aye 0.3.x 是 strict chain auto-invoke——`feature → scope → acceptance �
 
 ### Open questions（已答，留 trail）
 
-- ✅ Q1: handoff 形态 = **inline 摘要**（对话内，不留文件）
+- ✅ Q1: handoff 形态 = **双输出**——写文件 `docs/features/handoff-<date>.md` + inline 摘要（持久化让下个 session 直接 Read，不依赖对话历史；handoff 跟 features/ 同目录是 domain coherent）
 - ✅ Q2: `aye:debug` = **跳过**（场景模糊 + AI 行为难改 + 双重失效）
 - ✅ Q3: `aye:prototype` = **跳过**（用户实际不会用）
 - ✅ Q4: `aye:zoom-out` = **跳过**（口语已覆盖，扩写冗余）

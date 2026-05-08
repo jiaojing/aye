@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: 迭代终点交接(用户主动触发)。触发关键词:"今天到这 / 收 / 暂停 / handoff / context 满了 / 下次继续"。inline 摘要 < 10 行,只交事实,不替下家拍决策。
+description: 迭代终点交接(用户主动触发)。触发关键词:"今天到这 / 收 / 暂停 / handoff / context 满了 / 下次继续"。**双输出**:写文件 `docs/features/handoff-<date>.md`(持久化,下个 session 直接读)+ inline 摘要(本 session 用户可见)。< 10 行,只交事实,不替下家拍决策。
 ---
 
 # Handoff
@@ -23,7 +23,21 @@ Session 交接给下一个 AI session(或下次自己)的协议:**只交事实,�
 
 ---
 
-## 摘要模板(< 10 行,inline 输出)
+## 双输出(关键)
+
+handoff 触发时**同时**做两件事:
+
+1. **写文件** `docs/features/handoff-<YYYY-MM-DD>.md`(持久化)
+   - 下个 session 起来直接 Read 这个文件,无需翻对话历史
+   - 跟 features/ 同目录,domain coherent(handoff 是 feature 工作流的产出物)
+   - 同日多次触发 → 覆盖(瞬态状态,git 自带历史)
+2. **inline 同样内容**(本 session 用户可见)
+
+下个 session 进入时,AI 应自觉 `ls docs/features/handoff-*.md | tail -1` 找最新 handoff,Read 拉到 context。或在 feature.md "Notes" 段引用最新 handoff 路径。
+
+---
+
+## 摘要模板(< 10 行)
 
 ```markdown
 ## Today
