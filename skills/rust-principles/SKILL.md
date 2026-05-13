@@ -5,7 +5,7 @@ description: Rust 项目专属设计原则(横切,语言特化)。仅在 Rust �
 
 # Rust Principles
 
-Rust 项目专属设计原则与 idiomatic 选择。**语言无关的代码品味**走 `principles` / `design-review`,本 skill 只讲 Rust 特化的部分。
+Rust 项目专属设计原则与 idiomatic 选择。**语言无关的代码品味**走 `principles` / `review`,本 skill 只讲 Rust 特化的部分。
 
 ---
 
@@ -19,7 +19,7 @@ Rust 项目专属设计原则与 idiomatic 选择。**语言无关的代码品�
 **不触发**:
 - 非 Rust 项目(零干扰)
 - 具体编译错误 / 借用检查 / Send/Sync / ownership 问题 → 走 `rust-skills` 插件的 `m0x` 系列(各自有错误码 trigger)
-- 语言无关的代码品味问题 → 走 aye 的 `principles` / `design-review`
+- 语言无关的代码品味问题 → 走 aye 的 `principles` / `review`
 
 ---
 
@@ -71,7 +71,7 @@ Rust 项目专属设计原则与 idiomatic 选择。**语言无关的代码品�
 
 - 两个实现不值得抽 trait,**等第三个出现再考虑**(rule of three)
 - 不追求多对多的统一 trait
-- 抽 trait 前问 `design-review` 维度 3 的"真共性 vs 偶合"
+- 抽 trait 前问 `review` 维度 3 的"真共性 vs 偶合"
 
 ---
 
@@ -88,7 +88,7 @@ Rust 项目专属设计原则与 idiomatic 选择。**语言无关的代码品�
 其他硬规则:
 - **不用 `get_` 前缀**: `fn name()` not `fn get_name()`
 - 迭代器三兄弟: `iter()` / `iter_mut()` / `into_iter()`
-- 用 newtype 表达领域语义: `struct Email(String)` 不要裸 `String`(具体取舍见 `design-review` 维度 1)
+- 用 newtype 表达领域语义: `struct Email(String)` 不要裸 `String`(具体取舍见 `review` 维度 1)
 
 ---
 
@@ -119,7 +119,7 @@ Rust 代码写完 / review 前快速扫:
 [ ] 没有 hold lock across .await
 ```
 
-**和 `design-review` 5 维度的关系**:本 checklist 是 Rust 实现层信号(具体到 keyword 级);`design-review` 是设计判据(抽象到决策级)。两者都跑,不重复。
+**和 `review` 5 维度的关系**:本 checklist 是 Rust 实现层信号(具体到 keyword 级);`review` 是设计判据(抽象到决策级)。两者都跑,不重复。
 
 ---
 
@@ -161,7 +161,7 @@ Rust 代码写完 / review 前快速扫:
 ## 与其他 skill 的关系
 
 - **`principles`**(aye 语言无关版):本 skill 是它的 Rust 特化扩展,sibling 关系。语言无关层在 `principles`,Rust 特化层在本 skill。
-- **`design-review`**:5 维度判据是语言无关的;本 skill 的 review checklist 是 Rust 实现层信号。两者并行不冲突——design-review 给设计决策,本 skill 给具体编码 / review 检查。
+- **`review`**:5 维度判据是语言无关的;本 skill 的 review checklist 是 Rust 实现层信号。两者并行不冲突——review 给设计决策,本 skill 给具体编码 / review 检查。
 - **`rust-skills` 插件的 m0x 系列**(独立 plugin):本 skill 讲**风格 / 设计选择**(高层);m0x 讲**具体编译错误 / 语义问题 / 错误码**(低层)。错位互补,不重复。
   - 例:本 skill 说"用 thiserror 写 custom error";`m06-error-handling` 说"如何用 ? 操作符传播 / when to panic vs Result / 具体错误码 E0277"。
-- **`flow` / `feature` / `scope` / `acceptance` / `commit-review`**(aye 仪式层):正交关系,本 skill 是知识库,它们是流程。
+- **`flow` / `feature` / `scope` / `acceptance` / `commit-gate`**(aye 仪式层):正交关系,本 skill 是知识库,它们是流程。

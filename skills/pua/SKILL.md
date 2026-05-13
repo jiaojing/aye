@@ -1,6 +1,6 @@
 ---
 name: pua
-description: 跳出代码细节,以终为始 + 站领域专家视角 + 做 research,**只做对的,不做简单/直接的**。触发关键词:"以终为始 / 什么是真正对的 / 什么才是对的 / 看行业标准 / 主流怎么做 / 开源项目 / 作为 X 领域专家 / 站在专家视角 / 不要捡简单的 / 做 research / 调研一下 / root cause / 真正问题"。**用户主动喊触发**,LLM 走 7 步动作链,不当 yes-machine。
+description: 跳出代码细节,以终为始 + 站领域专家视角 + 做 research,**只做对的,不做简单/直接的**。触发关键词:"以终为始 / 行业上对的 / 看行业标准 / 主流怎么做 / 开源项目 / 作为 X 领域专家 / 站在专家视角 / 不要捡简单的 / 做 research / 调研一下 / root cause / 真正问题"。**用户主动喊触发**,LLM 走 7 步动作链,不当 yes-machine。
 ---
 
 # Pua
@@ -114,7 +114,7 @@ LLM 在行业知识 retrieval 上比人强——这是 AI 的真优势,**用 pua
 ## 与其他 skill 的关系
 
 - `principles`:静态哲学(4 条 + 决策框架)。`pua` 是**动态触发**的领域专家 + research 流程。两者并行,不冲突
-- `design-review`:5 维度评判某段代码 / 设计选择。`pua` 跳到更高层(行业视角)。先用 `pua` 找方向,再用 `design-review` 评具体段
+- `review`:5 维度评判某段代码 / 设计选择。`pua` 跳到更高层(行业视角)。先用 `pua` 找方向,再用 `review` 评具体段
 - `design`:产 design.md 时如果"拿不准用啥",可内嵌触发 `pua` 做 research,把"行业上对的"产出写进 design.md "决策"段
 
 ---

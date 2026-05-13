@@ -44,8 +44,8 @@ AI 协作的工作流地图。**不是教科书 Scrum**——为单人 + AI 实�
 │ Phase 2:围绕 task 迭代(单 session 闭环)   │
 │                                            │
 │   scope ──→ acceptance ──→ design?     │
-│   ──→ [写代码 ↔ design-review N 次]        │
-│   ──→ commit-review (含 push + 打勾 + 摘要) │
+│   ──→ [写代码 ↔ review N 次]        │
+│   ──→ commit-gate (含 push + 打勾 + 摘要) │
 │                                            │
 │   产出:1 个 PR + feature.md task 打勾      │
 │         + 1 次交接摘要(给"想关 session"     │
@@ -61,7 +61,7 @@ AI 协作的工作流地图。**不是教科书 Scrum**——为单人 + AI 实�
 - **session = task = PR**,三位一体——AI 没记忆从约束**变成 feature**,迭代天然 self-contained
 - **Phase 1 跨 session**(feature.md 持久化),**Phase 2 单 session**(自然闭环)
 - 一个 feature 内的多个 task 各自走 Phase 2,不重新走 Phase 1
-- 交接摘要是 commit-review push 后自带步骤,不再独立 skill
+- 交接摘要是 commit-gate push 后自带步骤,不再独立 skill
 
 ---
 
@@ -77,10 +77,10 @@ acceptance ──┬─→ design(大功能,可选闸门 2.5)
 
 design ─→ [写代码]
 
-[写代码 + design-review N 次]
+[写代码 + review N 次]
               │
               ▼ 测试绿
-commit-review ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主动给摘要)
+commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主动给摘要)
                           │
                           ▼ 用户选:
                           ├─ 拉下条 task → 直接进 scope
@@ -90,7 +90,7 @@ commit-review ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主
   principles        — 哲学底座
   rust-principles   — Rust 项目特化
   kotlin-principles — Kotlin 项目特化
-  design-review     — 5 维度判据(写代码中 / commit 前)
+  review     — 5 维度判据(写代码中 / commit 前)
   pua               — 跳出代码 / 站领域专家 / research(用户主动喊)
 ```
 
@@ -98,26 +98,45 @@ commit-review ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主
 
 ---
 
-## Skill 必走 / 可选
+## Skill 分层(4 类)
 
-| skill | 性质 | 何时进入 |
-|---|---|---|
-| `feature` | **必走**(闸门 0) | 模糊需求结构化,所有新工作的起点 |
-| `commit-review` | **必走**(闸门 3) | 动 git 前必经 |
-| `scope` | conditional | 改 ≥ 2 文件 / 改公开 API / 任务模糊 → 走;typo / 单文件显然 → 跳 |
-| `acceptance` | conditional | 有 test command DoD / 改公开 API → 走;文档型 / 简单 → 跳 |
-| `design` | conditional(闸门 2.5) | 大功能 / 多方案 / 跨 crate → 走;否则跳 |
-| `design-review` | 横切 | 写代码中 / commit 前,任意阶段调用 |
-| `principles` | 横切 | 多方案纠结时,哲学底座 |
-| `rust-principles` | 横切(语言特化) | Rust 项目自动 active |
-| `kotlin-principles` | 横切(语言特化) | Kotlin 项目自动 active |
-| `pua` | 横切(用户主动) | 喊"以终为始 / 看行业标准 / 不要捡简单的" |
-| `handoff` | 横切(用户主动) | 喊"今天到这 / 收 / 暂停 / handoff" |
-| `flow` | 横切(导航) | 不知道用哪个 skill 时,本 skill 给地图 |
+按**性质**而非 lifecycle 分:
 
-**全 12 个 skill**(横切 6 + 必走 2 + conditional 4)。
+### Gate(必走,AI 不能跳)
 
-**Phase 2 chain 是 conditional 不是 strict**——简单 task 可只走 `feature` → `commit-review`,复杂才全套。
+| skill | 何时进入 |
+|---|---|
+| `feature` | 闸门 0 — 模糊需求结构化,所有新工作的起点 |
+| `scope` | 闸门 1 — 改 ≥ 2 文件 / 改公开 API / 任务模糊 → 走;typo / 单文件显然 → 跳 |
+| `acceptance` | 闸门 2 — 有 test command DoD / 改公开 API → 走;文档型 / 简单 → 跳 |
+| `commit-gate` | 闸门 3 — 动 git 前必经 |
+
+### Triggered(条件 / 用户主动喊)
+
+| skill | 何时触发 |
+|---|---|
+| `design` | 闸门 2.5 — 大功能 / 多方案 / 跨 crate / 改公开 API / 改持久化 → 走;否则跳 |
+| `handoff` | 用户主动 — 喊"今天到这 / 收 / 暂停 / handoff" |
+| `pua` | 用户主动 — 喊"以终为始 / 看行业标准 / 不要捡简单的" |
+
+### Reference(横切判据,任意阶段查)
+
+| skill | 何时调用 |
+|---|---|
+| `principles` | 多方案纠结 / 决策框架 / 取舍 — 哲学底座 + AI 协作准则 |
+| `review` | 写代码中 / commit 前 — 5 维度设计判据 |
+| `rust-principles` | Rust 项目自动 active — 类型三分法 / 生命周期 / 错误处理 |
+| `kotlin-principles` | Kotlin 项目自动 active — ADT / scope functions / coroutine |
+
+### Nav
+
+| skill | 何时调用 |
+|---|---|
+| `flow` | 新 session / 不知道用哪个 skill — 本 skill 给地图 |
+
+**全 12 个 skill**(Gate 4 + Triggered 3 + Reference 4 + Nav 1)。
+
+**Phase 2 chain 是 conditional 不是 strict**——简单 task 可只走 `feature` → `commit-gate`,复杂才全套。
 
 ---
 
@@ -140,11 +159,11 @@ docs/features/
 
 ## 一句话总结
 
-**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design] → 写代码 + design-review → commit-review:含 push + 回打勾 + 摘要)围绕单个 task 单 session 闭环。
+**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design] → 写代码 + review → commit-gate:含 push + 回打勾 + 摘要)围绕单个 task 单 session 闭环。
 
 **session = task = PR**——AI 无记忆从约束变 feature。
 
-横切判据:`principles` / `rust-principles` / `kotlin-principles` / `design-review` 任意阶段调用。
+横切判据:`principles` / `rust-principles` / `kotlin-principles` / `review` 任意阶段调用。
 
 ---
 
@@ -152,7 +171,7 @@ docs/features/
 
 本 skill 是**地图入口**,不替代任何具体仪式 skill:
 - 落到 Phase 1 → `feature`
-- 落到 Phase 2 → `scope` / `acceptance` / `design` / `design-review` / `commit-review`
+- 落到 Phase 2 → `scope` / `acceptance` / `design` / `review` / `commit-gate`
 - 想要哲学底座 → `principles` / `rust-principles`(Rust 项目) / `kotlin-principles`(Kotlin 项目)
 
 如果 AI 在新 feature 不知如何下手,**先调本 skill 看地图**,再点对应 step skill。

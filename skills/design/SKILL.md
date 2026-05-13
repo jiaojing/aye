@@ -1,6 +1,6 @@
 ---
 name: design
-description: 大功能技术设计敲定(Phase 2 闸门 2.5,可选)。触发关键词:"得出个方案 / 先设计一下 / 得想想怎么做 / 怎么搞 / 拿不准用啥 / 大功能 / 改公开 API / schema 改 / 跨 crate / 多方案纠结 / 需要画图 / 架构选型 / 设计文档"。在 acceptance 之后、写代码之前,把"怎么实现"敲定成 design.md(问题 + 方案空间 + 决策 + 实施细节四段)。Auto-invoke: 写代码(实施)。
+description: 大功能技术设计敲定(Phase 2 闸门 2.5,可选)。触发关键词:"得出个方案 / 先设计一下 / 拿不准用啥 / 多方案纠结 / 大功能 / 改公开 API / schema 改 / 跨 crate / 架构选型 / 技术选型 / 实现方案 / 需要画图 / 设计文档"。在 acceptance 之后、写代码之前,把"怎么实现"敲定成 design.md(问题 + 方案空间 + 决策 + 实施细节四段)。Auto-invoke: 写代码(实施)。
 ---
 
 # Design
@@ -41,16 +41,16 @@ AI 协作的**闸门 2.5**(可选,大功能才触发):scope 锁了、acceptance 
 
 ---
 
-## 与 `design-review` 的边界(关键)
+## 与 `review` 的边界(关键)
 
-| | `design` | `design-review` |
+| | `design` | `review` |
 |---|---|---|
 | 性质 | **产出仪式** | **评价判据** |
 | 产物 | `design.md` 文档 | 5 维度评判结论 |
 | 触发 | 大功能,acceptance 之后 | 任意阶段,审视某段设计选择 |
 | 时机 | 写代码**前** | 写代码**中** / commit **前** |
 
-**两者非互斥**:写 design.md 时遇到拿不准的设计选择(类型抽象 / Builder / Trait / 命名 / 重构),内嵌调用 `design-review` 做 5 维度评估,结果写进 design.md 的"决策"章节。
+**两者非互斥**:写 design.md 时遇到拿不准的设计选择(类型抽象 / Builder / Trait / 命名 / 重构),内嵌调用 `review` 做 5 维度评估,结果写进 design.md 的"决策"章节。
 
 ---
 
@@ -85,6 +85,8 @@ AI 协作的**闸门 2.5**(可选,大功能才触发):scope 锁了、acceptance 
 
 ## 决策
 
+> 大决策走 A/B 文档化(本段);**小决策**(2-4 个候选可一句话说清的,如某段实现 idiom / 某个 dep crate / 某个枚举名)优先用 `AskUserQuestion` 工具收拍板,答完写回本段——见 `principles` 的「AI 不当提问机」段。
+
 **选 方案 X**。
 
 判据(按优先级):
@@ -96,7 +98,7 @@ AI 协作的**闸门 2.5**(可选,大功能才触发):scope 锁了、acceptance 
 - 不选 A:<具体短板,不是泛泛说"复杂"——要说"复杂在哪个具体点上">
 - 不选 C:...
 
-(如某段决策内嵌了 design-review 的 5 维度判据,在这里引用)
+(如某段决策内嵌了 review 的 5 维度判据,在这里引用)
 
 ## 实施细节
 
@@ -107,6 +109,18 @@ AI 协作的**闸门 2.5**(可选,大功能才触发):scope 锁了、acceptance 
 - **数据 schema**:struct 定义 / 表结构 / 协议字段
 - **状态机**(如适用):状态 + 转移条件
 - **关键算法步骤**(如适用):伪代码
+
+### 条件拆分(大改动避免单文档过载)
+
+破公开 API 或改持久化时,**实施细节拆出独立文件**,design.md 这段只留引用:
+
+| 触发条件 | 拆出文件 | 内容 |
+|---|---|---|
+| 破公开 API | `contracts.md` | 新旧签名对照 + breaking change 清单 + 迁移指南 |
+| 改持久化 / 改 schema | `schema.md` | 表结构 / migration SQL / 数据回填策略 |
+| 普通改动 | 不拆 | 内容写在本段 |
+
+启发自 spec-kit `contracts/` + `data-model.md` 拆分实践。
 
 例:
 
@@ -205,7 +219,7 @@ ASSUMPTIONS I'M MAKING:
 ❌ 决策:选方案 A,A 比 B 好
 ```
 
-判据要**具体到维度**:可测试性?性能?可逆性?简洁性?**对每个维度说为什么 A 在这里赢**。这是 design-review 5 维度的应用场景。
+判据要**具体到维度**:可测试性?性能?可逆性?简洁性?**对每个维度说为什么 A 在这里赢**。这是 review 5 维度的应用场景。
 
 ### 反模式 3:实施细节抽象空话
 
@@ -241,7 +255,7 @@ design 是设计,不是实现。**伪代码 / 接口签名 / 流程图 OK**,**�
 - **`feature`**:闸门 0,产出 feature.md(user-facing what)。本 skill 是 feature 的下游可选步骤,产出 design.md(technical how)。两者文件并列在 `docs/features/<slug>/` 目录。
 - **`scope`**:闸门 1。scope 决定改哪些文件,本 skill 决定**怎么改**。先 scope 后 design。
 - **`acceptance`**:闸门 2。acceptance 钉死"完成 = 什么",本 skill 钉死"实现 = 怎么"。先 acceptance 后 design——知道"完成的样子"才能讨论"如何到达"。
-- **`design-review`**:5 维度判据。本 skill 是产出仪式,design-review 是评价判据。**两者非互斥**:写 design.md 内嵌调用 design-review 做 5 维度评估,结果写进决策章节。
+- **`review`**:5 维度判据。本 skill 是产出仪式,review 是评价判据。**两者非互斥**:写 design.md 内嵌调用 review 做 5 维度评估,结果写进决策章节。
 
 ---
 
@@ -249,12 +263,12 @@ design 是设计,不是实现。**伪代码 / 接口签名 / 流程图 OK**,**�
 
 **Design 是闸门 2.5(可选):大功能时,把"怎么实现"敲定成 design.md(问题 + 方案空间 + 决策 + 实施细节四段)→ 用户 review 多轮 → 才进写代码**。
 
-它不是 feature 重复,不是 design-review 替代;它是 acceptance 已钉死后,实施前的方案空间收敛仪式。
+它不是 feature 重复,不是 review 替代;它是 acceptance 已钉死后,实施前的方案空间收敛仪式。
 
 ---
 
 ## Auto-invoke chain
 
-完成本 skill 后,LLM **自动 invoke**:开始写代码(实施),期间可调 `design-review` N 次。
+完成本 skill 后,LLM **自动 invoke**:开始写代码(实施),期间可调 `review` N 次。
 
-写代码完 + 测试绿 → `commit-review`(闸门 3)。
+写代码完 + 测试绿 → `commit-gate`(闸门 3)。

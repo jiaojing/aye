@@ -1,6 +1,6 @@
 ---
-name: commit-review
-description: commit + push 闸门(Phase 2 末尾)。触发关键词:"测试绿了 / 完成了 / commit / 提交 / push / 推送 / 准备好了 / 可以了 / 改完了"。摆 diff → 等明确点头才动 git。大改动(>200 行 / 改公开 API / 改持久化数据)时先内嵌调用 design-review 做 5 维度审查。包含 commit message 规范(中文 ≤15 字 / 只讲 why / 不带 Co-Authored-By / 副作用改动不进 message)。push 完短确认 + 回 feature.md 打勾;交接摘要由独立 `handoff` skill 触发(用户喊"今天到这 / 收"才走)。
+name: commit-gate
+description: commit + push 闸门(Phase 2 末尾)。触发关键词:"测试绿了 / commit / 提交 / push / 推送 / 可以提交了 / 可以推了"。摆 diff → 等明确点头才动 git。大改动(>200 行 / 改公开 API / 改持久化数据)时先内嵌调用 review 做 5 维度审查。包含 commit message 规范(中文 ≤15 字 / 只讲 why / 不带 Co-Authored-By / 副作用改动不进 message)。push 完短确认 + 回 feature.md 打勾;交接摘要由独立 `handoff` skill 触发(用户喊"今天到这 / 收"才走)。
 ---
 
 # Commit Review
@@ -159,7 +159,7 @@ push 成功后:
 ## 与其他 skill 的关系
 
 - **`scope`**:动手前对齐 scope。本 skill 是动手**后**、commit 前的闸门。前者防越界,后者防自作主张。
-- **`design-review`**:5 维度设计审查。改动量大或破面时,review 阶段可触发它做更深判断。
+- **`review`**:5 维度设计审查。改动量大或破面时,review 阶段可触发它做更深判断。
 - **`feature`**:本 skill push 后回 feature.md 打勾,机制层闭环。
 
 ---
@@ -172,4 +172,4 @@ push 完成后:
 2. 用户决定继续做下条 task / 关 session / 让 AI 等下一条指示
 3. 用户喊"今天到这 / 收 / 暂停 / handoff / context 满了 / 下次继续" → auto-invoke `handoff`
 
-大改动(>200 行 / 改公开 API / 改持久化)进入 commit-review 时,**先内嵌调用** `design-review` 做 5 维度审查,再摆 diff。
+大改动(>200 行 / 改公开 API / 改持久化)进入 commit-gate 时,**先内嵌调用** `review` 做 5 维度审查,再摆 diff。

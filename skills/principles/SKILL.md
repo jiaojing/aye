@@ -1,6 +1,6 @@
 ---
 name: principles
-description: 工程哲学底座(横切,始终 active)。触发关键词:"多种方案纠结 / 不知怎么取舍 / 想找判据 / 决策框架 / 该用哪种 / 反思设计 / 这样对吗 / 取舍 / 简洁性"。提供 4 条核心哲学(好品味 / 不破坏 consumer / 实用主义 / 简洁)+ 决策框架(可测试性 / 可读性 / 一致性 / 简洁性 / 可逆性)。其他所有 skill 的判据都建立在本 skill 之上。
+description: 工程哲学底座(横切,始终 active)。触发关键词:"决策框架 / 该用哪种 / 取舍 / 简洁性 / 哲学判据"。提供 4 条核心哲学(好品味 / 不破坏 consumer / 实用主义 / 简洁)+ 决策框架(可测试性 / 可读性 / 一致性 / 简洁性 / 可逆性)。其他所有 skill 的判据都建立在本 skill 之上。
 ---
 
 # Principles
@@ -147,7 +147,7 @@ ADT(Algebraic Data Type)/ Type Class(Haskell)/ Interpreter Pattern(GoF)/ Initial
 
 **关键判断不是 "会不会错",而是 "错了改起来贵不贵"**——可逆性优先。
 
-> 跟 `design-review` 的"5 维度"区分:本段是**元规则判据**(语言无关,跨多方案纠结);`design-review` 的 5 维度是**审视标准**(类型抽象 / Builder / Trait / 命名 / 重构,语言中立但更具体)。两者层次不同,不冲突。
+> 跟 `review` 的"5 维度"区分:本段是**元规则判据**(语言无关,跨多方案纠结);`review` 的 5 维度是**审视标准**(类型抽象 / Builder / Trait / 命名 / 重构,语言中立但更具体)。两者层次不同,不冲突。
 
 ---
 
@@ -196,12 +196,47 @@ ADT(Algebraic Data Type)/ Type Class(Haskell)/ Interpreter Pattern(GoF)/ Initial
 
 ---
 
+## AI 不当提问机
+
+抛 Open Question 必须 **候选 + trade-off + 推荐 + 理由** 四件套。用户拍板,不构造。
+
+被引用于:`feature`(Open Questions 段)、`scope`(不确定项段)、`design`(方案空间段)、`acceptance`(DoD 不确定点)。
+
+### 工具优先(交互式)
+
+环境支持 `AskUserQuestion` 时,**优先用工具**:
+
+- 候选 2-4 个(工具上限)
+- 推荐项放第一个,label 末尾 ` (Recommended)`
+- description 字段填一句话 trade-off
+- 用户键盘 / 鼠标选,零打字
+
+### 文本 fallback(工具不可用)
+
+每个 Q 输出格式:
+
+- Q<N>: <一句话问题>
+  - 候选 A: <方案> —— trade-off: <一句话>
+  - 候选 B: <方案> —— trade-off: <一句话>
+  - **推荐 A**,因为 <一行理由>
+
+### 反模式
+
+| ❌ | 为什么不行 |
+|---|---|
+| 裸问题("X 怎么定?") | 零信息,白送回用户 |
+| 候选无 trade-off | 用户还得自己查 |
+| 候选无推荐 | AI 装中立 = 偷懒 |
+| > 4 个候选 | 决策疲劳,先收敛再问 |
+
+---
+
 ## 与其他 skill 的关系
 
 `principles` 是**底座**,不是 step。具体仪式调对应 skill:
 - 流程地图 → `flow`
 - scope 对齐 → `scope`
-- 设计审查 → `design-review`
-- commit 闸门 → `commit-review`
+- 设计审查 → `review`
+- commit 闸门 → `commit-gate`
 
 但每个 skill 的判据,都建立在本 skill 的 4 条哲学 + 决策框架之上。

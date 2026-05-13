@@ -1,6 +1,6 @@
 ---
 name: acceptance
-description: 钉死可执行 DoD(Phase 2 第二步)。触发关键词:"DoD / 验收 / 什么算完 / acceptance / 怎么验证 / 确认目标 / 完成标准"。在 scope 对齐之后、写代码之前,把 feature.acceptance(用户视角粗版)细化成带 command 的 checklist。Auto-invoke: design(大功能可选闸门 2.5)或开始写代码.
+description: 钉死可执行 DoD(Phase 2 第二步)。触发关键词:"DoD / 验收 / acceptance / 怎么验证 / 确认目标 / 验收标准"。在 scope 对齐之后、写代码之前,把 feature.acceptance(用户视角粗版)细化成带 command 的 checklist。Auto-invoke: design(大功能可选闸门 2.5)或开始写代码.
 ---
 
 # Acceptance
@@ -136,6 +136,14 @@ DoD-3: 文档 docs/auth.md 同步更新
 
 ---
 
+## DoD 不确定点
+
+DoD 写到中途遇到边界拿不准——例:这个测试覆盖到哪一层?这条 ACR 算 must-have 还是可拖下一轮?返回值边界 case 怎么定?——**按 `principles` 的「AI 不当提问机」准则抛**:候选 + trade-off + 推荐 + 理由。环境支持 `AskUserQuestion` 时优先用工具收拍板,答完写回 DoD。
+
+**反模式**:DoD 模糊段写"待定 / TBD" → 等于把决策推到实施阶段才暴露,成本最高。
+
+---
+
 ## 反模式
 
 ### 反模式 1:DoD = "做完 X"
@@ -178,7 +186,7 @@ DoD 多 = scope 太大,**回去拆 task**,不是硬上。一个 task 通常 3-5 
 
 - **`flow`**:地图。本 skill 是闸门 2(scope 对齐**之后**)。
 - **`scope`**:闸门 1。先 scope 后 DoD——scope 定边界,DoD 定完成度。顺序不能反。
-- **`commit-review`**:闸门 3(commit 前)。commit 前回头核对 DoD 是否全勾掉。
+- **`commit-gate`**:闸门 3(commit 前)。commit 前回头核对 DoD 是否全勾掉。
 - **`feature`** 的 Acceptance 章节(用户视角粗版)是本 skill 的输入,本 skill 把它做成可验证的带 command checklist。
 
 ---
@@ -188,6 +196,6 @@ DoD 多 = scope 太大,**回去拆 task**,不是硬上。一个 task 通常 3-5 
 完成本 skill 后,LLM 决定下一步:
 
 - **大功能**(改公开 API / 持久化 / 跨 crate / 多方案纠结)→ `design`(产 design.md + 多轮敲定)
-- **正常实施** → 开始写代码,中途可调 `design-review` N 次
+- **正常实施** → 开始写代码,中途可调 `review` N 次
 
-写代码完 + 测试绿 → `commit-review`。
+写代码完 + 测试绿 → `commit-gate`。

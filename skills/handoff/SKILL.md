@@ -19,7 +19,7 @@ Session 交接给下一个 AI session(或下次自己)的协议:**只交事实,�
 - "handoff / 交接"
 - "context 满了 / 下次继续"
 
-`commit-review` push 完后**默认不触发**摘要。除非用户喊上面的关键词,LLM 不主动摆收尾姿态——避免"每个 commit 都给摘要"的噪音。
+`commit-gate` push 完后**默认不触发**摘要。除非用户喊上面的关键词,LLM 不主动摆收尾姿态——避免"每个 commit 都给摘要"的噪音。
 
 ---
 
@@ -81,7 +81,7 @@ handoff 触发时**同时**做两件事:
 
 ## 与其他 skill 的关系
 
-- `commit-review`:本 skill 在 commit-review push **之后**触发(用户主动喊)。commit-review 默认行为是短确认 + 回打勾,**不带摘要**
+- `commit-gate`:本 skill 在 commit-gate push **之后**触发(用户主动喊)。commit-gate 默认行为是短确认 + 回打勾,**不带摘要**
 - `feature.md`:摘要"下个 session 起点"指向 feature.md 待办 task
 
 ---

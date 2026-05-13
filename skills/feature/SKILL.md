@@ -1,6 +1,6 @@
 ---
 name: feature
-description: 模糊需求结构化(Phase 1 闸门 0)。触发关键词:"加 X 功能 / 想做 Y / 优化下 Z / 整理一下 W / 新需求 / 新 feature / 这个怎么搞"。引导对话补充细节,产出单份 feature.md(承载 problem + users + scope + acceptance + tasks + status + notes)。后续围绕 task 打勾推进。Auto-invoke: scope(进 PR 级实施)。
+description: 模糊需求结构化(Phase 1 闸门 0)。触发关键词:"加 X 功能 / 想做 Y / 优化下 Z / 整理一下 W / 新需求 / 新 feature / 模糊需求 / 还没明确"。引导对话补充细节,产出单份 feature.md(承载 problem + users + scope + acceptance + tasks + status + notes)。后续围绕 task 打勾推进。Auto-invoke: scope(进 PR 级实施)。
 ---
 
 # Feature
@@ -56,7 +56,8 @@ feature.md 是 AI 协作硬约束(没记忆 / 理解偏 / 容易越界 / PR≈co
 - ...
 
 ### Constraints
-<已知技术 / 业务 / 时间 / 兼容性约束>
+<项目级不可变约束 + 本 feature 已知技术 / 业务 / 时间 / 兼容性约束>
+<例:"只用 Postgres,不引入 ORM" / "public API v1 不破坏" / "Q3 上线" / "兼容 legacy P 路径">
 
 ### Open questions
 <必须列,不许空>
@@ -153,7 +154,12 @@ AI 写 feature 容易把"我不知道的"自己拍掉,变成"我假设 X"。**Op
 
 写不出任何 open question → 八成是没认真想过,再过一遍。
 
-**反例**:Open questions 下面立刻写"我倾向 X"——这是 sycophancy。Open questions 是**等用户回答**的,不是"我帮你想了答案"。
+**输出格式**:每个 Q 必须 候选 + trade-off + 推荐 + 理由 四件套——见 `principles` 的「AI 不当提问机」段。环境支持 `AskUserQuestion` 时用工具呈现,用户键盘选,答完写回 feature.md。
+
+**反模式**:
+- ❌ 裸问题("X 怎么定?")—— 零信息,白送回用户
+- ❌ 裸推荐("我倾向 X")—— sycophancy,无候选无论据
+- ✅ 三件套:候选 A/B/C + 各自 trade-off + 推荐 + 一行理由,用户拍板
 
 ---
 
@@ -208,7 +214,7 @@ ASSUMPTIONS I'M MAKING:
 
 ## Tasks 章节怎么写
 
-> **为什么颗粒度是头号问题**:aye 闸门成本固定(scope → acceptance → 可能 design → build → commit-review)。
+> **为什么颗粒度是头号问题**:aye 闸门成本固定(scope → acceptance → 可能 design → build → commit-gate)。
 > task 拆得越细,闸门重复跑得越多——同质活每次问"这条改哪些文件"是纯噪音,决策早在 feature 阶段定完。
 > 合并 task 跑一次是规避,不是修复:回去打勾时 task list 跟 commit 对不上,feature 收口失真。
 
@@ -265,7 +271,7 @@ Acceptance:
   - AC-2: 没匹配时显示"无结果",不报错
 ```
 
-技术选型留给实施阶段(scope / design-review)。
+技术选型留给实施阶段(scope / review)。
 
 ### 反模式 2:Out-of-scope 空白
 
@@ -348,7 +354,7 @@ T2-T5 同模板(三段式判据)、同文件、同验证——切 4 条只是凑
 - **`flow`**:地图。本 skill 是流程入口的**闸门 0**(在所有实施仪式之前)。
 - **`scope`**:闸门 1。feature 决定"做什么对吗",scope 决定"这次 task 改哪些文件"——颗粒小一档。先 feature 后 scope。
 - **`acceptance`**:闸门 2。feature 里 acceptance 是用户视角(较粗),acceptance skill 把它做成带 command 的 checklist。两者不重复。
-- **`design-review`**:feature 阶段如涉及大破面 / 多方案纠结(技术选型),可同步触发 design-review 做 5 维度判据。
+- **`review`**:feature 阶段如涉及大破面 / 多方案纠结(技术选型),可同步触发 review 做 5 维度判据。
 - **`design`**:大功能添加 `design.md` 时,由 design skill 维护。
 - **`principles`**:写 feature 时回去找判据——尤其在 out-of-scope 取舍上。
 

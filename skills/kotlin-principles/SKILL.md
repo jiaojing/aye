@@ -5,7 +5,7 @@ description: Kotlin 项目专属设计原则(横切,语言特化)。仅在 Kotli
 
 # Kotlin Principles
 
-Kotlin 项目专属设计原则与 idiomatic 选择。**语言无关的代码品味**走 `principles` / `design-review`,本 skill 只讲 Kotlin 特化的部分。
+Kotlin 项目专属设计原则与 idiomatic 选择。**语言无关的代码品味**走 `principles` / `review`,本 skill 只讲 Kotlin 特化的部分。
 
 ---
 
@@ -21,7 +21,7 @@ Kotlin 项目专属设计原则与 idiomatic 选择。**语言无关的代码品
 - 非 Kotlin 项目(零干扰)
 - 框架特定问题(Ktor 路由 / Spring 注解 / Android lifecycle / Compose)→ 走对应框架的资源
 - Kotlin 编译错误 / 类型推导问题 → IDE 即时反馈足够,本 skill 不重复
-- 语言无关的代码品味问题 → 走 aye 的 `principles` / `design-review`
+- 语言无关的代码品味问题 → 走 aye 的 `principles` / `review`
 
 ---
 
@@ -96,7 +96,7 @@ Review 时按"触发关键词"定位维度,再 Read reference 看具体判据。
 
 ## Review Checklist
 
-> 末尾 checklist,可被 `design-review` / `commit-review` 引用。
+> 末尾 checklist,可被 `review` / `commit-gate` 引用。
 
 Kotlin 代码写完 / review 前快速扫:
 
@@ -114,7 +114,7 @@ Kotlin 代码写完 / review 前快速扫:
 [ ] 函数 < 50 行 / 嵌套 ≤ 3 / 参数 ≤ 5                    ── 维度 13
 ```
 
-**和 `design-review` 5 维度的关系**:本 checklist 是 Kotlin 实现层信号(具体到 keyword 级);`design-review` 是设计判据(抽象到决策级)。两者都跑,不重复。
+**和 `review` 5 维度的关系**:本 checklist 是 Kotlin 实现层信号(具体到 keyword 级);`review` 是设计判据(抽象到决策级)。两者都跑,不重复。
 
 ---
 
@@ -122,8 +122,8 @@ Kotlin 代码写完 / review 前快速扫:
 
 - **`principles`**(aye 语言无关版):本 skill 是它的 Kotlin 特化扩展。"ADT + Type Class 模式"在 `principles`,Kotlin 落地映射在本 skill。
 - **`rust-principles`**(姊妹):同为语言特化 sibling。`rust-principles` 的"运行时三分法"(Service / Context / Value)是运行时角度,与本 skill 的设计角度正交,不重叠。
-- **`design-review`**:5 维度判据是语言无关的;本 skill 的 Review checklist 是 Kotlin 实现层信号。两者并行不冲突。
-- **`flow` / `feature` / `scope` / `acceptance` / `commit-review`**(aye 仪式层):正交关系,本 skill 是知识库,它们是流程。
+- **`review`**:5 维度判据是语言无关的;本 skill 的 Review checklist 是 Kotlin 实现层信号。两者并行不冲突。
+- **`flow` / `feature` / `scope` / `acceptance` / `commit-gate`**(aye 仪式层):正交关系,本 skill 是知识库,它们是流程。
 
 ---
 
