@@ -1,6 +1,6 @@
 ---
 name: flow
-description: 工作流地图(导航层)。触发关键词:"该做什么 / 怎么开始 / 整体流程 / 哪个 skill / 现在到哪一步 / 不知如何展开"。展示两段论(Phase 1 feature 明确 / Phase 2 围绕 task 迭代)+ 10 个 skill 位置 + chain 关系。为单人 + AI 配对设计,Kanban 拉式,不是教科书 Scrum。
+description: 工作流地图(导航层)。触发关键词:"该做什么 / 怎么开始 / 整体流程 / 哪个 skill / 现在到哪一步 / 不知如何展开"。**新 session 起手强制先扫 docs/features/handoff-*.md 作为接力点**,再展示两段论(Phase 1 feature 明确 / Phase 2 围绕 task 迭代)+ 13 个 skill 位置 + chain 关系。为单人 + AI 配对设计,Kanban 拉式,不是教科书 Scrum。
 ---
 
 # Flow
@@ -17,6 +17,21 @@ AI 协作的工作流地图。**不是教科书 Scrum**——为单人 + AI 实�
 - 想理解 aye 全体 skill 怎么编排成一条线
 
 **不触发**:改一行 typo / 改 commit message / 已经在某一步执行中(那时直接调对应 skill,不绕回 flow)。
+
+---
+
+## 新 session 起手强制动作(铁律)
+
+flow 触发时,AI **必须先做**:
+
+1. `ls docs/features/handoff-*.md`(项目根目录下)
+2. 存在 → 读最新一份(文件名 `handoff-YYYY-MM-DD.md` 按日期降序取头一份)
+3. 把"接力点"作为**地图第一节**抛给用户(状态 + 起点候选),再列两段论 / chain map
+4. 不存在 → 按现状直接抛地图
+
+**理由**:session 无记忆是 aye 的 Phase 2 闸门设计前提,handoff 文件就是为接力服务的 ground truth。新 session 喊 `/aye:flow` 几乎等价于"我刚开 session,告诉我从哪接"——直接抛地图让用户从零选,等于让用户自己背 context,反 self-contained。
+
+**反模式**:看到 `/aye:flow` 就抛通用地图,忽视 handoff 文件存在。上一任写 handoff 是为了让下一任无痛接力,跳过等于浪费上游工作。
 
 ---
 
