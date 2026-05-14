@@ -90,8 +90,9 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
   principles        — 哲学底座
   rust-principles   — Rust 项目特化
   kotlin-principles — Kotlin 项目特化
-  review     — 5 维度判据(写代码中 / commit 前)
+  review            — 5 维度判据(写代码中 / commit 前)
   pua               — 跳出代码 / 站领域专家 / research(用户主动喊)
+  pick              — 决策点强制走 AskUserQuestion 工具(用户主动喊)
 ```
 
 每个 skill 自己的 SKILL.md 末尾有"Auto-invoke chain"段说明完成后下一步。
@@ -118,6 +119,7 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
 | `design` | 闸门 2.5 — 大功能 / 多方案 / 跨 crate / 改公开 API / 改持久化 → 走;否则跳 |
 | `handoff` | 用户主动 — 喊"今天到这 / 收 / 暂停 / handoff" |
 | `pua` | 用户主动 — 喊"以终为始 / 看行业标准 / 不要捡简单的" |
+| `pick` | 用户主动 — 喊"pick / 拍板 / 选一个 / 哪条 / 让我选",强制下一次决策提问走 `AskUserQuestion` 工具 |
 
 ### Reference(横切判据,任意阶段查)
 
@@ -134,7 +136,7 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
 |---|---|
 | `flow` | 新 session / 不知道用哪个 skill — 本 skill 给地图 |
 
-**全 12 个 skill**(Gate 4 + Triggered 3 + Reference 4 + Nav 1)。
+**全 13 个 skill**(Gate 4 + Triggered 4 + Reference 4 + Nav 1)。
 
 **Phase 2 chain 是 conditional 不是 strict**——简单 task 可只走 `feature` → `commit-gate`,复杂才全套。
 

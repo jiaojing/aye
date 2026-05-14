@@ -123,16 +123,18 @@ session 层不再持有 user 业务状态。
 - [ ] 没有越界改 scope 之外的文件
 - [ ] 没有调试代码 / TODO 残留
 
-## 等指示(默认 [1] review)
+## 等指示(默认 review)
 
-- [1] **review**  — 摆 diff 逐文件过,我等你 commit / push 明确指令
-- [2] **direct**  — 跳 review,直接 commit + push 本波改动(信任快路径)
-- [3] **hold**    — 暂停,继续改不 commit
-- [4] **split**   — 本波多 deliverable,先拆多个 commit 再选
+4 个互斥候选,**环境支持时优先用 `AskUserQuestion` 工具呈现**(label 末尾 ` (Recommended)` 标推荐项,description 填 trade-off);不可用时 fallback 到下面文本列表:
 
-回复数字 / 关键字 / 具体修改意见。
+- **review** (Recommended) — 摆 diff 逐文件过,等你 commit / push 明确指令
+- **direct** — 跳 review,直接 commit + push 本波改动(信任快路径)
+- **hold** — 暂停,继续改不 commit
+- **split** — 本波多 deliverable,先拆多个 commit 再选
 
-**AI 不许自己默认 [2]**——只有用户明确选了才走 direct。
+**AI 不许自己默认 direct**——只有用户明确选了才走 direct。
+
+见 `pick` skill / `principles` § AI 不当提问机 — 决策点提问统一走工具化。
 ```
 
 ---
