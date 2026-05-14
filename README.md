@@ -14,7 +14,7 @@ Designed for **solo dev + AI pair programming**, not team Scrum. Skills focus on
 
 Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with commit-gate push + summary)**. Skills auto-invoke each other via chains.
 
-12 个 skill 按性质分 4 类:
+13 个 skill 按性质分 4 类:
 
 ### Gate(必走,AI 不能跳)
 
@@ -32,6 +32,7 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 | `/aye:design` | Gate 2.5(可选)— 大功能 / 跨 crate / 改公开 API / 改持久化 → 写 design.md 才写代码 |
 | `/aye:handoff` | 用户喊"今天到这 / 收 / 暂停" — 写持久化交接 + inline 摘要 |
 | `/aye:pua` | 用户喊"以终为始 / 看行业标准 / 不要捡简单的" — 跳出代码做行业 research |
+| `/aye:pick` | 用户喊"pick / 拍板 / 选一个 / 哪条 / 让我选" — 强制下一次决策提问走 `AskUserQuestion` 工具 |
 
 ### Reference(横切判据,任意阶段查)
 
@@ -118,6 +119,14 @@ After install, `/plugin` should list `aye` as enabled. Then try:
 You should see the workflow map. If you say something like *"I want to add a search feature"*, the LLM should auto-invoke `/aye:feature` based on the description match.
 
 ## Changelog
+
+### 0.6.0
+
+**`pick` skill 加入**:
+- 用户主动喊"pick / 拍板 / 选一个 / 哪条 / 让我选 / 二选一"
+- 强制下一次决策提问走 `AskUserQuestion` 工具(原约束在 `principles` § AI 不当提问机 + 4 个 step skill 里横切,但实战经常没触发)
+- `commit-gate` 等指示段同步改写为选项化呈现
+- `flow` 收录(Triggered 表 + Chain Map),全 skill 数 12 → 13
 
 ### 0.5.0 (breaking)
 
