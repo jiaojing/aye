@@ -120,6 +120,13 @@ You should see the workflow map. If you say something like *"I want to add a sea
 
 ## Changelog
 
+### 0.6.1
+
+**`scope` 二次确认 bug fix**:
+- AskUserQuestion 答完 = 已点头,AI 不该再追问"说'动手'我才开干"——冗余二次确认
+- 仪式第 2 步改成 conditional 双路径:工具路径直接动手 / 纯文字路径才等点头
+- 输出格式段同步重写
+
 ### 0.6.0
 
 **`pick` skill 加入**:
