@@ -72,8 +72,8 @@ aye 当前只有 per-feature 工作流（`feature.md → scope → acceptance �
 - [x] AC-3: `skills/flow/SKILL.md` 起手扫描段已加 inbox 数量摘要（与 handoff 检测并列），chain map 新增 Phase 0
 - [x] AC-4: `docs/inbox.md` 在 aye repo 自身已建，含本对话产出的散落想法（实际填 5 条 ≥ 3）
 - [x] AC-5: `README.md` + `plugin.json` 已 bump（0.7.0，列出新增 skill）
-- [ ] AC-6: 手动跑一遍 chain 验证可闭环 — 留作下个 session 真接续时自然验证（mock 跑收益低）
-- [ ] AC-7: push origin main
+- [x] AC-6: 手动跑一遍 chain 验证可闭环（done @ 本 session `/aye:flow` 自然走通：抛 handoff-2026-05-15 接力点 + 扫 inbox 5 项摘要）
+- [x] AC-7: push origin main（done @ 45a014c）
 
 ## Tasks
 
