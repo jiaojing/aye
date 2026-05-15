@@ -123,6 +123,15 @@ You should see the workflow map. If you say something like *"I want to add a sea
 
 ## Changelog
 
+### 0.7.1
+
+**handoff → inbox 自动 chain 去除**(修正 v0.7.0 设计矛盾):
+- `handoff` 不再扫散落想法关键词,不再抛 AskUserQuestion 引导写入 inbox
+- 理由:`inbox` 自身铁律是"用户主动喊才走"(基于 `principles` 的"AI 不当提问机");handoff 自动钩等于替用户决定"该不该 capture",违反 inbox 自身设计 + handoff "只交事实,不替下家拍决策"主旨
+- 用户在 handoff 后想 capture 散落想法,**自行**喊 inbox 关键词("记一下 / 先存着 / 以后做 / inbox / 散落想法 ...")
+- Trade-off:当场没想起 → 想法可能丢失,但这是 GTD 模型自洽代价(capture 责任在用户,工具不替他记),小于"每次 handoff 都问一遍"的噪音 + 误捕获代价
+- 同步更新:`handoff/SKILL.md` 删自动钩逻辑改为立场段、`inbox/SKILL.md` 「与 handoff 的 chain」段重写为「与 handoff 的边界」、`flow/SKILL.md` chain map 图示 + inbox 行说明
+
 ### 0.7.0
 
 **`inbox` skill 加入**(feature 上游可选 capture 层,GTD inbox-process):

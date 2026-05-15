@@ -36,16 +36,17 @@ inbox 不偷 feature 的活,feature 不偷 inbox 的活。
 
 - 想法已经成熟 → 直接喊 `aye:feature`,**跳过 inbox**
 - 想法还模糊 / 一闪而过想存档 → `aye:inbox` 先 capture,后续再 extract
-- handoff 触发时检测到散落想法关键词 → 引导回 inbox(不必当场升级成 feature)
+- handoff 收尾时想起散落想法 → **用户自行**喊 inbox 关键词 capture(handoff 不自动钩 inbox,详见与 handoff 的边界)
 
 ---
 
 ## 触发场景
 
 - 对话里冒出"这个以后也该做"、"记一下"、"先存着"类未承诺想法
-- handoff 触发时检测到散落想法关键词,需要写文件
 - 用户主动喊"看下 inbox" / "inbox 有啥" — 摆 inbox 内容
 - 用户挑一条 inbox 条目说"做这个" — 走 inbox → feature 提取
+
+**不自动从 handoff 钩进来**:handoff 收尾不扫关键词、不抛 AskUserQuestion。用户在 handoff 之后(或任何时候)想起散落想法,自行喊本 skill 关键词触发,详见「与 handoff 的边界」。
 
 **不触发**:
 
@@ -148,23 +149,16 @@ epic.md 是聚合视图,feature.md 是原始 record,二者不互斥。回顾时�
 
 ---
 
-## 与 handoff 的 chain(关键交集)
+## 与 handoff 的边界(不自动 chain)
 
-`aye:handoff` 触发时,若检测到对话里有散落想法关键词:
+`aye:handoff` 触发时**不**扫关键词、**不**抛 AskUserQuestion 引导 capture。理由两条:
 
-- "以后做" / "之后再说" / "还有个想法" / "记一下" / "这块可以..."
-- "下次..." / "TODO" / "回头看"
+1. **本 skill 自身铁律**:capture / extract / epic 全部"用户主动喊才走",建立在 `principles` 的"AI 不当提问机"之上。handoff 自动钩等于替用户决定"该不该 capture",违反本 skill 设计
+2. **handoff 主体铁律**:"只交事实,不替下家拍决策"。自动启 capture 仪式属于"替下家拍 capture 决策"的变体
 
-则在 handoff 摘要后**额外抛一次 `AskUserQuestion`**:
+**正确流程**:用户在 handoff 收尾(或任何时候)想起散落想法,**自行**喊本 skill 关键词("记一下 / 先存着 / 以后做 / inbox / 散落想法 / 灵感 ..."),正常走 capture 仪式。
 
-```
-检测到散落想法 N 条,要写入 docs/inbox.md 吗?
-A. 全写
-B. 我挑几条
-C. 跳过(不写)
-```
-
-用户选 A/B 才写 inbox.md。**handoff 主体只交事实**(铁律不破),散落想法走独立的 inbox capture chain。
+**Trade-off**:用户当场没想起 → 想法可能丢失。这是 GTD inbox 模型的自洽代价——capture 责任在用户,工具不替他记。比起"AI 每次 handoff 都问一遍"的噪音 + 错误捕获(关键词命中但用户其实不想 capture),丢失少量未承诺想法是更小的代价。
 
 ---
 
@@ -264,7 +258,7 @@ extract = 单向迁移。inbox 始终是"未处理"的真实视图,留 strikethr
 
 ### 1. capture(新增条目)
 
-用户喊"记一下 X" / handoff 检测到散落想法:
+用户喊"记一下 X" / 主动触发本 skill 任一关键词:
 
 - AI Read `docs/inbox.md`(不存在则 Write 新建)
 - 追加条目 `- <一句话需求> [#tag]` 到 `## Inbox` 段尾
@@ -293,7 +287,7 @@ extract = 单向迁移。inbox 始终是"未处理"的真实视图,留 strikethr
 
 - **`feature`**:本 skill 上游。inbox extract 后 chain 进 `feature`。feature 是"承诺",inbox 是"未承诺"。
 - **`flow`**:本 skill 是 flow chain map 的 **Phase 0(可选)**——feature 之前的 capture 层。flow 起手扫 handoff 后顺带扫 inbox 数量。
-- **`handoff`**:handoff 检测散落想法时 chain 进本 skill(写 inbox 段)。handoff 主体只交事实,散落想法走独立 capture。
+- **`handoff`**:**不自动 chain**。handoff 主体只交事实,散落想法 capture 由用户在 handoff 后自行喊本 skill 关键词触发。详见「与 handoff 的边界」。
 - **`principles`**:本 skill 的 epic retrospective 铁律 + 反模式协议建立在 `principles` 的"AI 不当提问机"(用户主动喊才走 epic)之上。
 
 ---

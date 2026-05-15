@@ -127,8 +127,8 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
                           ├─ 拉下条 task → 直接进 scope
                           └─ 喊"今天到这 / 收 / 暂停" → invoke handoff
                                                        │
-                                                       ▼ 检测散落想法关键词
-                                                       └─ 命中 → 引导写 inbox
+                                                       ▼ 摘要 < 10 行(不自动钩 inbox)
+                                                       └─ 想 capture 散落想法?用户自行喊 inbox 关键词
 
 (可选回顾)多个完成 feature ──→ epic-<slug>.md(用户喊"总结")
 
@@ -162,7 +162,7 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
 
 | skill | 何时触发 |
 |---|---|
-| `inbox` | Phase 0(可选)— feature 上游 capture 层。喊"记一下 / 先存着 / 以后做"或 handoff 检测到散落想法时走;想法成熟可跳过直接进 feature |
+| `inbox` | Phase 0(可选)— feature 上游 capture 层。**用户主动喊**"记一下 / 先存着 / 以后做 / inbox / 散落想法 ..."才走(handoff 不自动钩);想法成熟可跳过直接进 feature |
 | `design` | 闸门 2.5 — 大功能 / 多方案 / 跨 crate / 改公开 API / 改持久化 → 走;否则跳 |
 | `handoff` | 用户主动 — 喊"今天到这 / 收 / 暂停 / handoff" |
 | `pua` | 用户主动 — 喊"以终为始 / 看行业标准 / 不要捡简单的" |
