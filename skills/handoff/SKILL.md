@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: 迭代终点交接(用户主动触发)。触发关键词:"今天到这 / 收 / 暂停 / handoff / context 满了 / 下次继续"。**双输出**:写文件 `docs/features/handoff-<date>.md`(持久化,下个 session 直接读)+ inline 摘要(本 session 用户可见)。< 10 行,只交事实,不替下家拍决策。
+description: 迭代终点交接(用户主动触发)。触发关键词:"今天到这 / 收 / 暂停 / handoff / context 满了 / 下次继续"。**双输出**:写文件 `docs/features/handoff-<date>.md`(持久化,下个 session 直接读)+ inline 摘要(本 session 用户可见)。< 10 行,只交事实,不替下家拍决策。**chain 交集**:摘要写完后若检测到对话里有散落想法关键词(以后做 / 之后再说 / 还有个想法 / 记一下 / TODO / 回头看),抛一次 AskUserQuestion 引导写入 `docs/inbox.md`。
 ---
 
 # Handoff
@@ -79,10 +79,46 @@ handoff 触发时**同时**做两件事:
 
 ---
 
+## 散落想法捕获(与 inbox 的 chain)
+
+handoff 主体**只交事实**(铁律不破)。但 session 收尾时,对话里常冒出**未承诺的散落想法**——"以后做"、"还有个想法"、"这块可以..."——既不属于当前 feature(不能塞 feature.md Notes 污染主线),又不该当场升级成新 feature(还没承诺要做)。这些归 `aye:inbox` 管。
+
+### 触发判据(关键词检测)
+
+写完摘要(< 10 行)后,扫一遍本 session 对话历史是否出现以下任一关键词:
+
+- "以后做" / "之后再说" / "下次..." / "回头看"
+- "还有个想法" / "记一下" / "先存着"
+- "TODO" / "这块可以..." / "这个有意思"
+
+命中 ≥ 1 条 → 走捕获仪式;零命中 → 跳过,handoff 完整收尾。
+
+### 捕获仪式
+
+抛一次 `AskUserQuestion`:
+
+```
+检测到散落想法 N 条,要写入 docs/inbox.md 吗?
+A. 全写(我列出来你确认)
+B. 我挑几条
+C. 跳过(不写)
+```
+
+- 用户选 A → AI 把检测到的散落想法以 `- <一句话需求> [#tag]` 格式列出,确认后 Write/Edit `docs/inbox.md` 追加到 `## Inbox` 段
+- 用户选 B → AI 列候选,用户挑选哪几条,然后追加
+- 用户选 C → 跳过,handoff 收尾
+
+inbox.md 不存在时,Write 新建(含 `# Inbox` + `## Inbox` 段框架)。
+
+**不主动判断"什么算散落想法"**——只看关键词,精准低噪音。
+
+---
+
 ## 与其他 skill 的关系
 
 - `commit-gate`:本 skill 在 commit-gate push **之后**触发(用户主动喊)。commit-gate 默认行为是短确认 + 回打勾,**不带摘要**
 - `feature.md`:摘要"下个 session 起点"指向 feature.md 待办 task
+- `inbox`:handoff 检测到散落想法关键词 → 抛 AskUserQuestion 引导写入 `docs/inbox.md`,详见上一节
 
 ---
 
@@ -91,5 +127,6 @@ handoff 触发时**同时**做两件事:
 handoff 是 chain **终点**,完成后:
 
 1. 输出摘要(< 10 行)
-2. session 可关闭——但**不强制**,用户可继续
-3. 下次新 session 起来,从 feature.md 拉下条 task,直接进 scope
+2. 检测散落想法关键词 → 命中则走 inbox 捕获仪式(可选)
+3. session 可关闭——但**不强制**,用户可继续
+4. 下次新 session 起来,从 feature.md 拉下条 task,直接进 scope

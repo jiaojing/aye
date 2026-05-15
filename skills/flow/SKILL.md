@@ -1,6 +1,6 @@
 ---
 name: flow
-description: 工作流地图(导航层)。触发关键词:"该做什么 / 怎么开始 / 整体流程 / 哪个 skill / 现在到哪一步 / 不知如何展开"。**新 session 起手强制先扫 docs/features/handoff-*.md 作为接力点**,再展示两段论(Phase 1 feature 明确 / Phase 2 围绕 task 迭代)+ 13 个 skill 位置 + chain 关系。为单人 + AI 配对设计,Kanban 拉式,不是教科书 Scrum。
+description: 工作流地图(导航层)。触发关键词:"该做什么 / 怎么开始 / 整体流程 / 哪个 skill / 现在到哪一步 / 不知如何展开"。**新 session 起手强制先扫 docs/features/handoff-*.md 作为接力点 + 顺带扫 docs/inbox.md 数量摘要**,再展示三段论(Phase 0 可选 inbox capture / Phase 1 feature 明确 / Phase 2 围绕 task 迭代)+ 14 个 skill 位置 + chain 关系。为单人 + AI 配对设计,Kanban 拉式,不是教科书 Scrum。
 ---
 
 # Flow
@@ -26,12 +26,17 @@ flow 触发时,AI **必须先做**:
 
 1. `ls docs/features/handoff-*.md`(项目根目录下)
 2. 存在 → 读最新一份(文件名 `handoff-YYYY-MM-DD.md` 按日期降序取头一份)
-3. 把"接力点"作为**地图第一节**抛给用户(状态 + 起点候选),再列两段论 / chain map
-4. 不存在 → 按现状直接抛地图
+3. 把"接力点"作为**地图第一节**抛给用户(状态 + 起点候选)
+4. **顺带扫** `docs/inbox.md`(存在则 `wc -l` 算 `## Inbox` 段条目数)
+   - 抛一行摘要:"📥 `docs/inbox.md` inbox 有 N 项,要看吗?"
+   - 用户喊"看"才 Read,默认不主动展开(零 context 浪费)
+   - 不存在 → 不提
+5. 再列三段论 / chain map
+6. handoff 不存在 + inbox 不存在 → 按现状直接抛地图
 
-**理由**:session 无记忆是 aye 的 Phase 2 闸门设计前提,handoff 文件就是为接力服务的 ground truth。新 session 喊 `/aye:flow` 几乎等价于"我刚开 session,告诉我从哪接"——直接抛地图让用户从零选,等于让用户自己背 context,反 self-contained。
+**理由**:session 无记忆是 aye 的 Phase 2 闸门设计前提,handoff 文件就是为接力服务的 ground truth,inbox 文件是 feature 上游 capture 层的 ground truth。新 session 喊 `/aye:flow` 几乎等价于"我刚开 session,告诉我从哪接 + 还有啥候选要做"——直接抛地图让用户从零选,等于让用户自己背 context,反 self-contained。
 
-**反模式**:看到 `/aye:flow` 就抛通用地图,忽视 handoff 文件存在。上一任写 handoff 是为了让下一任无痛接力,跳过等于浪费上游工作。
+**反模式**:看到 `/aye:flow` 就抛通用地图,忽视 handoff / inbox 文件存在。上一任写 handoff / capture inbox 是为了让下一任无痛接力,跳过等于浪费上游工作。
 
 ---
 
@@ -39,15 +44,27 @@ flow 触发时,AI **必须先做**:
 
 ---
 
-## 两段论
+## 三段论
 
-整个工作流分两段:
+整个工作流分三段(Phase 0 可选):
 
 ```
 ┌────────────────────────────────────────────┐
+│ Phase 0(可选):inbox capture               │
+│                                            │
+│   散落想法 ──→ inbox(只 capture,不承诺)  │
+│                                            │
+│   产出:docs/inbox.md(raw bullet,无 status │
+│         无承诺;handoff 时也会引导写入)     │
+│                                            │
+│   想法成熟可跳过 inbox,直接进 Phase 1      │
+└────────────────────────────────────────────┘
+                    │
+                    ▼ 用户挑一条 extract(或新想法直接进)
+┌────────────────────────────────────────────┐
 │ Phase 1:feature 明确(可跨多 session)      │
 │                                            │
-│   模糊想法 ──→ feature(对话补充细节)      │
+│   想法 ──→ feature(对话补充细节)          │
 │                                            │
 │   产出:feature.md(单文档承载 problem +    │
 │         users + scope + acceptance + tasks │
@@ -70,19 +87,28 @@ flow 触发时,AI **必须先做**:
                     ▼ 新 session 接力
               拉下一个 task,回 Phase 2
               (feature 已经明确,不再回 Phase 1)
+
+(可选回顾)多个完成 feature 凑一组主题
+              ──→ docs/epic-<slug>.md
+              (retrospective 聚合,用户主动喊才走)
 ```
 
 **关键洞察**:
 - **session = task = PR**,三位一体——AI 没记忆从约束**变成 feature**,迭代天然 self-contained
-- **Phase 1 跨 session**(feature.md 持久化),**Phase 2 单 session**(自然闭环)
+- **Phase 0 可选**(项目早期 / 想法成熟可直接 Phase 1),**Phase 1 跨 session**(feature.md 持久化),**Phase 2 单 session**(自然闭环)
 - 一个 feature 内的多个 task 各自走 Phase 2,不重新走 Phase 1
 - 交接摘要是 commit-gate push 后自带步骤,不再独立 skill
+- epic 聚合是 retrospective 视图(看完成态归纳),永远手动触发,不预先规划
 
 ---
 
 ## Chain Map(完整自动跳转关系)
 
 ```
+inbox(可选 Phase 0)──→ feature(extract 一条做)
+   │
+   └→ 也可独立 capture,不进 feature(等以后)
+
 feature ────→ scope(进 PR 级实施)
 
 scope ──────→ acceptance
@@ -99,7 +125,12 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
                           │
                           ▼ 用户选:
                           ├─ 拉下条 task → 直接进 scope
-                          └─ 喊"今天到这 / 收 / 暂停" → invoke handoff(写文件 + inline)
+                          └─ 喊"今天到这 / 收 / 暂停" → invoke handoff
+                                                       │
+                                                       ▼ 检测散落想法关键词
+                                                       └─ 命中 → 引导写 inbox
+
+(可选回顾)多个完成 feature ──→ epic-<slug>.md(用户喊"总结")
 
 横切判据(任意阶段调用):
   principles        — 哲学底座
@@ -131,6 +162,7 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
 
 | skill | 何时触发 |
 |---|---|
+| `inbox` | Phase 0(可选)— feature 上游 capture 层。喊"记一下 / 先存着 / 以后做"或 handoff 检测到散落想法时走;想法成熟可跳过直接进 feature |
 | `design` | 闸门 2.5 — 大功能 / 多方案 / 跨 crate / 改公开 API / 改持久化 → 走;否则跳 |
 | `handoff` | 用户主动 — 喊"今天到这 / 收 / 暂停 / handoff" |
 | `pua` | 用户主动 — 喊"以终为始 / 看行业标准 / 不要捡简单的" |
@@ -151,7 +183,7 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
 |---|---|
 | `flow` | 新 session / 不知道用哪个 skill — 本 skill 给地图 |
 
-**全 13 个 skill**(Gate 4 + Triggered 4 + Reference 4 + Nav 1)。
+**全 14 个 skill**(Gate 4 + Triggered 5 + Reference 4 + Nav 1)。
 
 **Phase 2 chain 是 conditional 不是 strict**——简单 task 可只走 `feature` → `commit-gate`,复杂才全套。
 
@@ -176,7 +208,7 @@ docs/features/
 
 ## 一句话总结
 
-**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design] → 写代码 + review → commit-gate:含 push + 回打勾 + 摘要)围绕单个 task 单 session 闭环。
+**Phase 0**(可选 inbox)capture 未承诺的散落想法,**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design] → 写代码 + review → commit-gate:含 push + 回打勾 + 摘要)围绕单个 task 单 session 闭环。
 
 **session = task = PR**——AI 无记忆从约束变 feature。
 
@@ -187,6 +219,7 @@ docs/features/
 ## 与其他 skill 的关系
 
 本 skill 是**地图入口**,不替代任何具体仪式 skill:
+- 落到 Phase 0 → `inbox`(可选 capture)
 - 落到 Phase 1 → `feature`
 - 落到 Phase 2 → `scope` / `acceptance` / `design` / `review` / `commit-gate`
 - 想要哲学底座 → `principles` / `rust-principles`(Rust 项目) / `kotlin-principles`(Kotlin 项目)
