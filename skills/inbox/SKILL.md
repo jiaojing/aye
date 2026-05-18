@@ -174,6 +174,16 @@ epic.md 是聚合视图,feature.md 是原始 record,二者不互斥。回顾时�
 
 ---
 
+## 框架边界:aye 不管 feature 之前的 prioritize
+
+inbox 只是 raw capture(可选),**故意不承载 prioritize 视图**。
+
+prioritize 视图(跨 feature 候选主题归类 / priority 排序 / "已想清楚但等业务触发" 等待区 / WIP / sprint 等)= **项目特定 + 团队偏好 + 业务节奏**,使用者自加任意文件即可(`kanban.md` / `backlog.md` / `_deferred/` 目录 ...),aye 不替你拍——框架强加 schema 必然漂移成 Jira。
+
+aye 框架本分:**inbox(可选)→ feature(承诺)→ ship**,中间不扩宽。
+
+---
+
 ## 反模式
 
 ### 反模式 1:inbox 条目写承诺级内容

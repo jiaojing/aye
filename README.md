@@ -123,6 +123,15 @@ You should see the workflow map. If you say something like *"I want to add a sea
 
 ## Changelog
 
+### 0.7.2
+
+**`inbox/SKILL.md` 加 "框架边界" 段**(明示 aye 不管 feature 之前的 prioritize):
+- inbox 只是 raw capture(可选),故意不承载 prioritize 视图(跨 feature 候选主题归类 / priority 排序 / "已想清楚但等业务触发" 等待区 / WIP / sprint)
+- 使用者要这类视图 → 自加 `docs/kanban.md` / `backlog.md` / `_deferred/` 目录皆可,aye 不替你拍
+- 理由:prioritize = 项目特定 + 团队偏好 + 业务节奏,框架强加 schema 必然漂移成 Jira
+- aye 框架本分:**inbox(可选)→ feature(承诺)→ ship**,中间不扩宽
+- 触发场景:dogfood 项目(shield-rs)出现 kanban.md backlog 扩段提议,审视后判定越界,只动文档明示边界,零 schema 改动
+
 ### 0.7.1
 
 **handoff → inbox 自动 chain 去除**(修正 v0.7.0 设计矛盾):
