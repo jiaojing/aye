@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "aye",
-      "source": "./",
+      "source": "./plugins/aye",
       "description": "Scope alignment, acceptance criteria, pull-based iteration for AI-pair programming."
     }
   ]

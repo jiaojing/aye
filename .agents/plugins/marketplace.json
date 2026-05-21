@@ -1,0 +1,20 @@
+{
+  "name": "dongbai",
+  "interface": {
+    "displayName": "Dongbai"
+  },
+  "plugins": [
+    {
+      "name": "aye",
+      "source": {
+        "source": "local",
+        "path": "./plugins/aye"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    }
+  ]
+}

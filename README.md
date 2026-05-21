@@ -2,7 +2,7 @@
 
 > *aye aye, captain. ⚓*
 
-Lightweight AI-pair workflow skills for Claude Code.
+Lightweight AI-pair workflow skills for Claude Code and Codex.
 
 Designed for **solo dev + AI pair programming**, not team Scrum. Skills focus on the rituals that an AI partner most easily skips:
 
@@ -12,7 +12,7 @@ Designed for **solo dev + AI pair programming**, not team Scrum. Skills focus on
 
 ## Skills
 
-Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with commit-gate push + summary)**. Skills auto-invoke each other via chains.
+Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with commit-gate push + summary)**. Skills are written as shared `SKILL.md` files; Claude Code uses `/aye:<skill>` slash commands, while Codex triggers skills from normal conversation via skill metadata or explicit prompts like "use aye feature".
 
 14 个 skill 按性质分 4 类:
 
@@ -33,7 +33,7 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 | `/aye:design` | Gate 2.5(可选)— 大功能 / 跨 crate / 改公开 API / 改持久化 → 写 design.md 才写代码 |
 | `/aye:handoff` | 用户喊"今天到这 / 收 / 暂停" — 写持久化交接 + inline 摘要 |
 | `/aye:pua` | 用户喊"以终为始 / 看行业标准 / 不要捡简单的" — 跳出代码做行业 research |
-| `/aye:pick` | 用户喊"pick / 拍板 / 选一个 / 哪条 / 让我选" — 强制下一次决策提问走 `AskUserQuestion` 工具 |
+| `/aye:pick` | 用户喊"pick / 拍板 / 选一个 / 哪条 / 让我选" — 强制下一次决策提问走交互式选择工具(Claude Code: `AskUserQuestion`; Codex:可用工具或文本 fallback) |
 
 ### Reference(横切判据,任意阶段查)
 
@@ -58,9 +58,9 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 
 ## Usage
 
-### Two trigger modes
+### Trigger modes
 
-1. **Natural language (primary)** — say a keyword in chat, the LLM auto-invokes the matching skill via the `description` field in each `SKILL.md`. Examples:
+1. **Natural language (primary)** — say a keyword in chat, the LLM invokes the matching skill via the `description` field in each `SKILL.md`. Examples:
    - *"我想加个搜索功能"* / *"加 X 功能"* → `feature`
    - *"开始改 / 准备写代码"* → `scope`
    - *"测试绿了 / 改完了"* → `commit-gate`
@@ -68,31 +68,38 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 
    Each skill's full keyword list lives in its `SKILL.md` frontmatter.
 
-2. **Explicit slash (override)** — `/aye:<skill>` forces invocation. Use when:
+2. **Explicit slash (Claude Code override)** — `/aye:<skill>` forces invocation. Use when:
    - **Resuming a session** — first thing in a new session, type `/aye:flow` to re-orient.
    - **Auto-invoke missed** — your phrasing didn't match any keyword but you want the skill anyway.
    - **Re-entry** — already invoked once, want to re-run with fresh context (e.g. revisit `acceptance` after scope drift).
+
+3. **Explicit prompt (Codex override)** — Codex does not use Claude's `/aye:<skill>` slash namespace. Say `use aye <skill>` or `用 aye 的 <skill>` in normal chat. Examples:
+   - `use aye flow`
+   - `用 aye 的 scope`
+   - `use aye commit-gate`
 
 ### A full feature, end to end
 
 You say *"I want to add search to X"*:
 
 **Phase 1 — feature clarification (cross-session):**
-- LLM auto-invokes `/aye:feature` → produces a single `feature.md` (problem + users + scope + acceptance + tasks + status + notes)
+- LLM invokes `feature`(`/aye:feature` in Claude Code) → produces a single `feature.md` (problem + users + scope + acceptance + tasks + status + notes)
 - You approve
 
 **Phase 2 — one task at a time (single session, ends with commit-gate + summary):**
 - *"do tasks[0] — implement query parsing"*
-- → `/aye:scope` proposes which files change + open questions; you approve
-- → `/aye:acceptance` pins the DoD checklist (each item executable)
-- *(optional, big design)* → `/aye:design` writes `design.md` (problem + options + decision + impl) before coding
-- You write code; invoke `/aye:review` for 5-axis judgment whenever you want
-- *"tests green"* → `/aye:commit-gate` shows the diff, waits for explicit "commit / push"
+- → `scope`(`/aye:scope` in Claude Code) proposes which files change + open questions; you approve
+- → `acceptance` pins the DoD checklist (each item executable)
+- *(optional, big design)* → `design` writes `design.md` (problem + options + decision + impl) before coding
+- You write code; invoke `review` for 5-axis judgment whenever you want
+- *"tests green"* → `commit-gate` shows the diff, waits for explicit "commit / push"
 - → `commit-gate` push 后自动产出 next-task pointer + caveats summary（< 10 行,只交事实）。You then choose: close the session (summary makes it painless) or pull next task.
 
 Next session: open `feature.md`, pick the next unchecked task, repeat Phase 2. Cross-session memory lives in `feature.md`, not in chat history.
 
 ## Install
+
+### Claude Code
 
 Repo must be public, then:
 
@@ -105,23 +112,64 @@ Repo must be public, then:
 - `dongbai` is the marketplace name — author/brand namespace, can host multiple plugins in the future.
 - `aye` is the plugin name within the marketplace.
 
+### Codex
+
+Repo must be public, then:
+
+```bash
+codex plugin marketplace add jiaojing/aye
+codex plugin add aye@dongbai
+```
+
+For local development:
+
+```bash
+codex plugin marketplace add /path/to/aye
+codex plugin add aye@dongbai
+```
+
+Both marketplaces point at `plugins/aye/`. Codex reads `.agents/plugins/marketplace.json` plus `plugins/aye/.codex-plugin/plugin.json`; Claude Code reads `.claude-plugin/marketplace.json` plus `plugins/aye/.claude-plugin/plugin.json`. Both hosts share the same `plugins/aye/skills/` directory.
+
 ## For maintainers
 
-When editing any `skills/*/SKILL.md`, bump `version` in `.claude-plugin/plugin.json` (semver) and push. Otherwise `/plugin update aye` shows no-op despite new commits — marketplace caches by manifest version, not by commit sha.
+When editing any `plugins/aye/skills/*/SKILL.md`, bump `version` in both `plugins/aye/.claude-plugin/plugin.json` and `plugins/aye/.codex-plugin/plugin.json` (semver) and push. Otherwise plugin update may show no-op despite new commits — marketplace caches by manifest version, not by commit sha.
 
-After bump + push, **users must run BOTH `/plugin update aye` AND `/reload-plugins`** to switch their running cache to the new version. `/plugin update` alone fetches the new manifest but doesn't reload skills already loaded in the current Claude Code session.
+Claude Code users must run BOTH `/plugin update aye` AND `/reload-plugins` to switch their running cache to the new version. `/plugin update` alone fetches the new manifest but doesn't reload skills already loaded in the current Claude Code session.
+
+Codex users can refresh the marketplace snapshot and reinstall/update the plugin with:
+
+```bash
+codex plugin marketplace upgrade dongbai
+codex plugin add aye@dongbai
+```
 
 ## Verify
 
-After install, `/plugin` should list `aye` as enabled. Then try:
+After Claude Code install, `/plugin` should list `aye` as enabled. Then try:
 
 ```
 /aye:flow
 ```
 
-You should see the workflow map. If you say something like *"I want to add a search feature"*, the LLM should auto-invoke `/aye:feature` based on the description match.
+After Codex install, try:
+
+```text
+use aye flow
+```
+
+You should see the workflow map. If you say something like *"I want to add a search feature"*, the LLM should invoke `feature` based on the description match.
 
 ## Changelog
+
+### 0.8.0
+
+**Codex compatibility added**:
+- Added `plugins/aye/.codex-plugin/plugin.json` and `.agents/plugins/marketplace.json`
+- Moved the plugin body under `plugins/aye/` so Claude Code and Codex marketplaces resolve the same skills
+- Kept the Claude Code marketplace intact so Claude Code continues to use `/aye:<skill>`
+- Reworded host-specific interaction rules as Claude Code `AskUserQuestion` + Codex interactive-tool/text fallback
+- Replaced `CLAUDE.md`-only project guidance with host-neutral project agent instructions examples
+- Renamed skill tail sections from "Auto-invoke chain" to "Auto-invoke / next-step chain" for dual-host semantics
 
 ### 0.7.2
 
