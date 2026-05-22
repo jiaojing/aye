@@ -12,9 +12,9 @@ Designed for **solo dev + AI pair programming**, not team Scrum. Skills focus on
 
 ## Skills
 
-Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with commit-gate push + summary)**. Skills are written as shared `SKILL.md` files; Claude Code uses `/aye:<skill>` slash commands, while Codex triggers skills from normal conversation via skill metadata or explicit prompts like "use aye feature".
+Workflow shape: optional pre-feature layer (`inbox` capture / `spark` exploration) → **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with commit-gate push + summary)**. Skills are written as shared `SKILL.md` files; Claude Code uses `/aye:<skill>` slash commands, while Codex triggers skills from normal conversation via skill metadata or explicit prompts like "use aye feature".
 
-14 个 skill 按性质分 4 类:
+15 个 skill 按性质分 4 类:
 
 ### Gate(必走,AI 不能跳)
 
@@ -29,7 +29,8 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 
 | Skill | When |
 |-------|------|
-| `/aye:inbox` | Phase 0(可选)— feature 上游 capture 层。喊"记一下 / 先存着 / 以后做"或 handoff 检测到散落想法 → 写 `docs/inbox.md`(GTD inbox-process) |
+| `/aye:inbox` | Phase 0(可选)— feature 上游 capture 层。喊"记一下 / 先存着 / 以后做" → 写 `docs/inbox.md`(GTD inbox-process);不承诺 |
+| `/aye:spark` | Phase 0.5(可选)— feature 之前的想法探索层。喊"展开想想 / 先 brainstorm / 值不值得做 / 先出 proposal" → 写 `docs/sparks/<date>-<slug>.md`;不承诺、不进 scope |
 | `/aye:design` | Gate 2.5(可选)— 大功能 / 跨 crate / 改公开 API / 改持久化 → 写 design.md 才写代码 |
 | `/aye:handoff` | 用户喊"今天到这 / 收 / 暂停" — 写持久化交接 + inline 摘要 |
 | `/aye:pua` | 用户喊"以终为始 / 看行业标准 / 不要捡简单的" — 跳出代码做行业 research |
@@ -51,7 +52,7 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 | `/aye:flow` | 新 session / 不知如何展开 — 工作流地图 |
 
 **Lifecycle 顺序**:
-- Phase 0(可选,跨 session): `inbox` capture 散落想法 → 等想法成熟 extract 进 Phase 1
+- Phase 0(可选,跨 session): `inbox` capture 散落想法;`spark` 展开想法判断值不值得做。二者没有强制顺序,也都可跳过
 - Phase 1(跨 session): `feature` → 拉一个 task
 - Phase 2(单 session): `scope` → `acceptance` → [`design`?] → [code ↔ `review` N 次] → `commit-gate`(commit + push + 回打勾)
 - (可选回顾): 多个完成 feature → `docs/epic-<slug>.md` retrospective 主题聚合(用户主动喊)
@@ -62,6 +63,7 @@ Two-phase workflow: **Phase 1 = feature clarification (cross-session)** → **Ph
 
 1. **Natural language (primary)** — say a keyword in chat, the LLM invokes the matching skill via the `description` field in each `SKILL.md`. Examples:
    - *"我想加个搜索功能"* / *"加 X 功能"* → `feature`
+   - *"先展开想想 / 这个值不值得做"* → `spark`
    - *"开始改 / 准备写代码"* → `scope`
    - *"测试绿了 / 改完了"* → `commit-gate`
    - *"今天到这 / context 满了"* → `commit-gate` (push 后自带交接摘要)
@@ -160,6 +162,15 @@ use aye flow
 You should see the workflow map. If you say something like *"I want to add a search feature"*, the LLM should invoke `feature` based on the description match.
 
 ## Changelog
+
+### 0.9.0
+
+**`spark` skill added**:
+- 新增 `aye:spark`:feature 之前的可选想法探索层,从 raw idea / inbox 条目展开成 proposal/spec
+- 产物默认落 `docs/sparks/<YYYY-MM-DD>-<slug>.md`
+- 明确边界:不承诺、不写 feature.md、不进 scope、不写代码;完成后默认 stop
+- 工作流地图升级为 15 个 skill:Gate 4 + Triggered 6 + Reference 4 + Nav 1
+- `flow` 同步说明 Phase 0 可选层:`inbox` capture 与 `spark` exploration 没有强制顺序,都可跳过
 
 ### 0.8.0
 

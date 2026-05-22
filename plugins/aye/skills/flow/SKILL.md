@@ -1,6 +1,6 @@
 ---
 name: flow
-description: '工作流地图(导航层)。触发关键词:"该做什么 / 怎么开始 / 整体流程 / 哪个 skill / 现在到哪一步 / 不知如何展开"。**新 session 起手强制先扫 docs/features/handoff-*.md 作为接力点 + 顺带扫 docs/inbox.md 数量摘要**,再展示三段论(Phase 0 可选 inbox capture / Phase 1 feature 明确 / Phase 2 围绕 task 迭代)+ 14 个 skill 位置 + chain 关系。为单人 + AI 配对设计,Kanban 拉式,不是教科书 Scrum。'
+description: '工作流地图(导航层)。触发关键词:"该做什么 / 怎么开始 / 整体流程 / 哪个 skill / 现在到哪一步 / 不知如何展开"。**新 session 起手强制先扫 docs/features/handoff-*.md 作为接力点 + 顺带扫 docs/inbox.md 数量摘要**,再展示三段论(Phase 0 可选 inbox capture / spark exploration / Phase 1 feature 明确 / Phase 2 围绕 task 迭代)+ 15 个 skill 位置 + chain 关系。为单人 + AI 配对设计,Kanban 拉式,不是教科书 Scrum。'
 ---
 
 # Flow
@@ -11,7 +11,7 @@ AI 协作的工作流地图。**不是教科书 Scrum**——为单人 + AI 实�
 
 ## 触发场景
 
-- 开始一个新的 feature
+- 开始一个新的 feature / 探索一个新想法
 - 接到陌生任务,不知如何展开
 - 想看整体流程地图,确认现在该用哪个 skill
 - 想理解 aye 全体 skill 怎么编排成一条线
@@ -46,21 +46,24 @@ flow 触发时,AI **必须先做**:
 
 ## 三段论
 
-整个工作流分三段(Phase 0 可选):
+整个工作流分三段。Phase 0 是可选的 feature 上游层,有两个互不强制的工具:`inbox` 负责 capture,`spark` 负责 exploration。
 
 ```
 ┌────────────────────────────────────────────┐
-│ Phase 0(可选):inbox capture               │
+│ Phase 0(可选):pre-feature                 │
 │                                            │
-│   散落想法 ──→ inbox(只 capture,不承诺)  │
+│   raw idea ──┬─→ inbox(只 capture)        │
+│              ├─→ spark(展开判断)          │
+│              └─→ feature(已决定做)        │
 │                                            │
-│   产出:docs/inbox.md(raw bullet,无 status │
-│         无承诺;handoff 时也会引导写入)     │
+│   产出:docs/inbox.md(raw bullet)          │
+│        docs/sparks/<date>-<slug>.md       │
+│        二者都不承诺、不自动进实施          │
 │                                            │
-│   想法成熟可跳过 inbox,直接进 Phase 1      │
+│   想法成熟可跳过 Phase 0,直接进 Phase 1    │
 └────────────────────────────────────────────┘
                     │
-                    ▼ 用户挑一条 extract(或新想法直接进)
+                    ▼ 用户明确决定要做
 ┌────────────────────────────────────────────┐
 │ Phase 1:feature 明确(可跨多 session)      │
 │                                            │
@@ -95,7 +98,7 @@ flow 触发时,AI **必须先做**:
 
 **关键洞察**:
 - **session = task = PR**,三位一体——AI 没记忆从约束**变成 feature**,迭代天然 self-contained
-- **Phase 0 可选**(项目早期 / 想法成熟可直接 Phase 1),**Phase 1 跨 session**(feature.md 持久化),**Phase 2 单 session**(自然闭环)
+- **Phase 0 可选**(`inbox` / `spark` 都可跳过,二者也没有强制顺序),**Phase 1 跨 session**(feature.md 持久化),**Phase 2 单 session**(自然闭环)
 - 一个 feature 内的多个 task 各自走 Phase 2,不重新走 Phase 1
 - 交接摘要是 commit-gate push 后自带步骤,不再独立 skill
 - epic 聚合是 retrospective 视图(看完成态归纳),永远手动触发,不预先规划
@@ -105,9 +108,16 @@ flow 触发时,AI **必须先做**:
 ## Chain Map(完整自动跳转关系)
 
 ```
-inbox(可选 Phase 0)──→ feature(extract 一条做)
-   │
-   └→ 也可独立 capture,不进 feature(等以后)
+raw idea ─┬→ inbox(可选 capture,不承诺)
+          ├→ spark(可选 exploration,不承诺)
+          └→ feature(决定要做,进入承诺态)
+
+inbox ─┬→ spark(挑一条先展开判断)
+       └→ feature(挑一条直接做)
+
+spark ─┬→ feature(用户明确"做这个")
+       ├→ inbox(先存着)
+       └→ stop / drop(停住或放弃)
 
 feature ────→ scope(进 PR 级实施)
 
@@ -153,7 +163,7 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
 
 | skill | 何时进入 |
 |---|---|
-| `feature` | 闸门 0 — 模糊需求结构化,所有新工作的起点 |
+| `feature` | 闸门 0 — 决定要做后的模糊需求结构化,承诺态工作的起点 |
 | `scope` | 闸门 1 — 改 ≥ 2 文件 / 改公开 API / 任务模糊 → 走;typo / 单文件显然 → 跳 |
 | `acceptance` | 闸门 2 — 有 test command DoD / 改公开 API → 走;文档型 / 简单 → 跳 |
 | `commit-gate` | 闸门 3 — 动 git 前必经 |
@@ -163,6 +173,7 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
 | skill | 何时触发 |
 |---|---|
 | `inbox` | Phase 0(可选)— feature 上游 capture 层。**用户主动喊**"记一下 / 先存着 / 以后做 / inbox / 散落想法 ..."才走(handoff 不自动钩);想法成熟可跳过直接进 feature |
+| `spark` | Phase 0.5(可选)— feature 之前的想法探索层。展开 raw idea / inbox 条目,产 `docs/sparks/<date>-<slug>.md`,帮助判断值不值得做;不承诺、不进 scope、不写代码 |
 | `design` | 闸门 2.5 — 大功能 / 多方案 / 跨 crate / 改公开 API / 改持久化 → 走;否则跳 |
 | `handoff` | 用户主动 — 喊"今天到这 / 收 / 暂停 / handoff" |
 | `pua` | 用户主动 — 喊"以终为始 / 看行业标准 / 不要捡简单的" |
@@ -183,7 +194,7 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
 |---|---|
 | `flow` | 新 session / 不知道用哪个 skill — 本 skill 给地图 |
 
-**全 14 个 skill**(Gate 4 + Triggered 5 + Reference 4 + Nav 1)。
+**全 15 个 skill**(Gate 4 + Triggered 6 + Reference 4 + Nav 1)。
 
 **Phase 2 chain 是 conditional 不是 strict**——简单 task 可只走 `feature` → `commit-gate`,复杂才全套。
 
@@ -204,11 +215,15 @@ docs/features/
 
 默认只有 `feature.md` 一份;需要时同目录下直接加 `design.md` / `decisions.md` 等,无 promote 仪式。详见 `aye:feature`。
 
+## spark.md 落地约定
+
+`spark` 默认写到 `docs/sparks/<YYYY-MM-DD>-<slug>.md`。这是探索记录,不是 backlog,也不是承诺态 feature。`flow` 起手不主动扫描 `docs/sparks/`;用户要回看时直接喊 `aye:spark` 或点名路径。
+
 ---
 
 ## 一句话总结
 
-**Phase 0**(可选 inbox)capture 未承诺的散落想法,**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design] → 写代码 + review → commit-gate:含 push + 回打勾 + 摘要)围绕单个 task 单 session 闭环。
+**Phase 0**(可选 inbox / spark)处理未承诺的想法:inbox 只 capture,spark 展开判断;**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design] → 写代码 + review → commit-gate:含 push + 回打勾 + 摘要)围绕单个 task 单 session 闭环。
 
 **session = task = PR**——AI 无记忆从约束变 feature。
 
@@ -219,7 +234,7 @@ docs/features/
 ## 与其他 skill 的关系
 
 本 skill 是**地图入口**,不替代任何具体仪式 skill:
-- 落到 Phase 0 → `inbox`(可选 capture)
+- 落到 Phase 0 → `inbox`(可选 capture)或 `spark`(可选 exploration)
 - 落到 Phase 1 → `feature`
 - 落到 Phase 2 → `scope` / `acceptance` / `design` / `review` / `commit-gate`
 - 想要哲学底座 → `principles` / `rust-principles`(Rust 项目) / `kotlin-principles`(Kotlin 项目)

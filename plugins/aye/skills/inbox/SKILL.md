@@ -1,6 +1,6 @@
 ---
 name: inbox
-description: 'feature 上游的可选 capture 层(GTD inbox-process)。触发关键词:"记一下 / 先存着 / 以后做 / 想到个事 / inbox / 散落想法 / 灵感 / 还没想清楚 / 暂存 / 候选"。承载未结构化、未承诺的 raw 需求,只 capture 不承诺。**4 项能力**:inbox 维护 / 提取成 feature / 多 feature 回顾成 epic / 不管 active focus(handoff 在管)。**铁律**:epic 永远 retrospective + 永远手动触发,不按数量。文件落 `docs/inbox.md`,epic 归档落 `docs/epic-<slug>.md`。'
+description: 'feature 上游的可选 capture 层(GTD inbox-process)。触发关键词:"记一下 / 先存着 / 以后做 / 想到个事 / inbox / 散落想法 / 灵感 / 还没想清楚 / 暂存 / 候选"。承载未结构化、未承诺的 raw 需求,只 capture 不承诺。**5 项能力**:inbox 维护 / 提取成 spark / 提取成 feature / 多 feature 回顾成 epic / 不管 active focus(handoff 在管)。**铁律**:epic 永远 retrospective + 永远手动触发,不按数量。文件落 `docs/inbox.md`,epic 归档落 `docs/epic-<slug>.md`。'
 ---
 
 # Inbox
@@ -17,7 +17,9 @@ AI 协作的**可选 capture 层**——feature 上游,承接还没结构化、�
 脑中想法
     ↓ capture(本 skill)
 docs/inbox.md          ← raw bullet,无 status,无承诺
-    ↓ extract(用户挑一条决定要做)
+    ↓ explore(可选,用户挑一条先展开)
+docs/sparks/<slug>.md  ← proposal/spec,无承诺
+    ↓ decide(用户明确要做)
 docs/features/<slug>/feature.md   ← 结构化 + 承诺
     ↓ scope / acceptance / build / commit-gate
 完成
@@ -25,16 +27,18 @@ docs/features/<slug>/feature.md   ← 结构化 + 承诺
 docs/epic-<slug>.md   ← retrospective 主题聚合
 ```
 
-**两层接力,不是替代**:
+**三种状态接力,不是替代**:
 
 - **inbox** = 未结构化、未承诺("哪天可能做")
+- **spark** = 已展开、未承诺("先判断值不值得做")
 - **feature** = 已结构化、已承诺("这次就做这条")
 
-inbox 不偷 feature 的活,feature 不偷 inbox 的活。
+inbox 不偷 spark / feature 的活,spark 不偷 feature 的活,feature 不偷 inbox 的活。
 
 **inbox 是可选起点,不强制**:
 
 - 想法已经成熟 → 直接喊 `aye:feature`,**跳过 inbox**
+- 想法值得展开但还没决定做 → 直接喊 `aye:spark`,**跳过 inbox**
 - 想法还模糊 / 一闪而过想存档 → `aye:inbox` 先 capture,后续再 extract
 - handoff 收尾时想起散落想法 → **用户自行**喊 inbox 关键词 capture(handoff 不自动钩 inbox,详见与 handoff 的边界)
 
@@ -44,6 +48,7 @@ inbox 不偷 feature 的活,feature 不偷 inbox 的活。
 
 - 对话里冒出"这个以后也该做"、"记一下"、"先存着"类未承诺想法
 - 用户主动喊"看下 inbox" / "inbox 有啥" — 摆 inbox 内容
+- 用户挑一条 inbox 条目说"展开看看" — 走 inbox → spark
 - 用户挑一条 inbox 条目说"做这个" — 走 inbox → feature 提取
 
 **不自动从 handoff 钩进来**:handoff 收尾不扫关键词、不抛交互式选择问题。用户在 handoff 之后(或任何时候)想起散落想法,自行喊本 skill 关键词触发,详见「与 handoff 的边界」。
@@ -56,7 +61,7 @@ inbox 不偷 feature 的活,feature 不偷 inbox 的活。
 
 ---
 
-## 4 项核心能力
+## 5 项核心能力
 
 ### 1. inbox 维护(增删条目)
 
@@ -72,7 +77,15 @@ inbox 不偷 feature 的活,feature 不偷 inbox 的活。
 2. feature.md 落地后,**清掉 inbox 里对应那行**(不留痕,extract 是单向迁移)
 3. 提示用户:"已从 inbox 提取 → `docs/features/<slug>/feature.md`,inbox 该行已删"
 
-### 3. 多 feature → epic 回顾性总结(**纯手动**)
+### 3. inbox → spark 探索引导
+
+用户选定一条 inbox 条目想先展开、但还没决定做时:
+
+1. AI **invoke `aye:spark`**,把该条目作为 spark proposal 起点
+2. inbox 里对应行默认**保留**(因为还没承诺、也没放弃)
+3. 只有用户明确"做这个"并进入 feature 后,才删除 inbox 对应行
+
+### 4. 多 feature → epic 回顾性总结(**纯手动**)
 
 用户主动喊"总结一下这一组 feature" / "把这几个归一个 epic" 时:
 
@@ -81,7 +94,7 @@ inbox 不偷 feature 的活,feature 不偷 inbox 的活。
 3. 写 `docs/epic-<slug>.md`,聚合多个 feature.md 的核心信息(problem 浓缩 / 关键决策 / 完成时间线 / 跨 feature 学到的判据)
 4. **源 feature.md 保留**(epic 是聚合视图,不是替代;feature.md 仍是原始 record)
 
-### 4. 不管 active focus
+### 5. 不管 active focus
 
 "当前在做什么 feature" 这个 cross-feature 视图归 `handoff-*.md` + `docs/features/` 最新 mtime 管,inbox 不重复维护。
 
@@ -180,7 +193,7 @@ inbox 只是 raw capture(可选),**故意不承载 prioritize 视图**。
 
 prioritize 视图(跨 feature 候选主题归类 / priority 排序 / "已想清楚但等业务触发" 等待区 / WIP / sprint 等)= **项目特定 + 团队偏好 + 业务节奏**,使用者自加任意文件即可(`kanban.md` / `backlog.md` / `_deferred/` 目录 ...),aye 不替你拍——框架强加 schema 必然漂移成 Jira。
 
-aye 框架本分:**inbox(可选)→ feature(承诺)→ ship**,中间不扩宽。
+aye 框架本分:**inbox / spark(可选,未承诺)→ feature(承诺)→ ship**。spark 只负责探索,不引入 priority / sprint / backlog schema。
 
 ---
 
@@ -274,7 +287,15 @@ extract = 单向迁移。inbox 始终是"未处理"的真实视图,留 strikethr
 - 追加条目 `- <一句话需求> [#tag]` 到 `## Inbox` 段尾
 - 不动其他段
 
-### 2. extract(挑一条做)
+### 2. explore(挑一条展开)
+
+用户选定 inbox 条目"展开看看":
+
+- AI invoke `aye:spark`,把该条目作为 proposal 起点
+- inbox 对应行默认保留,直到用户明确进入 feature 或要求删除
+- 提示:"已从 inbox 展开 → `docs/sparks/<slug>.md`,inbox 该行仍保留"
+
+### 3. extract(挑一条做)
 
 用户选定 inbox 条目"做这个":
 
@@ -282,7 +303,7 @@ extract = 单向迁移。inbox 始终是"未处理"的真实视图,留 strikethr
 - feature.md 落地后,Edit `docs/inbox.md` 删除对应那行
 - 提示:"已从 inbox 提取 → `docs/features/<slug>/feature.md`,inbox 该行已删"
 
-### 3. epic 总结(**用户主动喊才走**)
+### 4. epic 总结(**用户主动喊才走**)
 
 用户喊"总结一下这一组 feature" / "归一个 epic":
 
@@ -295,7 +316,8 @@ extract = 单向迁移。inbox 始终是"未处理"的真实视图,留 strikethr
 
 ## 与其他 skill 的关系
 
-- **`feature`**:本 skill 上游。inbox extract 后 chain 进 `feature`。feature 是"承诺",inbox 是"未承诺"。
+- **`spark`**:同属 feature 上游。inbox 条目可先展开成 spark,但 spark 仍不承诺。
+- **`feature`**:本 skill 上游。inbox extract 后 chain 进 `feature`。feature 是"承诺",inbox / spark 是"未承诺"。
 - **`flow`**:本 skill 是 flow chain map 的 **Phase 0(可选)**——feature 之前的 capture 层。flow 起手扫 handoff 后顺带扫 inbox 数量。
 - **`handoff`**:**不自动 chain**。handoff 主体只交事实,散落想法 capture 由用户在 handoff 后自行喊本 skill 关键词触发。详见「与 handoff 的边界」。
 - **`principles`**:本 skill 的 epic retrospective 铁律 + 反模式协议建立在 `principles` 的"AI 不当提问机"(用户主动喊才走 epic)之上。
@@ -307,6 +329,7 @@ extract = 单向迁移。inbox 始终是"未处理"的真实视图,留 strikethr
 完成本 skill 后,根据动作不同:
 
 - **capture 完** → 不 chain,回原对话(用户继续干当前事)
+- **explore 完** → invoke `spark`(把 inbox 条目展开成 proposal,默认保留 inbox 行)
 - **extract 完** → invoke `feature`(把 extract 出的需求结构化)
 - **epic 总结完** → 不 chain,回原对话
 
@@ -316,8 +339,8 @@ inbox 是 capture 工具,不是工作流入口——大多数时候 capture 完�
 
 ## 一句话总结
 
-**inbox = feature 上游的可选 capture 层**:raw bullet 暂存未承诺想法 → 用户挑一条 extract 成 feature → 多个完成 feature 可手动总结成 retrospective epic。
+**inbox = feature 上游的可选 capture 层**:raw bullet 暂存未承诺想法 → 用户挑一条 explore 成 spark 或 extract 成 feature → 多个完成 feature 可手动总结成 retrospective epic。
 
 文件 `docs/inbox.md`,epic 归档 `docs/epic-<slug>.md`。
 
-铁律:不替 feature 做承诺 / epic 永远 retrospective + 手动 / 不在 inbox 维护 active focus / extract 后直接删行不留痕。
+铁律:不替 spark / feature 做承诺 / epic 永远 retrospective + 手动 / 不在 inbox 维护 active focus / extract 后直接删行不留痕。

@@ -1,6 +1,6 @@
 {
   "name": "aye",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Lightweight AI-pair workflow skills: scope alignment, acceptance criteria, pull-based iteration. Designed for solo dev + AI pair programming, not team Scrum.",
   "author": {
     "name": "jiaojing",
@@ -13,6 +13,7 @@
     "ai-pair",
     "workflow",
     "skills",
+    "spark",
     "scope",
     "acceptance",
     "review"
@@ -20,8 +21,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Aye",
-    "shortDescription": "Scope, acceptance, and review workflows for AI pair programming",
-    "longDescription": "Aye provides lightweight workflow skills for solo developer and AI pair programming: clarify features, align implementation scope, define executable acceptance criteria, review changes, and gate commits without adopting heavyweight team Scrum rituals.",
+    "shortDescription": "Idea exploration, scope, acceptance, and review workflows for AI pair programming",
+    "longDescription": "Aye provides lightweight workflow skills for solo developer and AI pair programming: explore ideas before committing, clarify features, align implementation scope, define executable acceptance criteria, review changes, and gate commits without adopting heavyweight team Scrum rituals.",
     "developerName": "jiaojing",
     "category": "Engineering",
     "capabilities": [
@@ -32,6 +33,7 @@
     "websiteURL": "https://github.com/jiaojing/aye",
     "defaultPrompt": [
       "Use aye flow to show the workflow map.",
+      "Use aye spark to explore whether this idea is worth doing.",
       "Use aye feature to clarify this new feature.",
       "Use aye scope before implementing this task."
     ],

@@ -1,11 +1,11 @@
 ---
 name: feature
-description: '模糊需求结构化(Phase 1 闸门 0)。触发关键词:"加 X 功能 / 想做 Y / 优化下 Z / 整理一下 W / 新需求 / 新 feature / 模糊需求 / 还没明确"。引导对话补充细节,产出单份 feature.md(承载 problem + users + scope + acceptance + tasks + status + notes)。后续围绕 task 打勾推进。Auto-invoke: scope(进 PR 级实施)。'
+description: '决定要做后的模糊需求结构化(Phase 1 闸门 0)。触发关键词:"加 X 功能 / 想做 Y / 优化下 Z / 整理一下 W / 新需求 / 新 feature / 模糊需求 / 还没明确"。引导对话补充细节,产出单份 feature.md(承载 problem + users + scope + acceptance + tasks + status + notes)。还没决定做不做时先用 spark。后续围绕 task 打勾推进。Auto-invoke: scope(进 PR 级实施)。'
 ---
 
 # Feature
 
-AI 协作的**闸门 0**:进 scope 之前,先把模糊需求结构化成 **feature.md**——单份文档承载需求描述 + 验收标准 + task 清单 + 状态跟踪。
+AI 协作的**闸门 0**:决定要做之后、进 scope 之前,先把模糊需求结构化成 **feature.md**——单份文档承载需求描述 + 验收标准 + task 清单 + 状态跟踪。
 
 不写 feature 直接进 scope,是在"我以为你要的是 X"的错误前提上对齐 PR scope。**前提错了,后面再严的闸门也救不回来**。
 
@@ -27,6 +27,8 @@ feature.md 是 AI 协作硬约束(没记忆 / 理解偏 / 容易越界 / PR≈co
 
 **不触发**:
 
+- 还没决定做不做,只想展开判断值不值得做(走 `spark`)
+- 只想暂存一个 raw idea(走 `inbox`)
 - bug fix(走 debugging,不需要写 feature)
 - typo / 局部重命名 / 一行修改
 - 已有 feature.md 的小改(直接 scope)
@@ -353,6 +355,7 @@ T2-T5 同模板(三段式判据)、同文件、同验证——切 4 条只是凑
 
 - **`flow`**:地图。本 skill 是流程入口的**闸门 0**(在所有实施仪式之前)。
 - **`scope`**:闸门 1。feature 决定"做什么对吗",scope 决定"这次 task 改哪些文件"——颗粒小一档。先 feature 后 scope。
+- **`spark`**:feature 上游的可选探索层。spark 不承诺;用户明确"做这个"后才进入 feature。
 - **`acceptance`**:闸门 2。feature 里 acceptance 是用户视角(较粗),acceptance skill 把它做成带 command 的 checklist。两者不重复。
 - **`review`**:feature 阶段如涉及大破面 / 多方案纠结(技术选型),可同步触发 review 做 5 维度判据。
 - **`design`**:大功能添加 `design.md` 时,由 design skill 维护。
@@ -362,7 +365,7 @@ T2-T5 同模板(三段式判据)、同文件、同验证——切 4 条只是凑
 
 ## 一句话总结
 
-**Feature 是闸门 0:模糊需求 → problem + users + scope + acceptance + tasks + open questions → 用户点头 → 落地 `docs/features/<slug>/feature.md` → 进 scope**。
+**Feature 是闸门 0:决定要做的模糊需求 → problem + users + scope + acceptance + tasks + open questions → 用户点头 → 落地 `docs/features/<slug>/feature.md` → 进 scope**。
 
 每个 feature 一个目录,默认只有 `feature.md` 一份;需要时同目录加 `design.md` / `decisions.md` / `notes.md`。后续每次小迭代围绕 task 打勾推进,状态跟踪天然在文件里。
 
