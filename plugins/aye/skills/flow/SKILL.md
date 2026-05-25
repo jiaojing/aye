@@ -1,6 +1,6 @@
 ---
 name: flow
-description: '工作流地图(导航层)。触发关键词:"该做什么 / 怎么开始 / 整体流程 / 哪个 skill / 现在到哪一步 / 不知如何展开"。**新 session 起手强制先扫 docs/features/handoff-*.md 作为接力点 + 顺带扫 docs/inbox.md 数量摘要**,再展示三段论(Phase 0 可选 inbox capture / spark exploration / Phase 1 feature 明确 / Phase 2 围绕 task 迭代)+ 15 个 skill 位置 + chain 关系。为单人 + AI 配对设计,Kanban 拉式,不是教科书 Scrum。'
+description: '工作流地图(导航层)。触发关键词:"该做什么 / 怎么开始 / 整体流程 / 哪个 skill / 现在到哪一步 / 不知如何展开"。**新 session 起手强制先扫 docs/features/handoff-*.md 作为接力点 + 顺带扫 docs/inbox.md 数量摘要**,再展示三段论(Phase 0 可选 inbox capture / spark exploration / Phase 1 feature 明确 / Phase 2 围绕 task 迭代)+ 16 个 skill 位置 + chain 关系。为单人 + AI 配对设计,Kanban 拉式,不是教科书 Scrum。'
 ---
 
 # Flow
@@ -147,6 +147,7 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
   rust-principles   — Rust 项目特化
   kotlin-principles — Kotlin 项目特化
   review            — 5 维度判据(写代码中 / commit 前)
+  cross-review      — 多 agent round review 文件协议(需要 ping-pong 时)
   pua               — 跳出代码 / 站领域专家 / research(用户主动喊)
   pick              — 决策点强制走交互式选择工具;不可用则文本 fallback(用户主动喊)
 ```
@@ -176,6 +177,7 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
 | `spark` | Phase 0.5(可选)— feature 之前的想法探索层。展开 raw idea / inbox 条目,产 `docs/sparks/<date>-<slug>.md`,帮助判断值不值得做;不承诺、不进 scope、不写代码 |
 | `design` | 闸门 2.5 — 大功能 / 多方案 / 跨 crate / 改公开 API / 改持久化 → 走;否则跳 |
 | `handoff` | 用户主动 — 喊"今天到这 / 收 / 暂停 / handoff" |
+| `cross-review` | 多 agent 互审 — 喊"交叉 review / ping-pong / 下一轮 review";维护 `review.md` 当前真相索引 + `reviews/NNN-*.md` 历史轮次 |
 | `pua` | 用户主动 — 喊"以终为始 / 看行业标准 / 不要捡简单的" |
 | `pick` | 用户主动 — 喊"pick / 拍板 / 选一个 / 哪条 / 让我选",强制下一次决策提问走交互式选择工具;不可用则文本 fallback |
 
@@ -194,7 +196,7 @@ commit-gate ─→ push ─→ 短确认 + 回 feature.md 打勾(默认,不主�
 |---|---|
 | `flow` | 新 session / 不知道用哪个 skill — 本 skill 给地图 |
 
-**全 15 个 skill**(Gate 4 + Triggered 6 + Reference 4 + Nav 1)。
+**全 16 个 skill**(Gate 4 + Triggered 7 + Reference 4 + Nav 1)。
 
 **Phase 2 chain 是 conditional 不是 strict**——简单 task 可只走 `feature` → `commit-gate`,复杂才全套。
 
@@ -223,11 +225,11 @@ docs/features/
 
 ## 一句话总结
 
-**Phase 0**(可选 inbox / spark)处理未承诺的想法:inbox 只 capture,spark 展开判断;**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design] → 写代码 + review → commit-gate:含 push + 回打勾 + 摘要)围绕单个 task 单 session 闭环。
+**Phase 0**(可选 inbox / spark)处理未承诺的想法:inbox 只 capture,spark 展开判断;**Phase 1**(feature)产出 **feature.md**(承载需求 + acceptance + tasks + status);**Phase 2**(scope → acceptance → [design] → 写代码 + review / cross-review → commit-gate:含 push + 回打勾 + 摘要)围绕单个 task 单 session 闭环。
 
 **session = task = PR**——AI 无记忆从约束变 feature。
 
-横切判据:`principles` / `rust-principles` / `kotlin-principles` / `review` 任意阶段调用。
+横切判据:`principles` / `rust-principles` / `kotlin-principles` / `review` 任意阶段调用。多 agent round review 用 `cross-review` 管文件协议。
 
 ---
 
@@ -236,7 +238,7 @@ docs/features/
 本 skill 是**地图入口**,不替代任何具体仪式 skill:
 - 落到 Phase 0 → `inbox`(可选 capture)或 `spark`(可选 exploration)
 - 落到 Phase 1 → `feature`
-- 落到 Phase 2 → `scope` / `acceptance` / `design` / `review` / `commit-gate`
+- 落到 Phase 2 → `scope` / `acceptance` / `design` / `review` / `cross-review` / `commit-gate`
 - 想要哲学底座 → `principles` / `rust-principles`(Rust 项目) / `kotlin-principles`(Kotlin 项目)
 
 如果 AI 在新 feature 不知如何下手,**先调本 skill 看地图**,再点对应 step skill。

@@ -14,7 +14,7 @@ Designed for **solo dev + AI pair programming**, not team Scrum. Skills focus on
 
 Workflow shape: optional pre-feature layer (`inbox` capture / `spark` exploration) → **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with commit-gate push + summary)**. Skills are written as shared `SKILL.md` files; Claude Code uses `/aye:<skill>` slash commands, while Codex triggers skills from normal conversation via skill metadata or explicit prompts like "use aye feature".
 
-15 个 skill 按性质分 4 类:
+16 个 skill 按性质分 4 类:
 
 ### Gate(必走,AI 不能跳)
 
@@ -33,6 +33,7 @@ Workflow shape: optional pre-feature layer (`inbox` capture / `spark` exploratio
 | `/aye:spark` | Phase 0.5(可选)— feature 之前的想法探索层。喊"展开想想 / 先 brainstorm / 值不值得做 / 先出 proposal" → 写 `docs/sparks/<date>-<slug>.md`;不承诺、不进 scope |
 | `/aye:design` | Gate 2.5(可选)— 大功能 / 跨 crate / 改公开 API / 改持久化 → 写 design.md 才写代码 |
 | `/aye:handoff` | 用户喊"今天到这 / 收 / 暂停" — 写持久化交接 + inline 摘要 |
+| `/aye:cross-review` | 多 agent 互审 — 喊"交叉 review / ping-pong / 下一轮 review" → 维护 `review.md` 当前真相索引 + `reviews/NNN-*.md` 历史轮次 |
 | `/aye:pua` | 用户喊"以终为始 / 看行业标准 / 不要捡简单的" — 跳出代码做行业 research |
 | `/aye:pick` | 用户喊"pick / 拍板 / 选一个 / 哪条 / 让我选" — 强制下一次决策提问走交互式选择工具(Claude Code: `AskUserQuestion`; Codex:可用工具或文本 fallback) |
 
@@ -54,7 +55,7 @@ Workflow shape: optional pre-feature layer (`inbox` capture / `spark` exploratio
 **Lifecycle 顺序**:
 - Phase 0(可选,跨 session): `inbox` capture 散落想法;`spark` 展开想法判断值不值得做。二者没有强制顺序,也都可跳过
 - Phase 1(跨 session): `feature` → 拉一个 task
-- Phase 2(单 session): `scope` → `acceptance` → [`design`?] → [code ↔ `review` N 次] → `commit-gate`(commit + push + 回打勾)
+- Phase 2(单 session): `scope` → `acceptance` → [`design`?] → [code ↔ `review` N 次 / `cross-review` 多 agent 轮次] → `commit-gate`(commit + push + 回打勾)
 - (可选回顾): 多个完成 feature → `docs/epic-<slug>.md` retrospective 主题聚合(用户主动喊)
 
 ## Usage
@@ -65,6 +66,7 @@ Workflow shape: optional pre-feature layer (`inbox` capture / `spark` exploratio
    - *"我想加个搜索功能"* / *"加 X 功能"* → `feature`
    - *"先展开想想 / 这个值不值得做"* → `spark`
    - *"开始改 / 准备写代码"* → `scope`
+   - *"让 CC 和你 ping-pong review / 下一轮 review"* → `cross-review`
    - *"测试绿了 / 改完了"* → `commit-gate`
    - *"今天到这 / context 满了"* → `commit-gate` (push 后自带交接摘要)
 
@@ -78,6 +80,7 @@ Workflow shape: optional pre-feature layer (`inbox` capture / `spark` exploratio
 3. **Explicit prompt (Codex override)** — Codex does not use Claude's `/aye:<skill>` slash namespace. Say `use aye <skill>` or `用 aye 的 <skill>` in normal chat. Examples:
    - `use aye flow`
    - `用 aye 的 scope`
+   - `use aye cross-review`
    - `use aye commit-gate`
 
 ### A full feature, end to end
@@ -94,6 +97,7 @@ You say *"I want to add search to X"*:
 - → `acceptance` pins the DoD checklist (each item executable)
 - *(optional, big design)* → `design` writes `design.md` (problem + options + decision + impl) before coding
 - You write code; invoke `review` for 5-axis judgment whenever you want
+- If a design needs multi-agent ping-pong, invoke `cross-review`; it keeps `review.md` as the current index and stores history under `reviews/`.
 - *"tests green"* → `commit-gate` shows the diff, waits for explicit "commit / push"
 - → `commit-gate` push 后自动产出 next-task pointer + caveats summary（< 10 行,只交事实）。You then choose: close the session (summary makes it painless) or pull next task.
 
@@ -162,6 +166,15 @@ use aye flow
 You should see the workflow map. If you say something like *"I want to add a search feature"*, the LLM should invoke `feature` based on the description match.
 
 ## Changelog
+
+### 0.10.0
+
+**`cross-review` skill added**:
+- 新增 `aye:cross-review`:多 agent ping-pong review 的文件协议,用于 CC / Codex / Claude / human 多轮互审
+- 约定 `review.md` 只放当前真相(Decision Log / Open Items / Latest Round / History),历史轮次落 `reviews/NNN-*.md`
+- 默认每轮只读 `feature.md` + `review.md` + 最新 response,禁止默认读全历史,控制 token
+- 明确边界:`review` 提供审查判据,`cross-review` 管轮次状态和文件收敛
+- 工作流地图升级为 16 个 skill:Gate 4 + Triggered 7 + Reference 4 + Nav 1
 
 ### 0.9.0
 
