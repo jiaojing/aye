@@ -12,11 +12,11 @@ Designed for **solo dev + AI pair programming**, not team Scrum. Skills focus on
 
 ## Skills
 
-Workflow shape: optional pre-feature layer (`inbox` capture / `spark` exploration) → **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with commit-gate push + summary)**. Skills are written as shared `SKILL.md` files; Claude Code uses `/aye:<skill>` slash commands, while Codex triggers skills from normal conversation via skill metadata or explicit prompts like "use aye feature".
+Workflow shape: optional pre-feature layer (`inbox` capture / `spark` exploration) → **Phase 1 = feature clarification (cross-session)** → **Phase 2 = task iteration (single-session, ends with commit-gate push + feature 回写)**. 用户主动暂停时再调用独立 `handoff`。Skills are written as shared `SKILL.md` files; Claude Code uses `/aye:<skill>` slash commands, while Codex triggers skills from normal conversation via skill metadata or explicit prompts like "use aye feature".
 
 16 个 skill 按性质分 4 类:
 
-### Gate(必走,AI 不能跳)
+### Gate（命中条件时进入；进入后不能绕过）
 
 | Skill | Role | When |
 |-------|------|------|
@@ -41,10 +41,10 @@ Workflow shape: optional pre-feature layer (`inbox` capture / `spark` exploratio
 
 | Skill | When |
 |-------|------|
-| `/aye:principles` | 多方案纠结 / 决策框架 / 取舍 — 4 条工程哲学 + 决策框架 + AI 协作准则(含 AI 不当提问机) |
-| `/aye:review` | 写代码中 / commit 前 — 5 维度判据(类型抽象 / Builder / Trait / 命名 / 重构) |
-| `/aye:rust-principles` | Rust 项目自动 active — 类型三分法 / 生命周期 / 错误处理 |
-| `/aye:kotlin-principles` | Kotlin 项目自动 active — ADT / scope functions / coroutine |
+| `/aye:principles` | 多方案纠结 / 决策框架 / 取舍 — 工程哲学 + 架构边界 + 决策点质量 |
+| `/aye:review` | 写代码中 / commit 前 — 5 维度判据(类型 / 构造 / 能力接口 / 组织边界 / 兼容重构) |
+| `/aye:rust-principles` | Rust 项目自动 active — 所有权 / 任务生命周期 / API 兼容 |
+| `/aye:kotlin-principles` | Kotlin 项目自动 active — ADT / coroutine lifecycle / binary API |
 
 ### Nav
 
@@ -55,7 +55,7 @@ Workflow shape: optional pre-feature layer (`inbox` capture / `spark` exploratio
 **Lifecycle 顺序**:
 - Phase 0(可选,跨 session): `inbox` capture 散落想法;`spark` 展开想法判断值不值得做。二者没有强制顺序,也都可跳过
 - Phase 1(跨 session): `feature` → 拉一个 task
-- Phase 2(单 session): `scope` → `acceptance` → [`design`?] → [code ↔ `review` N 次 / `cross-review` 多 agent 轮次] → `commit-gate`(commit + push + 回打勾)
+- Phase 2(单 session): `scope` → [`acceptance`?] → [`design`?] → [code ↔ `review` N 次 / `cross-review` 多 agent 轮次] → `commit-gate`(commit + push + 回打勾)
 - (可选回顾): 多个完成 feature → `docs/epic-<slug>.md` retrospective 主题聚合(用户主动喊)
 
 ## Usage
@@ -68,7 +68,7 @@ Workflow shape: optional pre-feature layer (`inbox` capture / `spark` exploratio
    - *"开始改 / 准备写代码"* → `scope`
    - *"让 CC 和你 ping-pong review / 下一轮 review"* → `cross-review`
    - *"测试绿了 / 改完了"* → `commit-gate`
-   - *"今天到这 / context 满了"* → `commit-gate` (push 后自带交接摘要)
+   - *"今天到这 / context 满了"* → `handoff`（用户主动触发）
 
    Each skill's full keyword list lives in its `SKILL.md` frontmatter.
 
@@ -91,15 +91,16 @@ You say *"I want to add search to X"*:
 - LLM invokes `feature`(`/aye:feature` in Claude Code) → produces a single `feature.md` (problem + users + scope + acceptance + tasks + status + notes)
 - You approve
 
-**Phase 2 — one task at a time (single session, ends with commit-gate + summary):**
+**Phase 2 — one task at a time (single session, ends with commit-gate + feature 回写):**
 - *"do tasks[0] — implement query parsing"*
 - → `scope`(`/aye:scope` in Claude Code) proposes which files change + open questions; you approve
-- → `acceptance` pins the DoD checklist (each item executable)
+- *(when risk warrants it)* → `acceptance` pins the executable DoD checklist
 - *(optional, big design)* → `design` writes `design.md` (problem + options + decision + impl) before coding
 - You write code; invoke `review` for 5-axis judgment whenever you want
 - If a design needs multi-agent ping-pong, invoke `cross-review`; it keeps `review.md` as the current index and stores history under `reviews/`.
 - *"tests green"* → `commit-gate` shows the diff, waits for explicit "commit / push"
-- → `commit-gate` push 后自动产出 next-task pointer + caveats summary（< 10 行,只交事实）。You then choose: close the session (summary makes it painless) or pull next task.
+- → `commit-gate` push 后回写 feature task/acceptance，不自动结束 session。
+- 如果你说 *"今天到这 / 暂停"*，`handoff` 再写少于 10 行的持久化接力点；否则继续拉下一条 task。
 
 Next session: open `feature.md`, pick the next unchecked task, repeat Phase 2. Cross-session memory lives in `feature.md`, not in chat history.
 
@@ -166,6 +167,17 @@ use aye flow
 You should see the workflow map. If you say something like *"I want to add a search feature"*, the LLM should invoke `feature` based on the description match.
 
 ## Changelog
+
+### 0.11.0
+
+**Skill set distilled and tightened**:
+- 16 个 SKILL.md 统一删除重复触发段、关系说明、伪候选和数量型仪式，总行数显著下降
+- `principles` 增加 consumer-driven abstraction、domain boundaries、framework edge、lifecycle ownership
+- 修复 chain 矛盾:`scope → acceptance → design?`，`commit-gate` 不再冒充 `handoff`
+- `review` 收敛为类型 / 构造 / 能力接口 / 组织边界 / 兼容重构五维触发式判据
+- Rust 增加 task lifecycle、MSRV/public trait compatibility；删除 parking_lot 和“三实现才抽 trait”绝对规则
+- Kotlin 扩展函数恢复为合法解释器入口，并补 coroutine owner、binary compatibility 和虚拟时间测试
+- `spark` 不再强制伪造第二方案；`pua` 不再把复杂度当作专业性的代理
 
 ### 0.10.0
 

@@ -3,7 +3,25 @@
 > 本文档是 `kotlin-principles` SKILL.md 的详细参考。SKILL.md 留索引骨架,各维度详细正反例 + 决策表在这里。
 > LLM 在 review Kotlin 代码命中某维度时,Read 本文档对应段查详细。
 
-每条三段式:**判据 / 正例 / 反例**。灰区给优先级阶梯("首选 X / 次选 Y / 例外 Z / 禁用 W"),黑白区直接判定。
+每条三段式:**判据 / 正例 / 反例**。阈值和优先级是 review 信号，不代替项目上下文。
+
+## 目录
+
+1. 类型设计
+2. Null safety
+3. Scope functions
+4. 协程基础
+5. 错误处理
+6. 不可变
+7. 扩展函数
+8. 集合 API
+9. 委托
+10. 命名惯例
+11. 历史包袱与上下文选择
+12. Public API 与兼容性
+13. 复杂度信号
+14. inline / reified
+15. equals / copy
 
 ---
 
@@ -58,7 +76,7 @@ class OrderStatus(
 2. **`?.let { } / ?:`**:短链 1-2 层
 3. **`requireNotNull(x) { "..." }`**:前置条件违反 / 早抛
 4. **`as?`**:类型转换可能失败,返回 nullable 自然链 `?:`
-5. **禁 `!!`**:**任何场景**都有上面之一更好
+5. **避免 `!!`**:它不携带失败原因;优先用能表达缺值或不变量的工具
 
 **正例**:
 
@@ -74,8 +92,8 @@ val str = obj as? String ?: return null        // as? + ?:
 **反例**:
 
 ```kotlin
-val name = config.name!!                       // ❌ 禁
-val s: String = obj as String                  // ❌ 应用 as?,失败抛 ClassCastException
+val name = config.name!!                       // ❌ 失败时缺少领域上下文
+val s: String = obj as String                  // ❌ 若类型并非已证明不变量,应使用 as?
 ```
 
 ---
@@ -127,12 +145,15 @@ val name = user.apply { logger.log(this) }     // ❌ apply 当 let 用 — name
 
 **判据**:
 
-1. **结构化并发**:`coroutineScope { }` 子协程绑当前作用域,失败传播
-2. **`supervisorScope`**:子失败不传染兄弟时
-3. **`Dispatchers` 边界**:CPU bound → `Default`;IO(网络/磁盘)→ `IO`;UI → `Main`
-4. **禁 `GlobalScope.launch`**(`@DelicateCoroutinesApi`,无 lifecycle / 资源泄漏 / 无 ExceptionHandler)
-5. **禁 `runBlocking` 在 `suspend fun` 内**(redundant + thread starvation)
-6. **禁吞 `CancellationException`**:`runCatching` / `catch (e: Exception)` 在协程内必须透传 cancel
+1. **结构化并发**:`coroutineScope { }` 子协程绑定当前 scope,失败传播
+2. **Scope owner**:应用、request、viewModel/service lifecycle 必须明确谁 cancel 和等待结束
+3. **`supervisorScope`**:只有子失败不应传染兄弟时使用
+4. **`Dispatchers` 边界**:CPU bound → `Default`;阻塞 IO → `IO`;UI → `Main`
+5. **Timeout/shutdown**:外部 I/O 和后台工作明确 deadline、cleanup 和失败传播
+6. **禁 `GlobalScope.launch`**:没有 lifecycle owner
+7. **禁 `runBlocking` 在 `suspend fun` 内**:可能阻塞线程池
+8. **禁吞 `CancellationException`**:`runCatching` / `catch (Exception)` 必须透传 cancel
+9. **确定性测试**:使用 `runTest`、test dispatcher/virtual time 或显式同步,不用 `Thread.sleep`
 
 **正例**:
 
@@ -164,12 +185,12 @@ runCatching { work() }.onFailure { logger.error(it) }  // ❌ 协程内吞 Cance
 
 ## 5. 错误处理(exception vs `Result<T>` vs sealed result)
 
-**判据(优先级阶梯)**:
+**判据**:
 
-1. **领域结果用 sealed result**:类型安全,业务流程显式,`when` 穷举
-2. **跨边界 / 调用方做异常处理**:`Result<T>` + `runCatching` 包外部 API(注意维度 4 协程内透传 cancel)
-3. **真错误 / 不变量违反**:`throw` exception(`IllegalStateException` / 自定义 `class XxxException : RuntimeException`)
-4. **禁** 用 nullable 表"操作失败"——nullable 表"无值",不表"出错"
+1. 有多个调用方必须区分的领域 outcome:使用 sealed result,获得穷举检查
+2. 跨边界需要把异常作为值传递:可使用 `Result<T>`,协程内仍要透传 cancellation
+3. 编程错误或不变量违反:抛出带上下文的 exception
+4. Nullable 只表达"无值";不要让 null 同时表示 not found、validation fail 和 I/O fail
 
 **正例**:
 
@@ -229,27 +250,30 @@ class Repo { val orders: MutableList<Order> = ... }    // ❌ 暴露 mutable
 
 ## 7. 扩展函数(vs 成员函数 vs 顶层函数)
 
-**判据(优先级阶梯)**:
+**判据**:
 
-1. **成员函数**(首选):行为属于类型自身
-2. **顶层函数**:无类型归属的工具,放 utils/
-3. **扩展函数**(谨慎):**仅当**无法改源类(stdlib / 第三方) + 行为是"对该类型的额外能力" + 不是核心领域行为
-4. **禁** 领域行为写成顶层扩展(应是 Service interface + 实现)
+1. 类型自己维护的不变量和固有行为:使用成员
+2. ADT + interface 解释器:核心行为由 interface/实现类承载,可用薄扩展提供类型化入口
+3. stdlib/第三方类型的额外能力:扩展函数是自然选择
+4. 无明确 receiver 的算法:使用有领域归属的顶层函数,避免 `utils` 垃圾桶
+5. 扩展函数保持无状态,不隐藏 I/O、Service locator 或昂贵副作用
 
 **正例**:
 
 ```kotlin
-class Order { fun submit(): Outcome { ... } }  // 成员: 领域行为
+class Order { fun submit(): Outcome { ... } }  // 成员维护 Order 不变量
 
-fun Instant.toSeoul(): ZonedDateTime = atZone(ZoneId.of("Asia/Seoul"))  // stdlib 加能力
+fun Instant.toSeoul(): ZonedDateTime = atZone(ZoneId.of("Asia/Seoul"))
 
-val Expr.isLeaf: Boolean get() = this is Expr.Num  // ADT 派生谓词(三分法解释器层)
+val Expr.isLeaf: Boolean get() = this is Expr.Num
+
+fun Expr.evaluateWith(eval: Eval<Int>): Int = eval.eval(this) // 薄解释器入口
 ```
 
 **反例**:
 
 ```kotlin
-fun Order.submit(): Outcome = OrderService.submit(this)  // ❌ 领域行为漂浮成扩展
+fun Order.submit(): Outcome = GlobalServices.orders.submit(this) // ❌ 隐藏 service lookup 和 I/O
 ```
 
 ---
@@ -258,9 +282,9 @@ fun Order.submit(): Outcome = OrderService.submit(this)  // ❌ 领域行为漂�
 
 **判据**:
 
-1. **默认 List**:`map / filter / fold` 等,小数据 / 单步
-2. **切 Sequence**:链 ≥ 3 步 + 数据量大,**或**短路场景(`first` / `any` / `take`)
-3. **禁** Sequence 滥用——单步 + 立即终结时 Sequence 比 List 慢(开销)
+1. **默认 List**:`map / filter / fold` 等,小数据或结果本来就要物化
+2. **评估 Sequence**:数据量大、多步中间集合昂贵,或短路场景(`first` / `any` / `take`)
+3. 单步后立即 `toList()` 通常没有收益;性能敏感时用 benchmark 判断
 
 **正例**:
 
@@ -345,31 +369,31 @@ fun checkValid(): Boolean = ...                // ❌ check 不像谓词,应 isV
 
 ---
 
-## 11. 弃用替换(`!!` / `GlobalScope` / `lateinit` / `Array` 等历史包袱)
+## 11. 历史包袱与上下文选择
 
-**判据(直接禁用清单)**:
+以下用法是 review 信号,不是脱离上下文的语法禁令。
 
-| 别用 | 改用 | 原因 |
+| 信号 | 默认替代 | 允许例外 |
 |---|---|---|
-| `!!` | `?.let` / `?:` / `requireNotNull` | 维度 2 |
-| `GlobalScope.launch` | 显式 `CoroutineScope` | 维度 4 |
-| `runBlocking` 在 suspend 内 | 直接 `await` / 改 suspend | 维度 4 |
-| `lateinit var x: T` | 构造器注入 / `by lazy` | 暴露未初始化态 + var |
-| `Array<T>` | `List<T>` / 原始数组(`IntArray` 等) | `Array<T>` 是 boxed,equals 引用比较 |
-| `companion object` 单纯放 const | top-level `const val` | 顶层 const 更简洁,不需 import companion |
-| `@JvmStatic` 滥用 | 仅 Java 互操作必要时 | Kotlin 内调用不需要 |
-
-每条用法即反例。
+| `!!` | `?:` / `requireNotNull` / `checkNotNull` | 极窄的测试夹具;仍应给失败上下文 |
+| `GlobalScope.launch` | 明确 owner 的 `CoroutineScope` | 基础设施级进程 scope,且有显式 shutdown |
+| suspend 内 `runBlocking` | 直接 suspend/await | 无 |
+| `lateinit` | 构造器注入 / nullable state / `lazy` | framework lifecycle 或测试注入要求时 |
+| `Array<T>` | `List<T>` / primitive array | Java interop、固定缓冲区或性能证据 |
+| companion 只放 const | top-level `const val` | 常量需要类型命名空间时 |
+| `@JvmStatic` | 普通 Kotlin API | Java consumer 明确需要静态入口 |
 
 ---
 
-## 12. Public API explicit return type(库 / 模块边界)
+## 12. Public API 与兼容性
 
 **判据**:
 
-1. **库代码 / 模块 public API:必须显式标返回类型**——避免 inferred type 漏 platform type / 暴露内部实现
-2. **私有 / file-private 可省略**:推导 OK
-3. **强制化**:`-Xexplicit-api=strict` 编译选项
+1. 库/模块 public API 显式标返回类型,避免泄漏 platform type 或具体实现
+2. 私有/file-private 可使用推导
+3. 库启用 `-Xexplicit-api=strict`
+4. public interface 新增 abstract member、改变 JVM signature、可见性或默认参数可能破坏 source/binary consumer
+5. 提高 Kotlin/JVM/Gradle 最低版本是兼容性变更;发布前使用 binary compatibility validator 等机械检查
 
 **正例**:
 
@@ -391,12 +415,12 @@ fun load() = readJson(file)                    // ❌ 推导出啥?String? Map?
 
 ## 13. 复杂度阈值(函数行数 / 嵌套深度 / 参数个数)
 
-**判据**:
+**判据**:以下数字是 review 信号,不是机械失败线。
 
-- **函数行数 < 50**(超了考虑拆)
-- **嵌套深度 ≤ 3**(参 Linus 内核风格)
-- **参数 ≤ 5**(超了用 data class 包装)
-- **圈复杂度 ≤ 10**(detekt 默认)
+- 函数约 50 行以上:检查是否包含多个可命名职责
+- 嵌套超过 3 层:优先早返回、拆函数或重建数据形态
+- 参数超过 5 个:检查是否存在领域 command/config 对象
+- 圈复杂度超过团队 detekt 阈值:检查状态建模和分支归属
 
 **补充**:
 

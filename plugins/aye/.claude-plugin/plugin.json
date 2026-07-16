@@ -1,7 +1,7 @@
 {
   "name": "aye",
   "description": "Lightweight AI-pair workflow skills: scope alignment, acceptance criteria, pull-based iteration. Designed for solo dev + AI pair programming, not team Scrum.",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "author": {
     "name": "jiaojing"
   },

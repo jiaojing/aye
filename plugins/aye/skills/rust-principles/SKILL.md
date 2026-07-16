@@ -1,167 +1,98 @@
 ---
 name: rust-principles
-description: 'Rust 项目专属设计原则(横切,语言特化)。仅在 Rust 项目(Cargo.toml / .rs / cargo / rustc / 运行时三分法 / 类型三分法 上下文)触发,**非 Rust 项目零干扰**。包含运行时三分法(Service/Context/Value)、行为跟类型走、生命周期偏好、错误处理(thiserror/anyhow)、命名惯例(as_/to_/into_)、弃用替换(LazyLock/parking_lot)、Review checklist、Crate 成熟度模板。新 Rust 项目可作为 project agent instructions 起点(Claude Code: CLAUDE.md; Codex: AGENTS.md)。'
+description: 'Rust 项目专属设计原则(横切)。在 Cargo.toml、.rs、cargo/rustc、Rust API 或所有权设计上下文触发。覆盖运行时 Service/Context/Value 分类、ADT + Trait 解释器、owned/borrowed 取舍、封装、错误、任务生命周期、框架边界、Default、命名、public API/MSRV 和 review checklist。'
 ---
 
 # Rust Principles
 
-Rust 项目专属设计原则与 idiomatic 选择。**语言无关的代码品味**走 `principles` / `review`,本 skill 只讲 Rust 特化的部分。
+只讲 Rust 特化；语言无关的品味和工作流分别走 `principles`、`review`、`flow`。
 
----
+## 运行时三分法
 
-## 触发场景
+先判断类型寿命和所有权，再选择引用、move、Clone 或 Arc：
 
-- 在 Rust 项目里(检测到 `Cargo.toml` / `.rs` 文件 / `cargo` 命令)
-- 讨论 Rust 设计选择("用 newtype 还是 type alias?" / "Model 该不该 owned by Engine?")
-- 新开 Rust 项目,需要 project agent instructions 的设计原则起点(Claude Code: `CLAUDE.md`; Codex: `AGENTS.md` 或项目说明)
-- Review Rust 代码,关注 idiomatic / 风格层
+| 分类 | 寿命 | 默认传递 | 例子 |
+|---|---|---|---|
+| Service | 长生命周期，由 composition root 构造 | `&T`；确有共享所有权时 `Arc<T>` | client、pool、配置快照 |
+| Context | pipeline 中间产物 | owned move | model、engine、request context |
+| Value | 小型领域值 | by value / borrow | newtype、money、timestamp |
 
-**不触发**:
-- 非 Rust 项目(零干扰)
-- 具体编译错误 / 借用检查 / Send/Sync / ownership 问题 → 走 `rust-skills` 插件的 `m0x` 系列(各自有错误码 trigger)
-- 语言无关的代码品味问题 → 走 aye 的 `principles` / `review`
+`Arc` 表达共享所有权，不表达“全局”。不要把 Service 自动做成 singleton，也不要让 Value 为了省一次复制感染整条 lifetime 链。
 
----
+## 数据与行为
 
-## 核心设计原则
+- ADT 用 `enum` / `struct` 承载状态；能力用 `trait`，解释器用 `impl Trait for Type`。
+- 行为必须有类型归属：inherent `impl`、trait 或解释器；避免无主的 public 自由函数。
+- 多个 `impl` 块可按职责拆分，同一类型仍保持自然的 `obj.method()` 调用。
+- 扩展 trait 与便捷 inherent method 可以作为入口，但核心解释逻辑不要重复。
 
-### 1. 运行时三分法
+## Ownership / Lifetime
 
-> **设计层三分**(怎么建模)在 `principles` 的"ADT + Type Class 模式";本节讲**运行时层三分**(谁活多久、怎么传),两者**维度正交**。
+- 应用层优先 owned 数据，避免为了局部借用给整条对象图添加 lifetime。
+- 库 API、零拷贝热路径和明确的临时视图可以且应该借用；不要机械 Clone/Arc。
+- Clone 必须表达合理的复制语义；无理由的 `.clone()` 是所有权设计信号。
+- 锁不能跨 `.await`；先缩小 guard 作用域或重构状态所有权。
 
-动手前先分类每个类型,决定生命周期和传递方式:
+## 封装与 Default
 
-| 分类 | 寿命 | 传递 | 例子 |
-|------|------|------|------|
-| **Service** | 长生命周期,全局 / 单例 | `Arc<T>` / 引用 | `DataSource`, `Config`, `ConnectionPool` |
-| **Context** | Pipeline 中间产物,用完即弃 | owned move | `Model`, `Engine`, `Builder` |
-| **Value** | 纯值,Copy/Clone | by value | `f64`, 领域 newtype, `Greeks`, `Email` |
+- 不暴露破坏不变量的 `pub` field；连续 `.field.field` 是缺能力方法的信号。
+- 只有语义上有效、安全且无需隐藏 I/O 的状态才实现 `Default`。
+- 不用空字符串、零 ID 或未连接 client 伪造“可默认”的半初始化对象。
 
-**先判分类,再决传递方式**——不分类就开始写,容易把 Value 写成借用、把 Context 写成 Arc,白白绕生命周期。
+## 错误
 
-### 2. 行为跟类型走
+- 可恢复失败返回 `Result<T, E>`；库/领域错误优先 `thiserror`，应用边界聚合可用 `anyhow`。
+- 能传播就用 `?`；`expect` 只用于已由不变量证明不可能失败的位置，并写清原因。
+- 错误在调用栈中补上下文，只在系统边界记录一次；不要 log 后又原样 return。
 
-- 方法放 struct 的 `impl`,**不做 `pub` 自由函数**
-- `obj.method(...)` > `module::method(&obj, ...)`
-- 文件太大按职责拆多个 `impl` 块(Rust 同 crate 内允许多个 impl)
+## 并发与资源生命周期
 
-### 3. 生命周期偏好
+- 每个 `tokio::spawn`/线程必须有 owner、取消路径和回收策略；不要丢弃需要观察的 `JoinHandle`。
+- 外部 I/O 设置 timeout；shutdown 使用独立 deadline，不能复用已取消 context。
+- 无界输入必须限制并发；先使用 runtime/库提供的结构化原语，不手写固定 worker pool。
+- async 测试使用显式同步或暂停/推进虚拟时间，不靠 sleep 猜调度。
 
-- **不引入 `'a` 除非必要**,偏好 owned 数据
-- `Model owned by Engine` 比引用更自然
-- 需要共享时用 `Clone` 或 `Arc`,不用引用
+## Frameworks at the Edge
 
-理由:lifetime 是病毒——一处加 `'a`,所有调用链都要传染。owned + `Arc` 看起来"不优雅",但**写起来 / 读起来 / 维护起来都更便宜**。
+- clap、axum、tonic、tauri 等类型停在 adapter。
+- adapter 转换成领域 command/config/value 后调用核心；核心不解析 flags、HTTP request 或 GUI event。
+- 在 `main`/composition root 构造依赖并接线，避免可变全局状态。
 
-### 4. 封装优先(Rust 表现层)
+## 抽象
 
-语言无关的"封装 > 逻辑方便"在 Rust 表现为:
-- 不暴露 `pub` field 给调用方直接访问
-- `mesher.axes[0].locations` → `mesher.locations(0)`
-- 调用方连续 `.field.field` = 缺方法的信号
+- trait 由 consumer 的最小能力驱动；实现数量是信号，不是“三个才抽”的硬门槛。
+- 同签名不代表同语义；抽 trait 前说明领域理由、替换需求或测试边界。
+- 泛型用于复用真实算法和静态能力，不为可能永远不会出现的类型层级预制复杂度。
 
-### 5. 错误处理风格
+## 命名
 
-- 可恢复错误用 `Result<T, E>`,custom error 用 **`thiserror`**
-- 应用层汇总错误用 **`anyhow`**
-- 不滥用 `.unwrap()` / `.expect()`,**生产代码只在"逻辑上不可能"的地方用**(且必须 `expect("...")` 带原因)
-- 函数能返回 `Result` 就别 `unwrap`
+| 前缀 | 语义 |
+|---|---|
+| `as_` | 廉价借用/视图 |
+| `to_` | 复制或计算得到新值 |
+| `into_` | 消费 self、转移所有权 |
 
-### 6. 不预先抽象
+同时遵守 `iter` / `iter_mut` / `into_iter`，不用 `get_` 前缀；newtype 用于阻止真实误用或维护不变量。
 
-- 两个实现不值得抽 trait,**等第三个出现再考虑**(rule of three)
-- 不追求多对多的统一 trait
-- 抽 trait 前问 `review` 维度 3 的"真共性 vs 偶合"
+## 当前生态与兼容性
 
----
+- 优先标准库已经稳定提供的能力，如 `OnceLock` / `LazyLock`；第三方替代必须有具体收益。
+- `std::sync::Mutex` 与 `parking_lot::Mutex` 按 poisoning、性能、依赖和运行环境选择，不设全局默认。
+- public trait 新增必需方法通常破坏外部 implementor。
+- MSRV 是 public contract；提高前先确认 consumer，并在 release notes 说明。
+- 发布库使用机械检查（如 `cargo semver-checks`）验证兼容性。
 
-## 命名惯例(Rust-specific,非显而易见)
+## Review Checklist
 
-来自 Rust API Guidelines + 社区共识:
-
-| 前缀 | 语义 | 举例 |
-|------|------|------|
-| `as_` | 廉价转换,返回引用 | `str::as_bytes()` |
-| `to_` | 昂贵转换,复制或计算 | `Path::to_string_lossy()` |
-| `into_` | 消费 self,所有权转移 | `String::into_bytes(self)` |
-
-其他硬规则:
-- **不用 `get_` 前缀**: `fn name()` not `fn get_name()`
-- 迭代器三兄弟: `iter()` / `iter_mut()` / `into_iter()`
-- 用 newtype 表达领域语义: `struct Email(String)` 不要裸 `String`(具体取舍见 `review` 维度 1)
-
----
-
-## 弃用 / 替换(优先用新的)
-
-| 别用 | 改用 | 原因 |
-|------|------|------|
-| `lazy_static!` | `std::sync::OnceLock` | 标准库已支持(Rust 1.70+) |
-| `once_cell::Lazy` | `std::sync::LazyLock` | 标准库已支持(Rust 1.80+) |
-| `std::sync::Mutex` | `parking_lot::Mutex` | 更快,无毒化 |
-| `failure` / `error-chain` | `thiserror` / `anyhow` | 主流选择 |
-| `for i in 0..v.len()` | `for (i, x) in v.iter().enumerate()` | 地道 |
-
----
-
-## Review Checklist(常驻)
-
-Rust 代码写完 / review 前快速扫:
-
-```
-[ ] 没有无理由的 .clone()(可能是所有权设计问题)
-[ ] 库代码没有 .unwrap()(用 ? 或 expect 带原因)
+```text
+[ ] 没有无理由 Clone/Arc 或不必要的 lifetime 扩散
+[ ] 可恢复错误没有 unwrap；expect 写明已证明的不变量
 [ ] 没有 pub field 泄漏不变量
-[ ] 没有 String 能用 &str 的地方
-[ ] 没有 .unwrap() 在能返回 Result 的函数里
-[ ] unsafe 块必须有 // SAFETY: 注释
-[ ] 函数长度 < 50 行(超了就想拆)
-[ ] 没有 hold lock across .await
+[ ] unsafe 块有 SAFETY 注释
+[ ] 没有 lock guard 跨 await
+[ ] spawn/thread 有 owner、cancel、timeout、join/shutdown
+[ ] framework 类型没有进入领域核心
+[ ] Default 表达有效安全状态
+[ ] public API / trait / MSRV 变化已做 consumer 兼容检查
+[ ] 大函数和深嵌套已按命名职责拆分
 ```
-
-**和 `review` 5 维度的关系**:本 checklist 是 Rust 实现层信号(具体到 keyword 级);`review` 是设计判据(抽象到决策级)。两者都跑,不重复。
-
----
-
-## 可选:Crate 成熟度表(多 crate workspace 模板)
-
-如果项目是 cargo workspace,建议在 project agent instructions 标注各 crate 状态,**防止 AI 对 WIP / placeholder 层做过度 review**:
-
-```markdown
-## Crate 成熟度
-
-| Crate | 状态 | 说明 |
-|-------|------|------|
-| crate-a | ✅ stable | production-ready |
-| crate-b | 🟡 WIP | 部分实现 |
-| crate-c | 🟢 placeholder | 骨架,等实装 |
-```
-
-规则:
-- ✅ stable 层做完整 5 维度 review
-- 🟡 WIP 层结构性 bug 先修,细节等实装
-- 🟢 placeholder 层不深度 review,只关注架构骨架是否合理
-
----
-
-## 用法:作为新 Rust 项目 agent instructions 起点
-
-新开 Rust 项目时:
-1. 创建项目说明文件(Claude Code: `CLAUDE.md`; Codex: `AGENTS.md` 或 repo 约定文件)
-2. 引用本 skill:"设计原则见 `aye/rust-principles` skill (LLM 自动 invoke)"
-3. 在项目说明文件里只写**项目特定**的部分(架构、crate 列表、build command),**不重复本 skill 的通用原则**
-
-这样:
-- 通用 Rust 设计原则一处维护,所有项目自动跟进(改 skill 即可)
-- project agent instructions 只放项目特殊内容,体积小,信号强
-- 新 Rust 项目零拷贝 bootstrap
-
----
-
-## 与其他 skill 的关系
-
-- **`principles`**(aye 语言无关版):本 skill 是它的 Rust 特化扩展,sibling 关系。语言无关层在 `principles`,Rust 特化层在本 skill。
-- **`review`**:5 维度判据是语言无关的;本 skill 的 review checklist 是 Rust 实现层信号。两者并行不冲突——review 给设计决策,本 skill 给具体编码 / review 检查。
-- **`rust-skills` 插件的 m0x 系列**(独立 plugin):本 skill 讲**风格 / 设计选择**(高层);m0x 讲**具体编译错误 / 语义问题 / 错误码**(低层)。错位互补,不重复。
-  - 例:本 skill 说"用 thiserror 写 custom error";`m06-error-handling` 说"如何用 ? 操作符传播 / when to panic vs Result / 具体错误码 E0277"。
-- **`flow` / `feature` / `scope` / `acceptance` / `commit-gate`**(aye 仪式层):正交关系,本 skill 是知识库,它们是流程。
