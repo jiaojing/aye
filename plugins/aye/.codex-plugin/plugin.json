@@ -1,7 +1,7 @@
 {
   "name": "aye",
-  "version": "0.11.0",
-  "description": "Lightweight AI-pair workflow skills: scope alignment, acceptance criteria, pull-based iteration. Designed for solo dev + AI pair programming, not team Scrum.",
+  "version": "0.13.5",
+  "description": "Lightweight AI-pair skills for domain boundaries, scope, design, acceptance, review and authorized Git operations.",
   "author": {
     "name": "jiaojing",
     "url": "https://github.com/jiaojing"
@@ -22,8 +22,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Aye",
-    "shortDescription": "Idea exploration, scope, acceptance, and review workflows for AI pair programming",
-    "longDescription": "Aye provides lightweight workflow skills for solo developer and AI pair programming: explore ideas before committing, clarify features, align implementation scope, define executable acceptance criteria, review changes, run cross-agent review rounds, and gate commits without adopting heavyweight team Scrum rituals.",
+    "shortDescription": "Domain boundaries, design, acceptance and review for AI pair programming",
+    "longDescription": "Aye provides focused skills for solo developer and AI pair programming: explore ideas, clarify goals, define domain boundaries and contracts, design meaningful tradeoffs, verify observable results, review changes, track cross-agent review rounds, and perform authorized Git operations. Reuse existing decisions and authorization, and choose workflows by actual risk.",
     "developerName": "jiaojing",
     "category": "Engineering",
     "capabilities": [
@@ -36,7 +36,7 @@
       "Use aye flow to show the workflow map.",
       "Use aye spark to explore whether this idea is worth doing.",
       "Use aye feature to clarify this new feature.",
-      "Use aye scope before implementing this task.",
+      "Use aye scope to clarify the goal and impact of this task.",
       "Use aye cross-review to run a multi-agent review round."
     ],
     "brandColor": "#2563EB",

@@ -1,0 +1,38 @@
+[package]
+name = "aye-rust-principles-examples"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+path = "module-boundary/lib.rs"
+
+[dependencies]
+anyhow = "1"
+thiserror = "2"
+tokio = { version = "1.53", features = ["macros", "rt", "sync", "time"] }
+tower-layer = "0.3.3"
+tower-service = "0.3.3"
+
+[dev-dependencies]
+tokio = { version = "1.53", features = ["test-util"] }
+
+[[bin]]
+name = "module-boundary"
+path = "module-boundary/main.rs"
+
+[[bin]]
+name = "service-lifecycle"
+path = "service-lifecycle.rs"
+
+[[bin]]
+name = "operation-dsl"
+path = "operation-dsl/main.rs"
+
+[[bin]]
+name = "service-pipeline"
+path = "service-pipeline/main.rs"
+
+[[test]]
+name = "module-contracts"
+path = "module-boundary/tests/contracts.rs"

@@ -4,3 +4,5 @@
 .idea/
 .vscode/
 node_modules/
+plugins/aye/skills/rust-principles/examples/target/
+plugins/aye/skills/rust-principles/examples/asyncband-coordination/target/

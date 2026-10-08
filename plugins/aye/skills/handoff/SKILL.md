@@ -1,37 +1,32 @@
 ---
 name: handoff
-description: '迭代终点交接(用户主动触发)。触发关键词:"今天到这 / 收 / 暂停 / handoff / context 满了 / 下次继续"。同时写 docs/features/handoff-日期.md 和 inline 摘要；摘要少于 10 行，只交事实，不替下个 session 拍决策，也不自动 capture inbox。'
+description: '按用户请求记录暂停或跨 session 接力点。保存当前事实、已有决策和恢复位置，保持简短；commit/push 后不自动触发。'
 ---
 
 # Handoff
 
-给下一个 session 留一份短小、事实化的接力点。只有用户主动表示暂停/结束时触发；commit/push 后不自动运行。
+为下一 session 留可核实的接力点。用户请求暂停、结束或接力时使用；优先引用已有任务和决策文档。
 
-## 双输出
+## 记录
 
-1. 写 `docs/features/handoff-<YYYY-MM-DD>.md`；同日再次触发覆盖当前瞬态状态，git 保留历史。
-2. 在当前对话 inline 输出相同内容。
+默认写 `docs/features/handoff-<YYYY-MM-DD>.md`，同日更新当前接力点，git 保留历史；项目已有交接位置时沿用。对话中报告关键事实与文件链接，避免重复全文。
+
+按需要记录：
 
 ```markdown
-## Today
-<commit/push 和本轮结果>
+## 结果
+<已完成内容、commit/push 的实际状态>
 
-## 状态
-<tests、worktree、阻塞事实>
+## 当前状态
+<工作区、验证、阻塞事实>
 
-## 下个 session 起点
-<feature/task + 文件位置>
+## 恢复位置
+<任务与关键文件，已约定的下一步>
 
 ## 注意约定
-<最多 1–3 条近期事实>
+<影响恢复的已有决策或限制>
 ```
 
-全文少于 10 行。已有信息引用 feature、ADR 或 commit，不复述。
+以能准确恢复工作为准，保持简短，不机械限制行数。未决事项标为未决，不将新建议伪装成已达成的决策。
 
-## 只交事实
-
-不写推荐、trade-off、leading question、执行顺序或新决策。下一 session 用 fresh eyes 读取代码和文档后再判断。
-
-散落想法属于 `inbox`：handoff 不扫描关键词、不主动询问 capture；用户明确说“记一下”时再调用 inbox。
-
-完成后停止。用户仍可继续对话，但本 skill 不自动进入下一 task。
+完成交接后停在用户要求的阶段；不自动启动下一任务、扫描想法或触发 spark。

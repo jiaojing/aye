@@ -1,0 +1,15 @@
+[package]
+name = "aye-asyncband-coordination"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.86"
+publish = false
+
+[dependencies]
+anyhow = "1"
+asyncband = { version = "=0.7.3", features = ["broadcast", "lazy-cell", "mpsc", "semaphore", "shutdown", "singleflight", "waitgroup"] }
+thiserror = "2"
+tokio = { version = "1.53", features = ["macros", "rt", "sync", "time"] }
+
+[dev-dependencies]
+tokio = { version = "1.53", features = ["test-util"] }

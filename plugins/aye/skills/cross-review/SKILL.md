@@ -1,85 +1,56 @@
 ---
 name: cross-review
-description: '多 agent 交叉审查协议(Phase 2 横向协作)。触发关键词:"交叉 review / ping-pong / round review / cc 和你互审 / codex review round / 多 agent 审查 / review.md 索引 / reviews 目录 / 下一轮 review"。维护 review.md 当前真相索引和 reviews/NNN-*.md 历史轮次；每轮只处理 open items，具体设计判据使用 review。'
+description: '管理用户要求的多 agent 审查轮次。维护 review.md 当前索引和 reviews 历史，跟进 open items，并检查本轮相关变更；设计判据由 review 提供。'
 ---
 
 # Cross Review
 
-管理多 agent review 的状态和文件协议；`review` 负责 finding 判据，本 skill 负责不丢状态、不重复读取全历史。
+维护审查当前事实与可追溯历史。轮次协议服务于用户请求的协作，不自动制造新轮次或扩大任务。
 
-## 文件布局
+## 文件协议
+
+沿用已有位置；默认：
 
 ```text
 docs/features/<slug>/
-  feature.md / design.md      # source of truth
-  review.md                   # 当前决策和 open items
-  reviews/
-    001-codex.md              # append-only 历史轮次
-    002-cc-response.md
+  feature.md / design.md     # 存在时作为目标与决策来源
+  review.md                  # 当前索引
+  reviews/NNN-agent.md        # 历史轮次
 ```
 
-## review.md
+`review.md` 维护已决定事项、Open Items、最新结论与 History；历史 round 文件 append-only，不回改。沿用项目已有 schema，没有索引时可采用：
 
 ```markdown
 # Review Index: <topic>
 
-Last updated: <date> (after Round N <agent>)
+Last updated: <date / round>
 
 ## Decision Log
 | ID | Decision | Source |
+|---|---|---|
 
 ## Open Items
 | ID | Item | Status |
+|---|---|---|
 
 ## Latest Round Summary
-<最多 10 bullets>
+<简短结论与剩余问题>
 
 ## History
 | Round | File | Source | Date |
+|---|---|---|---|
 ```
 
-- Decision Log 只放已拍板结论。
-- Open Items 只放未关闭事项，每轮必须更新状态。
-- 历史 round 文件 append-only，不回改旧轮次。
+## 每轮
 
-## 每轮流程
+- 读取目标/决策来源、当前索引和最新 response，以及本轮 diff、相关实现、契约、consumer 与验证证据。
+- 优先跟进 open items，同时检查修复回归和本轮新增的实质问题；历史按追溯需要读取，不把“少读历史”当作限制源码阅读。
+- 使用当前最大编号 +1 写新 round，记录输入、结论、finding/response、决策变化和剩余事项。
+- 同步更新当前索引及 History，避免 round 与索引描述不同事实。
+- 只有已决定且影响范围、验收或任务的变化写回相关文档；提议保留为 open item。
 
-1. 读取 source of truth、`review.md` 和最新 response；只有 open item 需要追溯时才读对应历史文件。
-2. 取当前最大编号 +1，写 `reviews/<NNN>-<agent>[-response].md`。
-3. 同步更新 review.md 的更新时间、Decision Log、Open Items、最新摘要和 History。
-4. 只有已拍板且会改变 scope/AC/tasks 的事项才写回 feature/design；未拍板内容只留在 Open Items。
+Finding 按 `review` 给位置、触发条件、风险、证据和最小修复。记录“已修复”时核对当前实现与验证，不能只凭 response 声明关闭。
 
-Round 文件：
+## 对用户报告
 
-```markdown
-# Round N — <Agent> Review
-
-Reviewer: <Agent>
-Date: <date>
-Inputs: <files>
-
-## Verdict
-<能否关闭 open items / 是否有 blocker>
-
-## Findings / Responses
-<按 blocker 和 open item 顺序>
-
-## Decision Updates
-<准备写入 Decision Log 的结论>
-
-## Open Items
-<留给下一轮的事项>
-```
-
-Finding 必须给具体位置、风险、最小修复，以及是否进入 Decision Log/Open Items；不要写“可以优化”。
-
-## Token 纪律
-
-- 默认只读 source、review.md 和最新一轮。
-- 不默认扫描整个 reviews/。
-- Decision 一句话，Latest Round Summary 最多 10 bullets。
-- Open Items 清空时明确写“可进入下一步”，不要继续制造轮次。
-
-## 对用户输出
-
-只报告新增 round 路径、review.md/feature.md 是否更新，以及剩余 open items；不把整份 review 再贴一遍。
+说明本轮结论、新增文件、索引变化与剩余事项，按影响提供必要证据。问题解决后明确收敛，不为满足轮次数量继续审查。
